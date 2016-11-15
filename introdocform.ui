@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>IntroDocForm</class>
+ <widget class="QWidget" name="IntroDocForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>680</width>
+    <height>457</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Cette &lt;A HREF SRC=&quot;:/page2.html&quot;&gt;page&lt;/A&gt; vous permet de définir l'opération désirée et le fichier ou le dossier d'images sur lequel elle s'appliquera, ainsi que les différentes phases de traitement qui seront executées. Vous pouvez ainsi choisir quelle phases seront executées ou non, sachant que chaque phase est préalable à la suivante et que par conséquent si vous omettez par exemple les trois premières phases, la ou les image(s) fournie(s) devront être détourée(s), régulièrement éclairée(s) et exempte(s) de détails non-significatifs Si vous optez pour un traitement par lot, les réglages présentés par la suite sur la première image s'appliqueront de façon identique à toutes les images fournies.. Si vous optez pour un traitement de séquence, les réglages présentés sur la dernière image s'appliqueront de façon identique à toutes les images précédentes. Si vous commencez les traitements après la phase 4 (Contour), le programme exigera en entrée non pas une image mais un fichier shapefile (.shp). Si vous ne sélectionnez aucune phase de traitement, le programme procédera uniquement au calcul des indicateurs à partir du shapefile fourni.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

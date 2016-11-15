@@ -1,0 +1,18 @@
+#ifndef BATCHPROCESSING_H
+#define BATCHPROCESSING_H
+
+#include <QDir>
+
+
+
+class BatchProcessing
+{
+    QDir dir;
+    QStringList files ;
+    
+    int counter ;
+public:
+    BatchProcessing();
+};
+
+#endif // BATCHPROCESSING_H

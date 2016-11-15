@@ -1,0 +1,265 @@
+#include "dilatationworker.h"
+#include "erosionworker.h"
+#include "openingdocform.h"
+#include "openingpage.h"
+#include "openingparamform.h"
+#include "ui_openingform.h"
+
+#include <QDir>
+#include <QSettings>
+#include <QThreadPool>
+#include <QTimer>
+
+OpeningPage::OpeningPage(MainWindow *parent) :
+    Page(parent)
+{
+
+    originalImage = mainWindow->regularizedImage ;
+    originalQImage = QImage(originalImage->width(),originalImage->height(),QImage::Format_ARGB32);
+    originalImage->toQImage(originalQImage);
+
+    outputImage = new DoubleImage(originalImage->width(),originalImage->height());
+
+    outputQImage = QImage(originalImage->width(),originalImage->height(),QImage::Format_ARGB32); ;
+
+    minImage = new DoubleImage(originalImage->width(),originalImage->height());
+
+    originalWidget = new ROIWidget(this);
+    resultWidget = new ROIWidget(this);
+    originalZoomWidget = new OpeningZoomWidget(this) ;
+    resultZoomWidget = new OpeningZoomWidget(this) ;
+
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->addWidget(originalWidget);
+    QVBoxLayout * vLayout = new QVBoxLayout;
+    vLayout->addWidget(originalZoomWidget);
+    vLayout->addWidget(resultZoomWidget);
+    layout->addLayout(vLayout);
+    layout->addWidget(resultWidget);
+setLayout(layout);
+
+
+    connect(originalWidget,SIGNAL(ROIChanged(QRect)),originalZoomWidget,SLOT(setROI(QRect)));
+    connect(originalWidget,SIGNAL(ROIChanged(QRect)),resultZoomWidget,SLOT(setROI(QRect)));
+    connect(originalWidget,SIGNAL(ROIChanged(QRect)),resultWidget,SLOT(setROI(QRect)));
+    connect(originalWidget,SIGNAL(mouseReleased()),this,SLOT(preview()));
+
+    connect(resultWidget,SIGNAL(ROIChanged(QRect)),originalWidget,SLOT(setROI(QRect)));
+    connect(resultWidget,SIGNAL(ROIChanged(QRect)),originalZoomWidget,SLOT(setROI(QRect)));
+    connect(resultWidget,SIGNAL(ROIChanged(QRect)),resultZoomWidget,SLOT(setROI(QRect)));
+    connect(resultWidget,SIGNAL(mouseReleased()),this,SLOT(preview()));
+
+    connect(originalZoomWidget,SIGNAL(ROIChanged(QRect)),originalWidget,SLOT(setROI(QRect)));
+    connect(originalZoomWidget,SIGNAL(ROIChanged(QRect)),resultZoomWidget,SLOT(setROI(QRect)));
+    connect(originalZoomWidget,SIGNAL(ROIChanged(QRect)),resultWidget,SLOT(setROI(QRect)));
+    connect(originalZoomWidget,SIGNAL(mouseReleased()),this,SLOT(preview()));
+
+    connect(resultZoomWidget,SIGNAL(ROIChanged(QRect)),originalWidget,SLOT(setROI(QRect)));
+    connect(resultZoomWidget,SIGNAL(ROIChanged(QRect)),originalZoomWidget,SLOT(setROI(QRect)));
+    connect(resultZoomWidget,SIGNAL(ROIChanged(QRect)),resultWidget,SLOT(setROI(QRect)));
+    connect(resultZoomWidget,SIGNAL(mouseReleased()),this,SLOT(preview()));
+
+    paramForm = new OpeningParamForm(parent,this);
+    docForm = new OpeningDocForm(parent);
+
+QTimer::singleShot(0,this,SLOT(initImages())) ;
+}
+
+OpeningPage::~OpeningPage()
+{
+}
+
+void OpeningPage::nextPhase()
+{
+    if (!settings.value("OpeningParamForm-Apply",QVariant(true)).toBool())
+    {
+        if (mainWindow->openedImage)
+        {
+            delete mainWindow->openedImage ;
+        }
+
+        mainWindow->openedImage = mainWindow->regularizedImage ;
+    }
+    else
+    {
+        if (!computed)
+        {
+            compute_clicked();
+        }
+        if (settings.value("OpeningParamForm-SaveJPG",QVariant(true)).toBool())
+    {
+        QString fileName = tr("Phase3-%1").arg(settings.value("File",QVariant(QDir::homePath())).toString());
+        mainWindow->croppedImage.save(fileName) ;
+    }
+    }
+}
+
+void OpeningPage::reinit()
+{
+    originalImage = mainWindow->regularizedImage ;
+    originalQImage = QImage(originalImage->width(),originalImage->height(),QImage::Format_ARGB32);
+    originalImage->toQImage(originalQImage);
+
+    delete outputImage ;
+    outputImage = new DoubleImage(originalImage->width(),originalImage->height());
+
+    outputQImage = QImage(originalImage->width(),originalImage->height(),QImage::Format_ARGB32); ;
+
+    delete minImage ;
+    minImage = new DoubleImage(originalImage->width(),originalImage->height());
+
+computed = false ;
+
+initImages();
+}
+
+void OpeningPage::invert_clicked()
+{
+   originalImage->invert();
+   originalQImage.invertPixels();
+   originalWidget->setFullImage(originalQImage);
+   resultWidget->setFullImage(originalQImage);
+   originalZoomWidget->setFullImage(originalQImage);
+   resultZoomWidget->setFullImage(originalQImage);
+repaint();
+}
+
+
+void OpeningPage::initImages()
+{
+    originalWidget->setFullImage(originalQImage);
+    resultWidget->setFullImage(originalQImage);
+    originalZoomWidget->setFullImage(originalQImage);
+    resultZoomWidget->setFullImage(originalQImage);
+    int x1 = (originalQImage.width()>>1) ;
+    int y1 = (originalQImage.height()>>1) ;
+    int w2 = (originalZoomWidget->width()>>1)/settings.value("OpeningParamForm-Zoom",QVariant(1)).toInt() ;
+    int h2 = (originalZoomWidget->height()>>1)/settings.value("OpeningParamForm-Zoom",QVariant(1)).toInt() ;
+    QRect ROI(x1-w2,y1-h2,w2<<1,h2<<1);
+    originalWidget->setROI(ROI);
+    resultWidget->setROI(ROI);
+    originalZoomWidget->setROI(ROI);
+    resultZoomWidget->setROI(ROI);
+    originalZoomWidget->setMagnification(settings.value("OpeningParamForm-Zoom",QVariant(1)).toInt());
+    resultZoomWidget->setMagnification(settings.value("OpeningParamForm-Zoom",QVariant(1)).toInt());
+
+    preview() ;
+
+    mainWindow->action_next->setEnabled(true);
+
+    }
+
+void OpeningPage::compute_clicked()
+{
+    paramForm->setEnabled(false );
+
+    QThreadPool * threadPool = QThreadPool::globalInstance() ;
+
+    mainWindow->progress->setMinimum(0);
+    mainWindow->progress->setValue(0);
+    mainWindow->progress->setMaximum(2*originalImage->width()*originalImage->height());
+
+
+    for (int i = 0 , y = 0 ; i < threadPool->maxThreadCount() ; i++)
+    {
+        int y2 = originalImage->height()*(i+1)/threadPool->maxThreadCount() ;
+        QRect zone(0,y,originalImage->width(),y2-y) ;
+        ErosionWorker * worker = new ErosionWorker(this,zone);
+        connect(worker,SIGNAL(setProgressIncrement(int)),mainWindow,SLOT(receiveProgressIncrement(int)));
+        threadPool->start(worker);
+        y = y2 ;
+    }
+
+    while (threadPool->activeThreadCount())
+    {
+        qApp->processEvents();
+        QThread::yieldCurrentThread();
+    }
+
+    for (int i = 0 , y = 0 ; i < threadPool->maxThreadCount() ; i++)
+    {
+        int y2 = originalImage->height()*(i+1)/threadPool->maxThreadCount() ;
+        QRect zone(0,y,originalImage->width(),y2-y) ;
+        DilatationWorker * worker = new DilatationWorker(this,zone);
+        connect(worker,SIGNAL(setProgressIncrement(int)),mainWindow,SLOT(receiveProgressIncrement(int)));
+        threadPool->start(worker);
+        y = y2 ;
+    }
+
+    while (threadPool->activeThreadCount())
+    {
+        qApp->processEvents();
+        QThread::yieldCurrentThread();
+    }
+
+    outputImage->computeMinMax();
+    outputImage->toQImage(outputQImage);
+
+    resultWidget->setImage(outputQImage);
+    resultZoomWidget->setImage(outputQImage);
+
+    mainWindow->openedImage = outputImage ;
+    mainWindow->openedQImage = outputQImage ;
+
+    paramForm->setEnabled(true);
+
+    repaint() ;
+}
+
+void OpeningPage::preview()
+{
+    paramForm->setEnabled(false);
+
+    QThreadPool * threadPool = QThreadPool::globalInstance() ;
+
+    QRect ROI = originalWidget->getROI() ;
+
+    mainWindow->progress->setMinimum(0);
+    mainWindow->progress->setValue(0);
+    mainWindow->progress->setMaximum(2*ROI.width()*ROI.height());
+
+
+    for (int i = 0 , y = ROI.y() ; i < threadPool->maxThreadCount() ; i++)
+    {
+        int y2 = ROI.y()+ROI.height()*(i+1)/threadPool->maxThreadCount() ;
+        QRect zone(ROI.x(),y,ROI.width(),y2-y) ;
+        ErosionWorker * worker = new ErosionWorker(this,zone);
+        connect(worker,SIGNAL(setProgressIncrement(int)),mainWindow,SLOT(receiveProgressIncrement(int)));
+        threadPool->start(worker);
+        y = y2 ;
+    }
+
+    while (threadPool->activeThreadCount())
+    {
+        qApp->processEvents();
+        QThread::yieldCurrentThread();
+    }
+
+    for (int i = 0 , y = ROI.y() ; i < threadPool->maxThreadCount() ; i++)
+    {
+        int y2 = ROI.y()+ROI.height()*(i+1)/threadPool->maxThreadCount() ;
+        QRect zone(ROI.x(),y,ROI.width(),y2-y) ;
+        DilatationWorker * worker = new DilatationWorker(this,zone);
+        connect(worker,SIGNAL(setProgressIncrement(int)),mainWindow,SLOT(receiveProgressIncrement(int)));
+        threadPool->start(worker);
+        y = y2 ;
+    }
+
+    while (threadPool->activeThreadCount())
+    {
+        qApp->processEvents();
+        QThread::yieldCurrentThread();
+    }
+
+    outputImage->toQImage(outputQImage);
+
+    resultWidget->setImage(outputQImage);
+    resultZoomWidget->setImage(outputQImage);
+
+    paramForm->setEnabled(true);
+
+    repaint() ;
+}
+
+
+
