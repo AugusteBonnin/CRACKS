@@ -1,6 +1,5 @@
 #include "paramform.h"
 #include "mainwindow.h"
-#include "ui_introform.h"
 
 #include <QSettings>
 #include <QFileDialog>

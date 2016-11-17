@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
         format.setDepthBufferSize(0);
         format.setStencilBufferSize(0);
         format.setAlphaBufferSize(8);
-        //format.setVersion(2, 0);
-        //format.setProfile(QSurfaceFormat::CoreProfile);
+        format.setVersion(2, 0);
+        format.setProfile(QSurfaceFormat::CoreProfile);
         QSurfaceFormat::setDefaultFormat(format);
 
     QApplication a(argc, argv);

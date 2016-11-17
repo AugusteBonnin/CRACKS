@@ -23,14 +23,17 @@ DoubleHistoWidget::DoubleHistoWidget(QWidget *parent,QVector<double> & data) :
     max_class_count = 0 ;
     for (int i = 0 ; i < data.count() ; i++)
     {
-        int idx = (int)(class_count.count()*(data[i]-min)/(max-min)) ;
-        if (idx==class_count.count()) idx-- ;
-        class_count[idx]++;
-        max_class_count = qMax(max_class_count,class_count[idx]) ;
+        int idx ;
+        if (!isnan(data[i]))
+        {
+            idx= (int)(class_count.count()*(data[i]-min)/(max-min)) ;
+            if (idx==class_count.count()) idx-- ;
+            class_count[idx]++;
+            max_class_count = qMax(max_class_count,class_count[idx]) ;
+        }
 
     }
- }
-
+}
 DoubleHistoWidget::~DoubleHistoWidget()
 {
 }

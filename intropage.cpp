@@ -2,12 +2,13 @@
 #include "intropage.h"
 #include "introparamform.h"
 #include "mainwindow.h"
-#include "ui_introform.h"
 
 #include <QSettings>
 #include <QFileDialog>
 #include <QStatusBar>
 #include <QTimer>
+#include <QAction>
+#include <QGridLayout>
 
 IntroPage::IntroPage(MainWindow *parent) :
     Page(parent)
@@ -21,7 +22,6 @@ IntroPage::IntroPage(MainWindow *parent) :
     docForm = new IntroDocForm(parent) ;
 
 parent->action_next->setEnabled(true);
-
 
 }
 

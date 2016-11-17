@@ -16,6 +16,7 @@ LIBS += -L/usr/local/lib  -lCGAL  -lCGAL_Core -lgmp -lmpfr
 LIBS += -L/usr/lib/x86_64-linux-gnu/ -lboost_thread -lboost_system -lz
 LIBS += -L . -lshp
 
+INCLUDEPATH += /usr/local/include
 
 SOURCES += main.cpp\
         mainwindow.cpp \

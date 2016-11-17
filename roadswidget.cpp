@@ -28,7 +28,7 @@ RoadsWidget::RoadsWidget(Form *parent) : ScrollableOpenGLWidget(parent) ,
     pre_roads_index_vbo_start(mainWindow->pre_roads_index_vbo_start) ,
     pre_roads_index_vbo_end(mainWindow->pre_roads_index_vbo_end),
     pre_junctions_vbos(mainWindow->pre_junctions_vbos)
-    {
+{
 
 }
 
@@ -578,14 +578,16 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
                 line_string << QPointF(skel_vertices[list[j]].x(),skel_vertices[list[j]].y());
             }
             //last element
-            pre_roads_vbo << skel_vertices[list[j]].x() ;
-            pre_roads_vbo << skel_vertices[list[j]].y() ;
-            pre_roads_vbo << r ;
-            pre_roads_vbo << g ;
-            pre_roads_vbo << b ;
-            pre_roads_vbo << 1 ;
-            line_string << QPointF(skel_vertices[list[j]].x(),skel_vertices[list[j]].y());
-
+            if (list.count())
+            {
+                pre_roads_vbo << skel_vertices[list[j]].x() ;
+                pre_roads_vbo << skel_vertices[list[j]].y() ;
+                pre_roads_vbo << r ;
+                pre_roads_vbo << g ;
+                pre_roads_vbo << b ;
+                pre_roads_vbo << 1 ;
+                line_string << QPointF(skel_vertices[list[j]].x(),skel_vertices[list[j]].y());
+            }
             pre_roads_index_vbo_end << pre_roads_index_vbo.count() ;
             mainWindow->roads_line_strings << line_string ;
 

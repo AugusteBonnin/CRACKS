@@ -93,6 +93,8 @@ void JunctionMapWidget::paintGL()
     glClearColor(1,1,1,1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    glLineWidth(3);
+
     QMatrix4x4 m;
     m.scale(2*scale/width(),-2*scale/height());
     m.translate(-center.x(),-center.y());
@@ -100,6 +102,7 @@ void JunctionMapWidget::paintGL()
     //roads
 
     mainWindow->line_program->bind();
+
     mainWindow->black_roads_vbo.bind();
     mainWindow->line_program->setUniformValue("matrix", m);
     mainWindow->line_program->enableAttributeArray(PROGRAM_VERTEX_ATTRIBUTE);
@@ -108,6 +111,7 @@ void JunctionMapWidget::paintGL()
     mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
 
     mainWindow->roads_index_vbo->bind();
+    glLineWidth(3);
     glDrawElements(GL_LINES, mainWindow->roads_index_vbo->size()/sizeof(unsigned int), GL_UNSIGNED_INT,0);
     mainWindow->black_roads_vbo.release();
     mainWindow->roads_index_vbo->release();

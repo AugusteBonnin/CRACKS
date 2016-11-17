@@ -17,7 +17,6 @@ ContourWidget::ContourWidget(Form *parent) : ScrollableOpenGLWidget(parent)
 ContourWidget::~ContourWidget()
 {
     makeCurrent();
-    mainWindow->quad_vbo.destroy();
     //mainWindow->contour_vbo.destroy();
     //mainWindow->contour_vao.destroy();
     //mainWindow->quad_vbo = mainWindow->contour_vbo = mainWindow->contour_vao = 0 ;

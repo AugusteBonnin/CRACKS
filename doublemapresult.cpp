@@ -36,8 +36,9 @@ DoubleMapResult::DoubleMapResult(MapPage *parent, QString titre, QVector<double>
     for (int i = 0 ; i < data.count() ; i++)
     {
         int c = 1 ;
-        while (data[i]>classes_limits[c])
-            c++;
+        for (;c<classes_limits.count()-1;c++)
+        if (data[i]<classes_limits[c])
+            break ;
         colors << colorFor((c-1)/(float)(classes_limits.count()-2)) ;
 }
 
