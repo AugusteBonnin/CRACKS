@@ -8,12 +8,12 @@ SaveForm::SaveForm(MainWindow *parent, QString prefix) :
 {
     ui->setupUi(this);
 
-ui->checkBox->setChecked(settings.value(QString("%1/SaveJPG").arg(prefix),true).toBool());
-ui->radioButton->setChecked(settings.value(QString("%1/Screenshot").arg(prefix),true).toBool());
+ui->checkBox->setChecked(settings.value(QString("%1/SaveJPG").arg(prefix),false).toBool());
+ui->radioButton->setChecked(settings.value(QString("%1/Screenshot").arg(prefix),false).toBool());
 ui->radioButton_2->setChecked(!ui->radioButton->isChecked());
 ui->groupBox_2->setEnabled(ui->checkBox->isChecked());
-ui->checkBox_2->setChecked(settings.value(QString("%1/SaveSVG").arg(prefix),true).toBool());
-ui->checkBox_3->setChecked(settings.value(QString("%1/SaveSHP").arg(prefix),true).toBool());
+ui->checkBox_2->setChecked(settings.value(QString("%1/SaveSVG").arg(prefix),false).toBool());
+ui->checkBox_3->setChecked(settings.value(QString("%1/SaveSHP").arg(prefix),false).toBool());
 
 }
 

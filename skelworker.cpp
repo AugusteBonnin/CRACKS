@@ -493,7 +493,8 @@ Triangulation & cdt = mainWindow->cdt;
                 length  += line.length();
                 str << current ;
 
-                if (((skel_distance[str[0]])-skel_distance[current])<length*2)
+                QSettings settings;
+                if (((skel_distance[str[0]]))<length*settings.value("Skel/Prune",2.0).toDouble())
                 {
                     something_happend = true ;
 

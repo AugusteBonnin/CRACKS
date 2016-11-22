@@ -14,8 +14,8 @@ DoubleHistoWidget::DoubleHistoWidget(QWidget *parent,QVector<double> & data) :
     max = -INFINITY ;
     for (int i = 0 ; i < data.count() ; i++)
     {
-        min = qMin(min,data[i]);
-        max = qMax(max,data[i]);
+        if (min>data[i]) min = data[i];
+        if (max<data[i]) max = data[i];
     }
 
     QSettings settings;
@@ -60,11 +60,13 @@ void DoubleHistoWidget::paintEvent(QPaintEvent *event)
     max_class_count = 0 ;
     for (int i = 0 ; i < data.count() ; i++)
     {
-        int idx = (int)(class_count.count()*(data[i]-min)/(max-min)) ;
+        if (!isnan(data[i]))
+        {
+            int idx = (int)(class_count.count()*(data[i]-min)/(max-min)) ;
         if (idx==class_count.count()) idx-- ;
         class_count[idx]++;
         max_class_count = qMax(max_class_count,class_count[idx]) ;
-
+}
     }
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing,true);

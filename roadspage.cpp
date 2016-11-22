@@ -170,9 +170,9 @@ void RoadsPage::saveSHP()
                 DBFWriteDoubleAttribute( dbfFile,entity,fieldNumbers[j],
                                          mainWindow->histoDoubleData[j+1][i]);
 
-            DBFWriteIntegerAttribute (dbfFile,entity,fieldNumbers[mainWindow->histoDoubleData.count()-1],
+            DBFWriteIntegerAttribute (dbfFile,entity,fieldNumbers[4],
                                      mainWindow->histoIntData[1][i]);
-            DBFWriteIntegerAttribute (dbfFile,entity,fieldNumbers[mainWindow->histoDoubleData.count()],
+            DBFWriteIntegerAttribute (dbfFile,entity,fieldNumbers[5],
                                      mainWindow->histoIntData[2][i]);
 
             SHPDestroyObject(object);
