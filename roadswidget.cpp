@@ -327,7 +327,9 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
                     if (!junctions[i].equivalent.contains(arrivals[j].edge))
                     {
                         if (isnan(arrivals[j].angle)) qDebug() << "NAN in inter" ;
-                        QLineF l=QLineF::fromPolar(1,arrivals[j].angle);
+                        float radius = 5*junctions[i].mean_radius ;
+//                        qDebug() << "radius" << radius ;
+                       QLineF l=QLineF::fromPolar(radius,arrivals[j].angle+180);
                         l.translate(arrivals[j].point);
 
                         qreal min_d = INFINITY ;
@@ -337,7 +339,7 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
                         {
                             int result = l.intersect(tree[k],&current_point) ;
                             if (result==0) qDebug() << " 0 " << arrivals[j].angle << tree[k].angle();
-                            if ((result==QLineF::UnboundedIntersection)||(result==QLineF::BoundedIntersection))
+                            if ((result==QLineF::BoundedIntersection))
                             {
                                 qreal d = QLineF(current_point,l.p1()).length();
                                 if (d<min_d)
@@ -463,15 +465,56 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
     road_index.clear();
 
     //Gather histogram info for degree of junctions
+    QVector<int> valid_junctions;
     QVector<int> degrees_of_junctions;
-    int max_degree_of_junctions = 0 ;
+    QVector<int> second_degrees_of_junctions;
     for(int i = 0 ; i < junctions.count() ; i++)
     {
         int degree = junctions[i].arrivals.count() ;
         if (degree)
+        {
+            valid_junctions<<second_degrees_of_junctions.count();
             degrees_of_junctions << degree ;
-        if(degree>max_degree_of_junctions)
-            max_degree_of_junctions = degree ;
+            int total = - degree ;
+            for (int j = 0 ; j < degree ; j++)
+            {
+                Arrival & A = junctions[i].arrivals[j];
+                DoubleSidedEdge & edge = double_sided_edges[A.edge] ;
+                if (edge.first_junction==i)
+                    total+=junctions[edge.second_junction].arrivals.count() ;
+                else
+                    total+=junctions[edge.first_junction].arrivals.count() ;
+            }
+            second_degrees_of_junctions<<total;
+        }
+        else valid_junctions<<-1;
+    }
+
+    QVector<int> third_degrees_of_junctions;
+    for(int i = 0 ; i < junctions.count() ; i++)
+    {
+
+        if (valid_junctions[i]>-1){
+
+            int total = - second_degrees_of_junctions[valid_junctions[i]] ;
+            int degree = junctions[i].arrivals.count() ;
+            for (int j = 0 ; j < degree ; j++)
+            {
+                Arrival & A = junctions[i].arrivals[j];
+                DoubleSidedEdge & edge = double_sided_edges[A.edge] ;
+                int second_degree_idx;
+                if (edge.first_junction==i)
+                    second_degree_idx  = valid_junctions[edge.second_junction];
+                else
+                    second_degree_idx  = valid_junctions[i];
+
+                if (second_degree_idx>-1)
+                    total+=second_degrees_of_junctions[second_degree_idx];
+
+            }
+            third_degrees_of_junctions<<total;
+        }
+
     }
 
     /*IntHistogramLabel * degrees_of_junctions_histogram = new IntHistogramLabel(640,480,1,max_degree_of_junctions);
@@ -480,7 +523,12 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
     degrees_of_junctions_histogram->display();
 */
     mainWindow->histoIntData << degrees_of_junctions ;
+    mainWindow->histoIntData << second_degrees_of_junctions ;
+    mainWindow->histoIntData << third_degrees_of_junctions ;
     degrees_of_junctions.clear();
+    second_degrees_of_junctions.clear();
+    third_degrees_of_junctions.clear();
+
     //build line strings
     makeCurrent();
 
@@ -910,6 +958,7 @@ void RoadsWidget::explorePoint(int i)
     if (!index_junction.contains(i))
     {
         Junction junction;
+        junction.mean_radius = skel_distance[i];
         junction.color = randColor() ;
         junction.centers_indices.append(i) ;
         junctions.append(junction) ;
@@ -1044,13 +1093,25 @@ void RoadsWidget::exploreEdge(const int first,const int second)
                 p1=p2;
             }
 
-            mean_angleA /= totalA ;
-            mean_angleB /= totalB ;
-            mean_angleB -= 180 ;
-            mean_width /= total_width;
 
-            if ((totalA==0)||(totalB==0)) qDebug() << "0 total in explore edge" ;
-            if (isnan(mean_angleA)||isnan(mean_angleB)) qDebug() << "nan in explore edge" ;
+                mean_angleA /= totalA ;
+                mean_angleB /= totalB ;
+                mean_angleB -= 180 ;
+                mean_width /= total_width;
+
+            if((isnan(mean_angleA))||(isnan(mean_angleB)))
+            {
+                //if ((totalA==0)||(totalB==0)) qDebug() << "0 total in explore edge" ;
+                //if (isnan(mean_angleA)||isnan(mean_angleB))
+
+                qDebug() << "nan in explore edge" ;
+                QLineF AB(skel_vertices[first], skel_vertices[last]);
+                mean_angleA = AB.angle() ;
+
+                mean_angleB = mean_angleA-180;
+                truncated_str.clear() ;
+                truncated_str << first << last ;
+            }
 
             DoubleSidedEdge edge ;
             edge.color = randColor() ;
@@ -1097,20 +1158,24 @@ void RoadsWidget::exploreEdge(const int first,const int second)
             {
                 int  first_junction = index_junction.value(first) ;
                 int  second_junction = index_junction.value(last) ;
-                for (int j = 0 ; j < junctions[first_junction].centers_indices.count() ; j++)
-                    index_junction.insert(junctions[first_junction].centers_indices[j], second_junction );
-
                 Junction junction = junctions[second_junction] ;
-                for (int i = 0 ; i < junctions[first_junction].centers_indices.count() ; i++ )
-                    junction.centers_indices.append(junctions[first_junction].centers_indices[i]) ;
+                Junction junction2 = junctions[first_junction] ;
+                junction.mean_radius = (junction.mean_radius*junction.centers_indices.count()+
+                                        junction2.mean_radius*junction2.centers_indices.count())/
+                        (junction.centers_indices.count()+junction2.centers_indices.count()) ;
+                for (int j = 0 ; j < junction2.centers_indices.count() ; j++)
+                    index_junction.insert(junction2.centers_indices[j], second_junction );
 
-                for (int i = 0 ; i < junctions[first_junction].arrivals.count() ; i++ )
-                    junction.arrivals.append(junctions[first_junction].arrivals[i]) ;
+                for (int i = 0 ; i < junction2.centers_indices.count() ; i++ )
+                    junction.centers_indices.append(junction2.centers_indices[i]) ;
 
-                junctions[first_junction].arrivals.clear() ;
+                for (int i = 0 ; i < junction2.arrivals.count() ; i++ )
+                    junction.arrivals.append(junction2.arrivals[i]) ;
 
-                junctions[second_junction] = junction ;
+                junction2.arrivals.clear() ;
 
+junctions[second_junction] = junction ;
+junctions[first_junction]= junction2 ;
                 /*Junction junction2 = junctions[first_junction] ;
             junction2.vertices.clear() ;
             junction2.arrivals.clear() ;
