@@ -21,7 +21,7 @@ public:
     QString getPrevTooltip(){return tr("Revenir à la phase Contour") ; }
     QString getNextTooltip(){return tr("Passer à la phase Voies et Places") ; }
 void nextPhase() ;
-void prevPhase(){} ;
+void prevPhase() ;
 void reinit();
 private slots:
 

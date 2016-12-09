@@ -5,18 +5,20 @@
 
 #include <QString>
 
-
+class HistoPage ;
+class MainWindow;
 
 class HistoResult : public Result
 {
     Q_OBJECT
+    MainWindow *mainWindow ;
 protected :
     QImage image;
     QString csv ;
     int index ;
 
 public:
-    HistoResult(QString name,QWidget * parent,int index);
+    HistoResult(QString name, HistoPage *parent, int index);
     void saveCSV();
     void saveImage() ;
     QImage & getImage(){return image;}

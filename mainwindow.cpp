@@ -5,7 +5,9 @@
 #include "phase.h"
 #include "ui_mainwindow.h"
 
+#include <QDir>
 #include <QDockWidget>
+#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QSettings>
 #include <QTextBrowser>
@@ -63,13 +65,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     kdtree = NULL ;
 
-//    QSettings settings;
-//    QVariant variant = settings.value("geometry") ;
-//    if (variant!=QVariant())
-//        restoreGeometry(variant.toByteArray());
+    //    QSettings settings;
+    //    QVariant variant = settings.value("geometry") ;
+    //    if (variant!=QVariant())
+    //        restoreGeometry(variant.toByteArray());
 
     phase = -1 ;
 
+    scale =  1 ;
 
     nextPhase();
 }
@@ -102,6 +105,7 @@ void MainWindow::nextPhase()
     QWidget * widget = Phase::newFromPhase(phase,this);
     stackedWidget->addWidget(widget);
     stackedWidget->setCurrentIndex(phase);
+    //showMaximized();
 
     restorePhase();
 }
@@ -132,6 +136,9 @@ void MainWindow::restorePhase()
     restoreDockWidget(paramWidget);
 
     action_back->setEnabled(phase);
+
+    showFullScreen();
+
 
 }
 
@@ -211,9 +218,35 @@ void MainWindow::on_actionParam_tres_triggered()
 void MainWindow::setActionsEnabled(bool enabled)
 {
     action_back->setEnabled(enabled?(phase>0):false) ;
-    action_next->setEnabled(enabled?(phase<maxPhase):false);
+    action_next->setEnabled(enabled);
     Page * page = (Page*)stackedWidget->currentWidget() ;
     page->getParamForm()->setEnabled(enabled);
 
     repaint();
+}
+
+void MainWindow::log(QString str)
+{
+    logStrings << str ;
+    statusBar()->findChild<QLabel*>()->setText(str);
+}
+
+void MainWindow::trySaveImage(const QString &pre, const QImage &image)
+{
+    QFileInfo file(settings.value("File").toString());
+
+    QString fileName = tr("%1/%2%3").arg(file.absoluteDir().absolutePath()).arg(pre).arg(file.fileName());
+    if (image.save(fileName))
+        log(tr("%1 a bien été enregistrée.").arg(fileName));
+    else
+        log(tr("<FONT COLOR=\"RED\">%1 n'a pas été enregistrée.</FONT>").arg(fileName));
+
+}
+
+void MainWindow::trySaveDoubleImage( QString pre,  DoubleImage *image)
+{
+    QImage i(image->width(),image->height(),QImage::Format_ARGB32);
+    image->toQImage(i);
+    trySaveImage(pre, i);
+
 }

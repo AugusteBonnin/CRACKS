@@ -4,6 +4,7 @@
 #include "ui_intmapresult.h"
 #include "mainwindow.h"
 #include "roadmapwidget.h"
+#include "openglscalewidget.h"
 
 #include <QPainter>
 
@@ -63,6 +64,14 @@ DoubleMapResult::DoubleMapResult(MapPage *parent, QString titre, QVector<double>
 
     }
     ui->gridLayout->addWidget(widget,1,1);
+
+    OpenGLScaleWidget *sw = new OpenGLScaleWidget(this,mainWindow->scale,mainWindow->openedQImage.size());
+    sw->setFixedHeight(40);
+    ui->gridLayout->addWidget(sw,2,1);
+    QSettings settings;
+    sw->setVisible(settings.value("Crop/Unit",false).toBool());
+
+
 }
 
 DoubleMapResult::~DoubleMapResult()

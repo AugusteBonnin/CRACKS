@@ -33,6 +33,7 @@ setLayout(layout);
 
 for (int i = 0 ; i < results.count() ; i++)
 {
+    results[i]->setFixedHeight(600);
     container->addWidget(results[i]) ;
 }
 

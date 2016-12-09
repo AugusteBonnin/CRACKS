@@ -24,9 +24,9 @@ OpeningParamForm::OpeningParamForm(MainWindow *parent,OpeningPage * page) :
     connect(ui->spinBox,SIGNAL(valueChanged(int)),page->resultZoomWidget,SLOT(setMagnification(int)));
     connect(ui->spinBox_2,SIGNAL(valueChanged(int)),page,SLOT(preview()));
     connect(ui->pushButton,SIGNAL(pressed()),page,SLOT(compute_clicked()));
-    connect(ui->checkBox_3,SIGNAL(toggled(bool)),page,SLOT(invert_clicked()));
 
     ui->checkBox_3->setChecked(settings.value("OpeningParamForm-Invert",false).toBool()) ;
+    connect(ui->checkBox_3,SIGNAL(toggled(bool)),page,SLOT(invert_clicked()));
 
     }
 
@@ -53,10 +53,12 @@ void OpeningParamForm::on_checkBox_toggled(bool checked)
 void OpeningParamForm::on_spinBox_valueChanged(int arg1)
 {
     settings.setValue("OpeningParamForm-Zoom",arg1);
+    page->scaleWidget->repaint() ;
 }
 void OpeningParamForm::on_spinBox_2_valueChanged(int arg1)
 {
     settings.setValue("OpeningParamForm-Radius",arg1);
+    page->computed = false ;
 }
 
 void OpeningParamForm::on_checkBox_clicked(bool checked)

@@ -4,6 +4,7 @@
 #include "mainwindow.h"
 #include "ui_contourform.h"
 #include "shapefil.h"
+#include "openglscalewidget.h"
 
 #include <QDir>
 #include <QSettings>
@@ -12,8 +13,8 @@
 void ContourPage::saveSVG()
 {
     QFileInfo file(settings.value("File").toString());
-
-    QFile data(tr("%1/Contour-%2.SVG").arg(file.absoluteDir().absolutePath()).arg(file.fileName()));
+QString path = tr("%1/Contour-%2.SVG").arg(file.absoluteDir().absolutePath()).arg(file.fileName()) ;
+    QFile data(path);
     if (data.open(QFile::WriteOnly)) {
         QPointF point;
         QTextStream out(&data);
@@ -39,7 +40,7 @@ void ContourPage::saveSVG()
         out << "</svg>\n" ;
     }
     data.close() ;
-
+mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
 }
 
 void ContourPage::saveSHP()
@@ -81,25 +82,35 @@ QPointF point ;
     }
     SHPClose( shapeFile );
 
+    mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
 }
 
 ContourPage::ContourPage(MainWindow *parent) :
     Page(parent)
 {
-    docForm = new ContourDocForm(parent);
-    paramForm = new ContourParamForm(parent,this);
 
-    originalImage = mainWindow->openedImage ;
+    originalImage = new DoubleImage(*(mainWindow->openedImage)) ;
+    originalImage->computeMinMax();
     originalQImage = QImage(originalImage->width(),originalImage->height(),QImage::Format_ARGB32);
     originalImage->toQImage(originalQImage);
 
     mainWindow->openedQImage = originalQImage ;
 
     widget = new ContourWidget(this) ;
+widget->setFixedHeight(512);
 
     QVBoxLayout * layout = new QVBoxLayout ;
     layout->addWidget(widget);
+    OpenGLScaleWidget * scale = new OpenGLScaleWidget(this,mainWindow->scale,mainWindow->openedQImage.size());
+    scale->setFixedHeight(40);
+    layout->addWidget(scale);
+    scale->setVisible(settings.value("Crop/Unit",false).toBool());
     setLayout(layout);
+
+    connect(widget,SIGNAL(ScaleChanged(double)),scale,SLOT(ScaleChanged(double)));
+
+    docForm = new ContourDocForm(parent);
+    paramForm = new ContourParamForm(parent,this);
 
     QTimer::singleShot(0,this,SLOT(setImages())) ;
 }
@@ -127,7 +138,8 @@ void ContourPage::setImages()
     if(settings.value("Contour/Invert",false).toBool())
         emit invertSignal() ;
 
-    emit kMeansSignal() ;
+    if(settings.value("Contour/KMeans",false).toBool())
+        emit kMeansSignal() ;
 
     updateThreshold(settings.value("ThresholdForm-Threshold",QVariant(5000)).toInt()) ;
 }
@@ -138,26 +150,32 @@ ContourPage::~ContourPage()
 
 void ContourPage::nextPhase()
 {
-    QFileInfo file(settings.value("File").toString());
 
     if (settings.value("Contour/SaveJPG",false).toBool())
     {
         QImage image;
         if (settings.value("Contour/Screenshot",true).toBool())
         {
-            image = widget->getScreenshot() ;
+            screenshot(image) ;
         }
         else //Full image
         {
             image = widget->getImage();
         }
 
-        image.save(tr("%1/Contour-%2").arg(file.absoluteDir().absolutePath()).arg(file.fileName()));
+        mainWindow->trySaveImage(tr("Contour-"),image);
     }
     if (settings.value("Contour/SaveSVG",false).toBool())
         saveSVG();
     if (settings.value("Contour/SaveSHP",false).toBool())
         saveSHP();
+}
+
+void ContourPage::prevPhase()
+{
+    mainWindow->getContourIndices().clear();
+    mainWindow->getContourVertices().clear();
+
 }
 
 void ContourPage::reinit()

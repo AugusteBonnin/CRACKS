@@ -33,7 +33,7 @@ public:
     QString getPrevTooltip(){return tr("Revenir à la phase Ouverture");}
     QString getNextTooltip(){return tr("Passer à la phase Squelettisation");}
 void nextPhase();
-void prevPhase(){};
+void prevPhase();
 void reinit();
 
 public slots:

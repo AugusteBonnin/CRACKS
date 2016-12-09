@@ -2,6 +2,7 @@
 #include "intmapresult.h"
 #include "junctionmapwidget.h"
 #include "mainwindow.h"
+#include "openglscalewidget.h"
 #include "roadmapwidget.h"
 #include "ui_intmapresult.h"
 
@@ -51,6 +52,14 @@ IntMapResult::IntMapResult(MapPage *parent, QString titre, QVector<int> &data,in
         break ;
     }
     ui->gridLayout->addWidget(widget,1,1);
+
+    OpenGLScaleWidget *sw = new OpenGLScaleWidget(this,mainWindow->scale,mainWindow->openedQImage.size());
+    sw->setFixedHeight(40);
+    ui->gridLayout->addWidget(sw,2,1);
+    QSettings settings;
+    sw->setVisible(settings.value("Crop/Unit",false).toBool());
+
+
 
 }
 

@@ -40,6 +40,8 @@ private slots:
 
 void maibeKMeans();
 void invert();
+void checkBox_3_toggled(bool checked);
+void spinBox_valueChanged(int arg1);
 };
 
 #endif // ContourParamForm_H

@@ -3,6 +3,7 @@
 
 #include "form.h"
 #include "mainwindow.h"
+#include "openingscalewidget.h"
 #include "openingzoomwidget.h"
 #include "roiwidget.h"
 
@@ -25,9 +26,12 @@ public:
     QString getTitle(){return tr("Ouverture");}
     QString getNextTooltip(){return tr("Passer à la phase Contour");}
     QString getPrevTooltip(){return tr("Revenir à la phase Régularisation");}
+
 void prevPhase() {} ;
 void nextPhase() ;
 void reinit();
+
+OpeningScaleWidget * scaleWidget;
 public slots:
 void preview();
 private slots:

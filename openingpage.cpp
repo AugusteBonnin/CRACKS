@@ -3,6 +3,7 @@
 #include "openingdocform.h"
 #include "openingpage.h"
 #include "openingparamform.h"
+#include "scalewidget.h"
 #include "ui_openingform.h"
 
 #include <QDir>
@@ -14,7 +15,8 @@ OpeningPage::OpeningPage(MainWindow *parent) :
     Page(parent)
 {
 
-    originalImage = mainWindow->regularizedImage ;
+    originalImage = new DoubleImage(*(mainWindow->regularizedImage)) ;
+    originalImage->computeMinMax();
     originalQImage = QImage(originalImage->width(),originalImage->height(),QImage::Format_ARGB32);
     originalImage->toQImage(originalQImage);
 
@@ -30,13 +32,37 @@ OpeningPage::OpeningPage(MainWindow *parent) :
     resultZoomWidget = new OpeningZoomWidget(this) ;
 
     QHBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(originalWidget);
+
+    QVBoxLayout * vLayout1 = new QVBoxLayout;
+    layout->addLayout(vLayout1);
+    originalWidget->setFixedHeight(256);
+    vLayout1->addWidget(originalWidget);
+    ScaleWidget * sw1 = new ScaleWidget(this);
+    sw1->setFixedHeight(24);
+    vLayout1->addWidget(sw1);
+    sw1->setVisible(settings.value("Crop/Unit",false).toBool());
+
     QVBoxLayout * vLayout = new QVBoxLayout;
-    vLayout->addWidget(originalZoomWidget);
-    vLayout->addWidget(resultZoomWidget);
     layout->addLayout(vLayout);
-    layout->addWidget(resultWidget);
-setLayout(layout);
+    originalZoomWidget->setFixedSize(256,256);
+    vLayout->addWidget(originalZoomWidget);
+    resultZoomWidget->setFixedSize(256,256);
+    vLayout->addWidget(resultZoomWidget);
+    scaleWidget = new OpeningScaleWidget(this,originalQImage.size());
+    scaleWidget->setFixedHeight(40);
+    vLayout->addWidget(scaleWidget);
+    scaleWidget->setVisible(settings.value("Crop/Unit",false).toBool());
+
+    QVBoxLayout * vLayout2 = new QVBoxLayout;
+    layout->addLayout(vLayout2);
+    resultWidget->setFixedHeight(256);
+    vLayout2->addWidget(resultWidget);
+    ScaleWidget * sw2 = new ScaleWidget(this);
+    sw2->setFixedHeight(24);
+    vLayout2->addWidget(sw2);
+    sw2->setVisible(settings.value("Crop/Unit",false).toBool());
+
+    setLayout(layout);
 
 
     connect(originalWidget,SIGNAL(ROIChanged(QRect)),originalZoomWidget,SLOT(setROI(QRect)));
@@ -62,7 +88,8 @@ setLayout(layout);
     paramForm = new OpeningParamForm(parent,this);
     docForm = new OpeningDocForm(parent);
 
-QTimer::singleShot(0,this,SLOT(initImages())) ;
+
+    QTimer::singleShot(0,this,SLOT(initImages())) ;
 }
 
 OpeningPage::~OpeningPage()
@@ -73,12 +100,12 @@ void OpeningPage::nextPhase()
 {
     if (!settings.value("OpeningParamForm-Apply",QVariant(true)).toBool())
     {
-        if (mainWindow->openedImage)
+        if ((mainWindow->openedImage)&&(mainWindow->openedImage != mainWindow->regularizedImage))
         {
             delete mainWindow->openedImage ;
         }
 
-        mainWindow->openedImage = mainWindow->regularizedImage ;
+        mainWindow->openedImage = new DoubleImage(*(mainWindow->regularizedImage)) ;
     }
     else
     {
@@ -87,10 +114,9 @@ void OpeningPage::nextPhase()
             compute_clicked();
         }
         if (settings.value("OpeningParamForm-SaveJPG",QVariant(true)).toBool())
-    {
-        QString fileName = tr("Phase3-%1").arg(settings.value("File",QVariant(QDir::homePath())).toString());
-        mainWindow->croppedImage.save(fileName) ;
-    }
+        {
+            mainWindow->trySaveDoubleImage(tr("Ouverture-"),mainWindow->openedImage);
+        }
     }
 }
 
@@ -108,25 +134,28 @@ void OpeningPage::reinit()
     delete minImage ;
     minImage = new DoubleImage(originalImage->width(),originalImage->height());
 
-computed = false ;
-
-initImages();
+    initImages();
 }
 
 void OpeningPage::invert_clicked()
 {
-   originalImage->invert();
-   originalQImage.invertPixels();
-   originalWidget->setFullImage(originalQImage);
-   resultWidget->setFullImage(originalQImage);
-   originalZoomWidget->setFullImage(originalQImage);
-   resultZoomWidget->setFullImage(originalQImage);
-repaint();
+    originalImage->invert();
+    originalImage->computeMinMax();
+    //originalImage->toQImage(outputQImage);
+    originalImage->toQImage(originalQImage);
+    originalWidget->setFullImage(originalQImage);
+    //resultWidget->setFullImage(outputQImage);
+    originalZoomWidget->setFullImage(originalQImage);
+    //resultZoomWidget->setFullImage(outputQImage);
+    preview();
 }
 
 
 void OpeningPage::initImages()
 {
+    if (settings.value("OpeningParamForm-Invert",false).toBool() )
+        invert_clicked();
+
     originalWidget->setFullImage(originalQImage);
     resultWidget->setFullImage(originalQImage);
     originalZoomWidget->setFullImage(originalQImage);
@@ -147,7 +176,9 @@ void OpeningPage::initImages()
 
     mainWindow->action_next->setEnabled(true);
 
-    }
+    computed = false ;
+
+}
 
 void OpeningPage::compute_clicked()
 {
@@ -202,6 +233,8 @@ void OpeningPage::compute_clicked()
     mainWindow->openedQImage = outputQImage ;
 
     paramForm->setEnabled(true);
+
+    computed = true ;
 
     repaint() ;
 }

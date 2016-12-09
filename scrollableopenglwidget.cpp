@@ -112,6 +112,8 @@ void ScrollableOpenGLWidget::wheelEvent(QWheelEvent *event)
 {
     scale *= (1000.0/(1000.0+event->delta())) ;
 
+    emit ScaleChanged(scale);
+
     repaint() ;
 }
 
@@ -131,26 +133,29 @@ void ScrollableOpenGLWidget::resetToSavedState()
 {
     scale = settings.value("Scale").toFloat() ;
     center = settings.value("Center").toPointF() ;
+    emit ScaleChanged(scale);
 }
 
 void ScrollableOpenGLWidget::resetToSize(QSize size)
 {
-    if (size.width()/(float)size.height()<width()/(float)height())
-        scale = height()/(float)size.height() ;
-    else
+//    if (size.width()/(float)size.height()<width()/(float)height())
+//        scale = height()/(float)size.height() ;
+//    else
         scale = width()/(float)size.width() ;
+
+    emit ScaleChanged(scale);
 
     center = QPointF(size.width()*.5,size.height()*.5);
 }
 
 void ScrollableOpenGLWidget::resetImage(QImage & image)
 {
-    this->image = image ;
-
-    if (image.width()/(float)image.height()<width()/(float)height())
-        scale = height()/(float)image.height() ;
-    else
+//    if (image.width()/(float)image.height()<width()/(float)height())
+//        scale = height()/(float)image.height() ;
+//    else
         scale = width()/(float)image.width() ;
+
+    emit ScaleChanged(scale);
 
     center = QPointF(image.width()*.5,image.height()*.5);
     update() ;
@@ -161,8 +166,8 @@ QImage ScrollableOpenGLWidget::getImage()
     QImage result ;
     QSize oldSize = size() ;
     saveState() ;
-    resize(image.size()) ;
-    resetImage(image);
+    resize(mainWindow->openedQImage.size()) ;
+    resetImage(mainWindow->openedQImage);
     result = grabFramebuffer();
     resize(oldSize);
     resetToSavedState();

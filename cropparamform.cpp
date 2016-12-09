@@ -26,8 +26,13 @@ CropParamForm::CropParamForm(MainWindow *parent,CropPage*page) :
     ui->mygroupbox->setEnabled(ui->checkBox_2->isChecked());
     page->setEnabled(ui->checkBox_2->isChecked());
 
+    ui->checkBox_3->setChecked(settings.value("Crop/Unit",false).toBool());
+    ui->groupBox->setVisible(settings.value("Crop/Unit",false).toBool());
+
     ui->doubleSpinBox->setValue(settings.value("CropForm-UnitY",QVariant(1.0)).toDouble());
     ui->doubleSpinBox_2->setValue(settings.value("CropForm-UnitX",QVariant(1.0)).toDouble());
+
+    ui->comboBox->setEditText(settings.value("Crop/UnitName","").toString());
 }
 
 CropParamForm::~CropParamForm()
@@ -47,6 +52,8 @@ void CropParamForm::on_doubleSpinBox_valueChanged(double arg1)
 {
     QSettings settings;
     settings.setValue("CropForm-UnitY",arg1);
+    ((CropPage*)page)->remap(((CropPage*)page)->quadWidget->polygon);
+    page->repaint();
 
 }
 
@@ -61,5 +68,27 @@ void CropParamForm::on_doubleSpinBox_2_valueChanged(double arg1)
 {
     QSettings settings;
     settings.setValue("CropForm-UnitX",arg1);
+    ((CropPage*)page)->remap(((CropPage*)page)->quadWidget->polygon);
+    page->repaint();
+
+}
+
+void CropParamForm::on_checkBox_3_toggled(bool checked)
+{
+    QSettings settings;
+    settings.setValue("Crop/Unit",checked);
+    ((CropPage*)page)->remap(((CropPage*)page)->quadWidget->polygon);
+    ((CropPage*)page)->scaleWidget->setVisible(checked);
+    page->repaint();
+    ui->groupBox->setVisible(checked);
+ }
+
+void CropParamForm::on_comboBox_currentTextChanged(const QString &arg1)
+{
+    QSettings settings;
+    settings.setValue("Crop/UnitName",arg1);
+    ui->label_2->setText(arg1);
+    ui->label_4->setText(arg1);
+    ((CropPage*)page)->scaleWidget->repaint();
 
 }

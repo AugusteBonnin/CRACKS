@@ -50,16 +50,22 @@ void MapResult::saveImage()
         widget->resetToSavedState();
     }
     settings.endArray();
-    image.save(path);
-}
+    if(image.save(path))
+       mainWindow->log(tr("%1 a bien été enregistrée.").arg(path));
+   else
+        mainWindow->log(tr("<FONT COLOR=RED>%1 n'a pas été enregistrée.</FONT>").arg(path));
+ }
+
 
 void MapResult::saveSVG()
 {
 
         QSettings settings ;
         QFileInfo file(settings.value("File").toString()) ;
-        widget->saveSVG(tr("%1/Cartes-%2-%3.SVG").arg(file.absoluteDir().absolutePath())
-                        .arg(resultName).arg(file.baseName()));
+        QString path = tr("%1/Cartes-%2-%3.SVG").arg(file.absoluteDir().absolutePath())
+                .arg(resultName).arg(file.baseName()) ;
+        widget->saveSVG(path);
+        mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
 
 }
 

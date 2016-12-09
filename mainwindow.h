@@ -109,6 +109,12 @@ KDTree2D::PointCloud point_cloud;
     double scale ;
     QPointF center;
 
+    QStringList logStrings;
+
+    void log(QString str);
+    void trySaveImage(const QString & pre,const QImage & image);
+    void trySaveDoubleImage(QString pre, DoubleImage *image);
+    QSettings settings;
 public slots :
     void nextPhase();
     void prevPhase();

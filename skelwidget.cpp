@@ -124,7 +124,7 @@ void SkelWidget::paintGL()
     mainWindow->circle_vbo.release();
 }
     //skeletton
-    if (mainWindow->getSkelIndices().count())
+    if (mainWindow->skel_index_vbo->isCreated())
     {
         mainWindow->line_program->bind();
         mainWindow->skel_vbo.bind();
@@ -135,7 +135,7 @@ void SkelWidget::paintGL()
         mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
 
         mainWindow->skel_index_vbo->bind();
-        glDrawElements(GL_LINES, mainWindow->getSkelIndices().count(), GL_UNSIGNED_INT,0);
+        glDrawElements(GL_LINES, mainWindow->skel_index_vbo->size()>>2, GL_UNSIGNED_INT,0);
         mainWindow->skel_vbo.release();
         mainWindow->skel_index_vbo->release();
     }

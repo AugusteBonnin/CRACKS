@@ -8,8 +8,6 @@ class MainWindow ;
 
 class Page : public Form
 {
-protected :
-    bool computed ;
 public:
     Page(MainWindow *parent);
 
@@ -21,8 +19,12 @@ public:
     virtual void nextPhase() = 0 ;
     virtual void prevPhase() = 0 ;
     virtual void reinit() = 0 ;
+
+    void screenshot(QImage & image);
     ParamForm * paramForm;
     DocForm * docForm;
+
+    bool computed ;
     };
 
 #endif // PAGE_H

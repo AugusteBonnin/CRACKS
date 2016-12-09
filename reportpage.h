@@ -19,9 +19,11 @@ public:
     QString getTitle() {return tr("Bilan (8/8)") ;}
     QString getPrevTooltip() {return tr("Revenir à la phase 7 : Histogrammes") ;}
     QString getNextTooltip() {return tr("Passer à la phase 9 : Bilan") ;}
-    void nextPhase() {}
+    void nextPhase() {exit(0);}
     void prevPhase() {}
     void reinit() {}
+private slots:
+    void postInit();
 private:
     Ui::ReportPage *ui;
 };

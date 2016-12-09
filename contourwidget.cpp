@@ -1,3 +1,4 @@
+#include "contourpage.h"
 #include "contourwidget.h"
 #include "form.h"
 #include "mainwindow.h"
@@ -197,7 +198,7 @@ void ContourWidget::paintGL()
 
 
     //contour lines
-    if (mainWindow->getContourIndices().count())
+    if (mainWindow->contour_index_vbo->isCreated())
     {
         mainWindow->line_program->bind();
         mainWindow->contour_vbo.bind();
@@ -208,7 +209,7 @@ void ContourWidget::paintGL()
         mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
 
         mainWindow->contour_index_vbo->bind();
-        glDrawElements(GL_LINES, mainWindow->getContourIndices().count(), GL_UNSIGNED_INT,0);
+        glDrawElements(GL_LINES, mainWindow->contour_index_vbo->size()>>2, GL_UNSIGNED_INT,0);
         mainWindow->contour_vbo.release();
         mainWindow->contour_index_vbo->release();
     }
@@ -224,7 +225,7 @@ void ContourWidget::updateThreshold(double treshold)
     int last_column_index = -1 ;
     int first_column_index = -1 ;
 
-    DoubleImage * doubleImage = mainWindow->getOpenedImage() ;
+    DoubleImage * doubleImage = ((ContourPage*)parent())->originalImage ;
 
     QVector<QPointF> & contour_vertices = mainWindow->getContourVertices();
     contour_vertices.clear();
@@ -702,6 +703,18 @@ void ContourWidget::updateThreshold(double treshold)
         }
     }
 
+    //smoothing
+    if (settings.value("Contour/Smoothing",false).toBool())
+    for (int i = 0 ; i < settings.value("Contour/SmoothingIterations",0).toInt() ; i++)
+    {
+        QVector<QPointF> new_vertices(contour_vertices.count());
+        for (int j = 0 ; j < new_vertices.count() ; j++)
+            new_vertices[j] = (contour_vertices[next_point_index[j]]+
+                    contour_vertices[prev_point_index[j]]+
+                    contour_vertices[j])/3;
+        contour_vertices = new_vertices ;
+    }
+
     //count connected components
     QVector < unsigned int> & connected_components_start = mainWindow->getConnectedComponentsStarts();
     connected_components_start.clear();
@@ -734,6 +747,7 @@ void ContourWidget::updateThreshold(double treshold)
 
         current = not_counted.indexOf(true);
 
+        if (count>3)
         connected_components_start.append(history[found]);
 
         mainWindow->progress->setValue(mainWindow->progress->value()+count);
@@ -781,7 +795,7 @@ void ContourWidget::updateThreshold(double treshold)
             if (doubleImage->pixel(i,j)>treshold)
             {
 
-                 grid_image.setPixel(i,j,0xFFFF0000);
+                grid_image.setPixel(i,j,0xFFFF0000);
             }
             else
             {
@@ -791,73 +805,10 @@ void ContourWidget::updateThreshold(double treshold)
     if (mainWindow->texture)
         delete mainWindow->texture ;
     mainWindow->texture = new QOpenGLTexture(grid_image);
-     mainWindow->texture->setBorderColor(127,127,127,255);
-     mainWindow->texture->setWrapMode(QOpenGLTexture::DirectionR,QOpenGLTexture::ClampToEdge);
-     mainWindow->texture->setWrapMode(QOpenGLTexture::DirectionS,QOpenGLTexture::ClampToEdge);
+    mainWindow->texture->setBorderColor(127,127,127,255);
     doneCurrent();
 
 
 
-    /*
-    //simplify holes
-    simplified_holes.clear() ;
-    qreal mean_sides = 0 ;
-    QHash<int,int> histo;
-    for (int i = 0 ; i < connected_components_start.count() ; i++)
-    {
-        QPolygonF poly;
-        int current = connected_components_start[i] ;
-        do {
-            poly << contour_vertices[current] ;
-            current = next_point_index[current] ;
-        } while (current!=connected_components_start[i]) ;
-        QPointF center = poly.boundingRect().center() ;
-        QLineF AB(center,poly[0]) ;
-        QLineF BC(poly[0],poly[1]) ;
-        qreal angle = AB.angleTo(BC);
-        if ((sinf(angle*M_PI/180)<0))
-            continue ;
-
-        bool something_happend ;
-        do {
-            something_happend = false ;
-
-            int j = 0 ;
-            float min = INFINITY ;
-            int min_index = -1 ;
-            while (j<poly.count())
-            {
-                QLineF AB(poly[j],poly[(j+1)%poly.count()]) ;
-                QLineF AC(poly[j],poly[(j+2)%poly.count()]) ;
-                float area = sinf(AB.angleTo(AC)*M_PI/180)*AC.length() ;
-                if (area<min)
-                {
-                    min = area ;
-                    min_index = (j+1)%poly.count() ;
-                }
-                j++ ;
-
-            }
-            if (min < 4 )
-            {
-                poly.remove(min_index);
-                something_happend = true ;
-            }
-        } while(something_happend) ;
-
-        mean_sides += poly.count() ;
-
-        histo.insert(poly.count(),histo.value(poly.count(),0)+1) ;
-
-        simplified_holes << poly ;
-    }
-
-    mean_sides /= simplified_holes.count() ;
-
-    qDebug() << "found " << simplified_holes.count() << " well defined holes with " << mean_sides << " sides " ;
-    QList<int> keys = histo.keys() ;
-for (int i = 0 ; i < keys.count() ; i++)
-    qDebug() << "found " << histo[keys[i]] << " holes with " << keys[i] << " sides " << (histo[keys[i]]*100.0/simplified_holes.count()) << "%" ;
-*/
     repaint() ;
 }

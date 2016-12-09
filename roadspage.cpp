@@ -1,3 +1,4 @@
+#include "openglscalewidget.h"
 #include "roadsdocform.h"
 #include "roadspage.h"
 #include "roadsparamform.h"
@@ -15,13 +16,19 @@ RoadsPage::RoadsPage(MainWindow *parent) :
     docForm = new RoadsDocForm(parent);
     paramForm = new RoadsParamForm(parent,this);
 
-    QGridLayout * layout = new QGridLayout ;
+    QVBoxLayout * layout = new QVBoxLayout ;
 
     widget = new RoadsWidget(this);
-
     layout->addWidget(widget);
 
+    OpenGLScaleWidget * sw = new OpenGLScaleWidget(this,mainWindow->scale,mainWindow->openedQImage.size());
+    sw->setFixedHeight(40);
+    layout->addWidget(sw);
+    sw->setVisible(settings.value("Crop/Unit",false).toBool());
+
     setLayout(layout);
+
+    connect(widget,SIGNAL(ScaleChanged(double)),sw,SLOT(ScaleChanged(double)));
 
     QTimer::singleShot(100,this,SLOT(on_pushButton_2_clicked()));
 }
@@ -37,14 +44,13 @@ void RoadsPage::nextPhase()
         QImage image;
         if (settings.value("Roads/Screenshot").toBool())
         {
-            image = widget->getScreenshot() ;
+            screenshot(image) ;
         }
         else //Full image
         {
             image = widget->getImage();
         }
-        QFileInfo file(settings.value("File").toString());
-        image.save(tr("%1/Voies et places-%2").arg(file.absoluteDir().absolutePath()).arg(file.fileName()));
+        mainWindow->trySaveImage(tr("Voies et places-"),image);
 
     }
     if (settings.value("Roads/SaveSVG",false).toBool())
@@ -115,6 +121,7 @@ void RoadsPage::saveSVG()
             out << "</svg>\n" ;
         }
         data.close() ;
+        mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
 
 }
 
@@ -216,5 +223,7 @@ void RoadsPage::saveSHP()
 
         SHPClose( shapeFile );
         DBFClose(dbfFile);
+
+        mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
 
      }

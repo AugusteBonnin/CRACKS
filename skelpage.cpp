@@ -4,6 +4,7 @@
 #include "skelparamform.h"
 #include "ui_skelform.h"
 #include "shapefil.h"
+#include "openglscalewidget.h"
 #include <QDir>
 #include <QFileInfo>
 #include <QTimer>
@@ -34,6 +35,7 @@ void SkelPage::saveSVG()
         out << "</svg>\n" ;
     }
     data.close() ;
+    mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
 
 }
 
@@ -77,6 +79,8 @@ void SkelPage::saveSHP()
     SHPClose( shapeFile );
     DBFClose(dbfFile);
 
+    mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
+
 }
 
 SkelPage::SkelPage(MainWindow *parent) :
@@ -85,11 +89,17 @@ SkelPage::SkelPage(MainWindow *parent) :
     docForm = new SkelDocForm(parent);
     paramForm = new SkelParamForm(parent,this);
 
-QGridLayout * layout = new QGridLayout;
+QVBoxLayout * layout = new QVBoxLayout;
     widget = new SkelWidget(this) ;
 
     layout->addWidget(widget);
+    OpenGLScaleWidget * sw = new OpenGLScaleWidget(this,mainWindow->scale,mainWindow->openedQImage.size());
+    sw->setFixedHeight(40);
+    layout->addWidget(sw);
     setLayout(layout);
+    sw->setVisible(settings.value("Crop/Unit",false).toBool());
+
+    connect(widget,SIGNAL(ScaleChanged(double)),sw,SLOT(ScaleChanged(double)));
 
     QTimer::singleShot(200,widget,SLOT(buildSkel()));
 
@@ -107,23 +117,32 @@ void SkelPage::reinit()
 
 void SkelPage::nextPhase()
 {
-    if (settings.value("Skel/SaveJPG",true).toBool())
+    if (settings.value("Skel/SaveJPG",false).toBool())
     {
         QImage image;
         if (settings.value("Skel/Screenshot").toBool())
         {
-            image = widget->getScreenshot() ;
+            screenshot(image) ;
         }
         else //Full image
         {
             image = widget->getImage();
         }
-        QFileInfo file(settings.value("File").toString());
-        image.save(tr("%1/Squelettisation-%2.%3").arg(file.absoluteDir().absolutePath()).arg(file.baseName()).arg(file.completeSuffix()));
+
+        mainWindow->trySaveImage(tr("Squelettisation-"),image);
 
     }
     if (settings.value("Skel/SaveSVG",false).toBool())
         saveSVG();
     if (settings.value("Skel/SaveSHP",false).toBool())
         saveSHP();
+}
+
+void SkelPage::prevPhase()
+{
+    mainWindow->getSkelChildren().clear();
+    mainWindow->getSkelColors().clear();
+mainWindow->getSkelDistanceToBoundary().clear();
+mainWindow->getSkelIndices().clear();
+mainWindow->getSkelVertices().clear();
 }

@@ -1,8 +1,10 @@
 #include "intcolorbadge.h"
 #include "intrangedmapresult.h"
 #include "junctionmapwidget.h"
+#include "openglscalewidget.h"
 #include "roadmapwidget.h"
 #include "ui_intmapresult.h"
+#include "mainwindow.h"
 
 #include <QPainter>
 
@@ -65,6 +67,15 @@ IntRangedMapResult::IntRangedMapResult(MapPage *parent, QString titre, QVector<i
         break ;
     }
     ui->gridLayout->addWidget(widget,1,1);
+
+    OpenGLScaleWidget *sw = new OpenGLScaleWidget(this,mainWindow->scale,mainWindow->openedQImage.size());
+    sw->setFixedHeight(40);
+    ui->gridLayout->addWidget(sw,2,1);
+    QSettings settings;
+    sw->setVisible(settings.value("Crop/Unit",false).toBool());
+
+    connect(widget,SIGNAL(ScaleChanged(double)),sw,SLOT(ScaleChanged(double)));
+
 }
 
 IntRangedMapResult::~IntRangedMapResult()

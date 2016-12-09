@@ -170,6 +170,8 @@ void IntroParamForm::validateFile()
         break ;
     }
 
+    settings.setValue("FileList",list);
+
     page->setImage(page->image);
 
 

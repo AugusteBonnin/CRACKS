@@ -17,7 +17,7 @@
 
 class ScrollableOpenGLWidget : public QOpenGLWidget , protected QOpenGLFunctions
 {
-    QSettings settings;
+Q_OBJECT
 
 public:
     ScrollableOpenGLWidget(Form *parent);
@@ -32,6 +32,8 @@ public:
     void saveState();
 
     void resetToSize(QSize size);
+signals :
+    void ScaleChanged(double);
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
@@ -43,10 +45,10 @@ protected:
     QPointF & center;
     double & scale ;
 
-    QImage image ;
+    //QImage image ;
 
     MainWindow * mainWindow ;
-
+    QSettings settings;
 };
 
 #endif // SCROLLABLEOPENGLWIDGET_H

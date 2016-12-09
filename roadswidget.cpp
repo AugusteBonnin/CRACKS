@@ -328,8 +328,8 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
                     {
                         if (isnan(arrivals[j].angle)) qDebug() << "NAN in inter" ;
                         float radius = 5*junctions[i].mean_radius ;
-//                        qDebug() << "radius" << radius ;
-                       QLineF l=QLineF::fromPolar(radius,arrivals[j].angle+180);
+                        //                        qDebug() << "radius" << radius ;
+                        QLineF l=QLineF::fromPolar(radius,arrivals[j].angle+180);
                         l.translate(arrivals[j].point);
 
                         qreal min_d = INFINITY ;
@@ -539,110 +539,117 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
     pre_roads_index_vbo_end.clear();
     mainWindow->roads_line_strings.clear();
     QVector<bool> edge_treated(double_sided_edges.count(),false) ;
-    for (int i = 0 ; i < double_sided_edges.count() ; i++)
+    for (int m = 0 ; m < mainWindow->getRoadsJunctions().count() ; m++)
     {
-        DoubleSidedEdge edge = double_sided_edges[i] ;
+        QVector<int> & edges = mainWindow->getRoadsEdges()[m];
+        for (int l = 0 ; l < edges.count() ; l++)
+            {
 
-        if ((!edge_treated[i])&&
-                ((!junctions[edge.first_junction].equivalent.contains(i))||
-                 (!junctions[edge.second_junction].equivalent.contains(i))))
-        {
-            edge_treated[i] = true ;
-            int prev = i , current ;
-            QVector<int> list ;
-            QVector<QPointF>  line_string;
+                int i = edges[l] ;
+                DoubleSidedEdge edge =  double_sided_edges[i];
 
-            if (junctions[edge.first_junction].equivalent.contains(prev))
-            {
-                current = junctions[edge.first_junction].equivalent.value(prev) ;
-                for (int j = edge.truncated_str.count()-1 ; j >=0 ; j--)
-                    list << edge.truncated_str[j] ;
-            }
-            else if (junctions[edge.second_junction].equivalent.contains(prev))
-            {
-                current = junctions[edge.second_junction].equivalent.value(prev) ;
-                list << edge.truncated_str ;
-            }
-            else
-            {
-                current = -1 ;
-                list << edge.truncated_str ;
-            }
-
-            while (current>=0)
-            {
-                edge_treated[current] = true ;
-                edge = double_sided_edges[current] ;
-                if (junctions[edge.second_junction].equivalent.contains(prev))
+                if ((!edge_treated[i])&&
+                        ((!junctions[edge.first_junction].equivalent.contains(i))||
+                         (!junctions[edge.second_junction].equivalent.contains(i))))
                 {
-                    for (int j = edge.truncated_str.count()-1 ; j >=0 ; j--)
-                        list << edge.truncated_str[j] ;
+                    edge_treated[i] = true ;
+                    int prev = i , current ;
+                    QVector<int> list ;
+                    QVector<QPointF>  line_string;
 
-                    if (junctions[edge.first_junction].equivalent.contains(current))
+                    if (junctions[edge.first_junction].equivalent.contains(prev))
                     {
-                        prev = current ;
-                        current = junctions[edge.first_junction].equivalent.value(current) ;
+                        current = junctions[edge.first_junction].equivalent.value(prev) ;
+                        for (int j = edge.truncated_str.count()-1 ; j >=0 ; j--)
+                            list << edge.truncated_str[j] ;
+                    }
+                    else if (junctions[edge.second_junction].equivalent.contains(prev))
+                    {
+                        current = junctions[edge.second_junction].equivalent.value(prev) ;
+                        list << edge.truncated_str ;
                     }
                     else
-                        current =-1 ;
-                }
-                else if (junctions[edge.first_junction].equivalent.contains(prev))
-                {
-                    list << edge.truncated_str ;
-                    if (junctions[edge.second_junction].equivalent.contains(current))
                     {
-                        prev = current ;
-                        current = junctions[edge.second_junction].equivalent.value(current) ;
-                    }
-                    else
                         current = -1 ;
-                }
-                else
-                {
-                    qDebug() << "Bug1" ;
-                    current = -1 ;
-                }
-            }//end while
+                        list << edge.truncated_str ;
+                    }
 
-            float r = rand()/((float)RAND_MAX) ;
-            float g = rand()/((float)RAND_MAX) ;
-            float b = rand()/((float)RAND_MAX) ;
-            QColor c;
-            c.setRgbF(r,g,b);
-            mainWindow->roads_line_strings_colors << c ;
+                    while (current>=0)
+                    {
+                        edge_treated[current] = true ;
+                        edge = double_sided_edges[current] ;
+                        if (junctions[edge.second_junction].equivalent.contains(prev))
+                        {
+                            for (int j = edge.truncated_str.count()-1 ; j >=0 ; j--)
+                                list << edge.truncated_str[j] ;
 
-            pre_roads_index_vbo_start << pre_roads_index_vbo.count() ;
+                            if (junctions[edge.first_junction].equivalent.contains(current))
+                            {
+                                prev = current ;
+                                current = junctions[edge.first_junction].equivalent.value(current) ;
+                            }
+                            else
+                                current =-1 ;
+                        }
+                        else if (junctions[edge.first_junction].equivalent.contains(prev))
+                        {
+                            list << edge.truncated_str ;
+                            if (junctions[edge.second_junction].equivalent.contains(current))
+                            {
+                                prev = current ;
+                                current = junctions[edge.second_junction].equivalent.value(current) ;
+                            }
+                            else
+                                current = -1 ;
+                        }
+                        else
+                        {
+                            qDebug() << "Bug1" ;
+                            current = -1 ;
+                        }
+                    }//end while
 
-            int j = 0 ;
-            for (; j < list.count() -1 ; j++)
-            {
-                pre_roads_index_vbo << pre_roads_vbo.count()/6 << pre_roads_vbo.count()/6+1 ;
-                pre_roads_vbo << skel_vertices[list[j]].x() ;
-                pre_roads_vbo << skel_vertices[list[j]].y() ;
-                pre_roads_vbo << r ;
-                pre_roads_vbo << g ;
-                pre_roads_vbo << b ;
-                pre_roads_vbo << 1 ;
-                line_string << QPointF(skel_vertices[list[j]].x(),skel_vertices[list[j]].y());
-            }
-            //last element
-            if (list.count())
-            {
-                pre_roads_vbo << skel_vertices[list[j]].x() ;
-                pre_roads_vbo << skel_vertices[list[j]].y() ;
-                pre_roads_vbo << r ;
-                pre_roads_vbo << g ;
-                pre_roads_vbo << b ;
-                pre_roads_vbo << 1 ;
-                line_string << QPointF(skel_vertices[list[j]].x(),skel_vertices[list[j]].y());
-            }
-            pre_roads_index_vbo_end << pre_roads_index_vbo.count() ;
-            mainWindow->roads_line_strings << line_string ;
+                    float r = rand()/((float)RAND_MAX) ;
+                    float g = rand()/((float)RAND_MAX) ;
+                    float b = rand()/((float)RAND_MAX) ;
+                    QColor c;
+                    c.setRgbF(r,g,b);
+                    mainWindow->roads_line_strings_colors << c ;
 
-        }//end if !treated and start of line string
+                    pre_roads_index_vbo_start << pre_roads_index_vbo.count() ;
+
+                    int j = 0 ;
+                    for (; j < list.count() -1 ; j++)
+                    {
+                        pre_roads_index_vbo << pre_roads_vbo.count()/6 << pre_roads_vbo.count()/6+1 ;
+                        pre_roads_vbo << skel_vertices[list[j]].x() ;
+                        pre_roads_vbo << skel_vertices[list[j]].y() ;
+                        pre_roads_vbo << r ;
+                        pre_roads_vbo << g ;
+                        pre_roads_vbo << b ;
+                        pre_roads_vbo << 1 ;
+                        line_string << skel_vertices[list[j]];
+                    }
+                    //last element
+                    if (list.count())
+                    {
+                        pre_roads_vbo << skel_vertices[list[j]].x() ;
+                        pre_roads_vbo << skel_vertices[list[j]].y() ;
+                        pre_roads_vbo << r ;
+                        pre_roads_vbo << g ;
+                        pre_roads_vbo << b ;
+                        pre_roads_vbo << 1 ;
+                        line_string << skel_vertices[list[j]];
+                    }
+                    pre_roads_index_vbo_end << pre_roads_index_vbo.count() ;
+                    mainWindow->roads_line_strings << line_string ;
+
+                }//end if !treated and start of line string
 
 
-    }//end for i in double sided edges
+        }
+
+    }//end for
 
 
     if (mainWindow->roads_vbo.isCreated())
@@ -761,7 +768,7 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
         for (int j = 0 ; j < i ; j ++)
             close += simple_distances[(valid_roads[i]*(valid_roads[i]-1))/2+valid_roads[j]] ;
         for (int j = i+1 ; j < valid_roads.count() ; j ++)
-            close += simple_distances[(valid_roads[i]*(valid_roads[i]-1))/2+valid_roads[j]] ;
+            close += simple_distances[(valid_roads[j]*(valid_roads[j]-1))/2+valid_roads[i]] ;
         closeness << 1.0/close ;
     }
     mainWindow->histoDoubleData << closeness ;
@@ -1094,10 +1101,10 @@ void RoadsWidget::exploreEdge(const int first,const int second)
             }
 
 
-                mean_angleA /= totalA ;
-                mean_angleB /= totalB ;
-                mean_angleB -= 180 ;
-                mean_width /= total_width;
+            mean_angleA /= totalA ;
+            mean_angleB /= totalB ;
+            mean_angleB -= 180 ;
+            mean_width /= total_width;
 
             if((isnan(mean_angleA))||(isnan(mean_angleB)))
             {
@@ -1111,6 +1118,8 @@ void RoadsWidget::exploreEdge(const int first,const int second)
                 mean_angleB = mean_angleA-180;
                 truncated_str.clear() ;
                 truncated_str << first << last ;
+
+
             }
 
             DoubleSidedEdge edge ;
@@ -1174,8 +1183,8 @@ void RoadsWidget::exploreEdge(const int first,const int second)
 
                 junction2.arrivals.clear() ;
 
-junctions[second_junction] = junction ;
-junctions[first_junction]= junction2 ;
+                junctions[second_junction] = junction ;
+                junctions[first_junction]= junction2 ;
                 /*Junction junction2 = junctions[first_junction] ;
             junction2.vertices.clear() ;
             junction2.arrivals.clear() ;

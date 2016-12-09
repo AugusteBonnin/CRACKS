@@ -95,7 +95,10 @@ SOURCES += main.cpp\
     mapresult.cpp \
     saveform.cpp \
     reportpage.cpp \
-    reportparamform.cpp
+    reportparamform.cpp \
+    scalewidget.cpp \
+    openingscalewidget.cpp \
+    openglscalewidget.cpp
 
 HEADERS  += mainwindow.h \
     statsform.h \
@@ -176,7 +179,10 @@ HEADERS  += mainwindow.h \
     saveform.h \
     shapefil.h \
     reportpage.h \
-    reportparamform.h
+    reportparamform.h \
+    scalewidget.h \
+    openingscalewidget.h \
+    openglscalewidget.h
 
 FORMS    += mainwindow.ui \
     statsform.ui \

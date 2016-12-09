@@ -5,10 +5,12 @@
 #include <QPainter>
 #include <QSettings>
 #include <QTextStream>
+#include "histopage.h"
+#include "mainwindow.h"
 
-HistoResult::HistoResult(QString name, QWidget *parent,int index) : Result(name,parent) , index(index)
+HistoResult::HistoResult(QString name, HistoPage *parent,int index) : Result(name,parent) , index(index)
 {
-
+mainWindow = parent->getMainWindow() ;
 }
 
 
@@ -42,11 +44,10 @@ void HistoResult::saveImage()
     QDir dir(fileInfo.absoluteDir());
 
     QString path(dir.filePath((tr("Histogramme-")+resultName+"-"+fileInfo.fileName())))  ;
-    image.save(path);
-//    if(image.save(path))
-//        QMessageBox::information(this,tr("Info"),path+tr(" a été enregistré."));
-//    else
-//        QMessageBox::warning(this,tr("Attention"),path+tr(" n'a pas été enregistré."));
+    if(image.save(path))
+       mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
+   else
+       mainWindow->log(tr("<FONT COLOR=RED>%1 n'a pas été enregistré.</FONT>").arg(path));
 }
 
 void HistoResult::saveCSV()
@@ -64,6 +65,7 @@ void HistoResult::saveCSV()
         ts << csv ;
 
         file.close() ;
+        mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
     }
 
 }

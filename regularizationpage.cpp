@@ -4,6 +4,7 @@
 #include "regularizationpage.h"
 #include "regularizationparamform.h"
 #include "regularizationworker.h"
+#include "scalewidget.h"
 #include "ui_regularizationform.h"
 
 #include <QSettings>
@@ -25,12 +26,24 @@ RegularizationPage::RegularizationPage(MainWindow *parent) :
     resultWidget = new ImageWidget;
 
     QHBoxLayout * layout = new QHBoxLayout;
-    layout->addWidget(originalWidget);
-    layout->addWidget(resultWidget);
+    QVBoxLayout *vl1 = new QVBoxLayout;
+    layout->addLayout((vl1));
+    vl1->addWidget(originalWidget);
+    originalWidget->setFullImage(originalImage);
+    ScaleWidget *sw1 = new ScaleWidget(this) ;
+    sw1->setFixedHeight(24);
+    vl1->addWidget(sw1);
+    sw1->setVisible(settings.value("Crop/Unit",false).toBool());
+    QVBoxLayout *vl2 = new QVBoxLayout;
+    layout->addLayout((vl2));
+    vl2->addWidget(resultWidget);
+    resultWidget->setFullImage(originalImage);
+    ScaleWidget *sw2 = new ScaleWidget(this) ;
+    sw2->setFixedHeight(24);
+    vl2->addWidget(sw2);
+    sw2->setVisible(settings.value("Crop/Unit",false).toBool());
     setLayout(layout);
 
-    originalWidget->setFullImage(originalImage);
-    resultWidget->setFullImage(originalImage);
 
     computed = false ;
 
@@ -65,10 +78,9 @@ void RegularizationPage::nextPhase()
         {
             on_compute_clicked();
         }
-        if (settings.value("RegularizationForm-SaveJPG",QVariant(true)).toBool())
+        if (settings.value("RegularizationForm-SaveJPG",false).toBool())
     {
-            QString fileName = tr("Phase2-%1").arg(settings.value("File",QVariant(QDir::homePath())).toString());
-       mainWindow->croppedImage.save(fileName) ;
+            mainWindow->trySaveDoubleImage(tr("Régularisation-"),mainWindow->regularizedImage);
     }
     }
 }

@@ -32,6 +32,10 @@ private slots:
 
     void on_doubleSpinBox_2_valueChanged(double arg1);
 
+    void on_checkBox_3_toggled(bool checked);
+
+    void on_comboBox_currentTextChanged(const QString &arg1);
+
 private:
     Page * page;
     Ui::CropForm *ui;

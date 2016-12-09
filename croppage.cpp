@@ -2,6 +2,7 @@
 #include "croppage.h"
 #include "cropparamform.h"
 #include "mainwindow.h"
+#include "scalewidget.h"
 #include "ui_cropform.h"
 
 #include <QDir>
@@ -13,8 +14,6 @@ CropPage::CropPage(MainWindow *parent) :
     Page(parent)
 {
 
-    docForm = new CropDocForm(parent) ;
-    paramForm = new CropParamForm(parent , this) ;
 
 
     QHBoxLayout * layout = new QHBoxLayout ;
@@ -24,8 +23,14 @@ CropPage::CropPage(MainWindow *parent) :
 
     layout->addWidget(quadWidget);
     layout->addWidget(zoomWidget);
-    layout->addWidget(resultWidget);
+    QVBoxLayout *vl = new QVBoxLayout;
+    layout->addLayout(vl);
+    vl->addWidget(resultWidget);
 
+    scaleWidget = new ScaleWidget(this) ;
+    scaleWidget->setFixedHeight(24);
+    scaleWidget->setVisible(settings.value("Crop/Unit").toBool());
+    vl->addWidget(scaleWidget);
     setLayout(layout);
 
     connect(quadWidget,SIGNAL(selectionChanged(int)),zoomWidget,SLOT(updateSelection(int)));
@@ -41,7 +46,8 @@ CropPage::CropPage(MainWindow *parent) :
     zoomWidget->setZoomImage(mainWindow->initialImage);
     zoomWidget->initSourcePolygon();
 
-    remap(quadWidget->polygon);
+    docForm = new CropDocForm(parent) ;
+    paramForm = new CropParamForm(parent , this) ;
 
     parent->action_next->setEnabled(true);
 
@@ -49,7 +55,7 @@ CropPage::CropPage(MainWindow *parent) :
 
 CropPage::~CropPage()
 {
- }
+}
 
 void
 CropPage::RAZ()
@@ -73,11 +79,11 @@ void CropPage::nextPhase()
         mainWindow->croppedImage = mainWindow->initialImage ;
     }
 
-    if (settings.value("CropForm-SaveJPG",QVariant(true)).toBool())
-{
-        QString fileName = tr("Phase1-%1").arg(settings.value("File",QVariant(QDir::homePath())).toString());
-   mainWindow->croppedImage.save(fileName) ;
-}
+    if (settings.value("CropForm-SaveJPG",false).toBool())
+    {
+     mainWindow->trySaveImage(tr("Recadrage-"),mainWindow->croppedImage);
+
+    }
 }
 
 void CropPage::prevPhase()
@@ -110,6 +116,15 @@ void CropPage::remap(QPolygon p)
     qreal hauteur = QLineF(p[1],p[2]).length() ;
     hauteur = qMin(hauteur,QLineF(p[3],p[0]).length());
 
+    if (settings.value("Crop/Unit",false).toBool())
+    {
+        if (largeur/hauteur>
+                settings.value("CropForm-UnitX",1).toDouble()/settings.value("CropForm-UnitY",1).toDouble())
+            hauteur = largeur * settings.value("CropForm-UnitY",1).toDouble()/settings.value("CropForm-UnitX",1).toDouble() ;
+        else
+            largeur = hauteur * settings.value("CropForm-UnitX",1).toDouble()/settings.value("CropForm-UnitY",1).toDouble() ;
+
+    }
     QPolygon target ;
     target << QPoint (0,0) << QPoint(largeur,0) << QPoint(largeur,hauteur) << QPoint(0,hauteur);
 

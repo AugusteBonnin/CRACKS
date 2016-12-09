@@ -4,34 +4,59 @@
 RoadMapWidget::RoadMapWidget(MapPage *parent, QVector<QColor> & colors) : MapWidget(parent) , colors(colors)
 {
 
-    QVector<float>  & pre_roads_vbo = mainWindow->pre_roads_vbo ;
+    QVector<float> pre_valid_roads_vbo ;
+    QVector<unsigned int> pre_valid_roads_index_vbo ;
 
-    int i = 0 ;
-    while (i < mainWindow->valid_roads.count())
+    for (int i = 0 ; i < colors.count() ; i++)
     {
-
-        for (int k = mainWindow->pre_valid_roads_index_vbo_start[i];
-             k <  mainWindow->pre_valid_roads_index_vbo_end[i]
-             ; k++)
+        int j = 0 ;
+        QVector<QPointF> & road = mainWindow->roads_line_strings[mainWindow->valid_roads[i]] ;
+        for  (;j < road.count()-1 ; j++)
         {
-            pre_roads_vbo[mainWindow->pre_valid_roads_index_vbo[k]*6+2] = colors[i].redF() ;
-            pre_roads_vbo[mainWindow->pre_valid_roads_index_vbo[k]*6+3] = colors[i].greenF() ;
-            pre_roads_vbo[mainWindow->pre_valid_roads_index_vbo[k]*6+4] = colors[i].blueF() ;
+            pre_valid_roads_index_vbo << pre_valid_roads_vbo.count()/6 << pre_valid_roads_vbo.count()/6 +1;
+            pre_valid_roads_vbo << road[j].x()
+                                   << road[j].y()
+                                   << colors[i].redF()
+                                   << colors[i].greenF()
+                                   << colors[i].blueF()
+                                   << 1 ;
+
         }
-        i++ ;
+        pre_valid_roads_vbo << road[j].x()
+                               << road[j].y()
+                               << colors[i].redF()
+                               << colors[i].greenF()
+                               << colors[i].blueF()
+                               << 1 ;
+
     }
+
+//    int i = 0 ;
+//    while (i < mainWindow->valid_roads.count())
+//    {
+
+//        for (int k = mainWindow->pre_valid_roads_index_vbo_start[i];
+//             k <  mainWindow->pre_valid_roads_index_vbo_end[i]
+//             ; k++)
+//        {
+//            pre_roads_vbo[mainWindow->pre_valid_roads_index_vbo[k]*6+2] = colors[i].redF() ;
+//            pre_roads_vbo[mainWindow->pre_valid_roads_index_vbo[k]*6+3] = colors[i].greenF() ;
+//            pre_roads_vbo[mainWindow->pre_valid_roads_index_vbo[k]*6+4] = colors[i].blueF() ;
+//        }
+//        i++ ;
+//    }
 
     valid_roads_vbo.create();
     valid_roads_vbo.bind();
     valid_roads_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
-    valid_roads_vbo.allocate(pre_roads_vbo.constData(),pre_roads_vbo.count()*sizeof(float));
+    valid_roads_vbo.allocate(pre_valid_roads_vbo.constData(),pre_valid_roads_vbo.count()*sizeof(float));
 
     valid_roads_index_vbo = new QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
     valid_roads_index_vbo->create();
     valid_roads_index_vbo->bind();
     valid_roads_index_vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
-    valid_roads_index_vbo->allocate(mainWindow->pre_valid_roads_index_vbo.constData(),
-                                    mainWindow->pre_valid_roads_index_vbo.count()*sizeof(unsigned int));
+    valid_roads_index_vbo->allocate(pre_valid_roads_index_vbo.constData(),
+                                    pre_valid_roads_index_vbo.count()*sizeof(unsigned int));
 }
 
 void RoadMapWidget::saveSVG(QString path)

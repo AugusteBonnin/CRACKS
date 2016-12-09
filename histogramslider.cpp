@@ -19,6 +19,7 @@ HistogramSlider::HistogramSlider(QWidget *parent) :
 
     last_width = -1 ;
 
+    image = NULL ;
 }
 
 QSize HistogramSlider::minimumSizeHint() const
@@ -119,7 +120,7 @@ void HistogramSlider::computeBins()
 
 void HistogramSlider::paintEvent(QPaintEvent *e)
 {
-    if (last_width!=width())
+    if ((last_width!=width())&&(image))
     {
         computeBins() ;
         last_width=width() ;

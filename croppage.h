@@ -4,6 +4,7 @@
 #include "cropquadwidget.h"
 #include "cropzoomwidget.h"
 #include "page.h"
+#include "scalewidget.h"
 
 #include <QWidget>
 
@@ -25,6 +26,9 @@ public:
     void nextPhase();
     void prevPhase();
     void reinit();
+
+    CropQuadWidget * quadWidget ;
+    ScaleWidget * scaleWidget;
 public slots:
     void remap(QPolygon p);
     void RAZ();
@@ -32,9 +36,9 @@ public slots:
 private slots:
     void initImages();
 private:
-    CropQuadWidget * quadWidget ;
     CropZoomWidget * zoomWidget ;
     ImageWidget * resultWidget ;
-    };
+
+};
 
 #endif // CROPFORM_H

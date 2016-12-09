@@ -12,7 +12,7 @@ SkelParamForm::SkelParamForm(MainWindow *parent, SkelPage *page) :
 
     ui->doubleSpinBox->setValue(settings.value("Skel/Prune",2.0).toDouble());
 
-    ui->verticalLayout->addWidget(new SaveForm(parent,QString("Skel")));
+    ui->verticalLayout->addWidget(new SaveForm(parent,"Skel"));
 }
 
 SkelParamForm::~SkelParamForm()
