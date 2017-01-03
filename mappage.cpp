@@ -42,6 +42,8 @@ docForm = new MapDocForm(parent);
 
 mainWindow->setActionsEnabled(true);
 
+initDone = true ;
+
 }
 
 MapPage::~MapPage()
@@ -70,18 +72,26 @@ void MapPage::setFont() {
 
 void MapPage::reinit()
 {
-//    if (histoResults[0])
-//    {
-//        IntHistoResult *tmp = new IntHistoResult(this,tr("Degré des places"),mainWindow->histoIntData[0],0);
-//        layout->replaceWidget(histoResults[0],tmp);
-//        delete histoResults[0] ;
-//        histoResults[0] = tmp ;
-//    }
-//    else
-//    {
-//    histoResults[0] = new IntHistoResult(this,tr("Degré des places"),mainWindow->histoIntData[0],0);
-//    layout->addWidget(histoResults[0]);
-//    }
+    for (int i = 0 ; i < results.count() ; i++)
+        container->removeWidget(results[i]);
+    results.clear();
+
+    results << new IntRangedMapResult(this,tr("Degré des places"),mainWindow->histoIntData[0],0,2,5,0) ;
+    results << new IntRangedMapResult(this,tr("Degré second des places"),mainWindow->histoIntData[1],1,2,10,0) ;
+    results << new IntRangedMapResult(this,tr("Degré troisième des places"),mainWindow->histoIntData[1],2,10,20,0) ;
+    results << new DoubleMapResult(this,tr("Accessibilité des voies"),mainWindow->histoDoubleData[1],3,1);
+    results << new IntRangedMapResult(this,tr("Degré des voies"),mainWindow->histoIntData[3],4,2,10,1);
+    results << new DoubleMapResult(this,tr("Orthogonalité des voies"),mainWindow->histoDoubleData[2],5,1);
+    results << new DoubleMapResult(this,tr("Espacement des voies"),mainWindow->histoDoubleData[3],6,1);
+    results << new DoubleMapResult(this,tr("Longueur des voies"),mainWindow->histoDoubleData[4],7,1);
+    results << new IntRangedMapResult(this,tr("Longueur topologique des voies"),mainWindow->histoIntData[4],8,1,10,1);
+
+    for (int i = 0 ; i < results.count() ; i++)
+    {
+        results[i]->setFixedHeight(600);
+        container->addWidget(results[i]) ;
+    }
+
 }
 
 

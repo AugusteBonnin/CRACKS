@@ -13,7 +13,7 @@
 void ContourPage::saveSVG()
 {
     QFileInfo file(settings.value("File").toString());
-QString path = tr("%1/Contour-%2.SVG").arg(file.absoluteDir().absolutePath()).arg(file.fileName()) ;
+QString path = tr("%1/Contour-%2.svg").arg(file.absoluteDir().absolutePath()).arg(file.fileName()) ;
     QFile data(path);
     if (data.open(QFile::WriteOnly)) {
         QPointF point;
@@ -40,14 +40,14 @@ QString path = tr("%1/Contour-%2.SVG").arg(file.absoluteDir().absolutePath()).ar
         out << "</svg>\n" ;
     }
     data.close() ;
-mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
+mainWindow->log(tr("%1").arg(path));
 }
 
 void ContourPage::saveSHP()
 {
     QFileInfo file(settings.value("File").toString());
 
-    QString path(tr("%1/Contour-%2.SHP").arg(file.absoluteDir().absolutePath()).arg(file.fileName()));
+    QString path(tr("%1/Contour-%2.shp").arg(file.absoluteDir().absolutePath()).arg(file.fileName()));
 
     SHPHandle shapeFile = SHPCreate( path.toStdString().c_str(), SHPT_ARC );
 
@@ -82,7 +82,9 @@ QPointF point ;
     }
     SHPClose( shapeFile );
 
-    mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
+    mainWindow->log(path);
+    mainWindow->log(path.replace(".shp",".shx"));
+
 }
 
 ContourPage::ContourPage(MainWindow *parent) :
@@ -128,6 +130,8 @@ void ContourPage::updateThreshold(int value)
     paramForm->setEnabled(true);
 
     mainWindow->action_next->setEnabled(true);
+
+    initDone = true ;
 
 }
 
@@ -180,6 +184,9 @@ void ContourPage::prevPhase()
 
 void ContourPage::reinit()
 {
+    mainWindow->getContourIndices().clear();
+    mainWindow->getContourVertices().clear();
+
     originalImage = mainWindow->openedImage ;
     originalQImage = QImage(originalImage->width(),originalImage->height(),QImage::Format_ARGB32);
     originalImage->toQImage(originalQImage);

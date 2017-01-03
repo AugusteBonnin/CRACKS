@@ -14,7 +14,7 @@
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
 typedef K::Point_2 Point_2;
 
-RoadsWidget::RoadsWidget(Form *parent) : ScrollableOpenGLWidget(parent) ,
+RoadsWidget::RoadsWidget(Page *parent) : ScrollableOpenGLWidget(parent) ,
     junctions(mainWindow->getJunctions()) ,
     double_sided_edges(mainWindow->getDoubleSidedEdges()) ,
     roads_junctions(mainWindow->getRoadsJunctions()) ,
@@ -924,7 +924,7 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
         }
     }
     doneCurrent();
-
+((Page*)parent())->initDone = true ;
     update() ;
 }
 

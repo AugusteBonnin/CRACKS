@@ -79,7 +79,7 @@ void RoadsPage::on_pushButton_2_clicked()
 void RoadsPage::saveSVG()
 {
     QFileInfo file(settings.value("File").toString()) ;
-    QString path = tr("%1/Voies-%2.SVG").arg(file.dir().absolutePath()).arg(file.baseName());
+    QString path = tr("%1/Voies-%2.svg").arg(file.dir().absolutePath()).arg(file.baseName());
         QFile data(path);
         if (data.open(QFile::WriteOnly)) {
             QTextStream out(&data);
@@ -121,7 +121,7 @@ void RoadsPage::saveSVG()
             out << "</svg>\n" ;
         }
         data.close() ;
-        mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
+        mainWindow->log(tr("%1").arg(path));
 
 }
 
@@ -131,7 +131,7 @@ void RoadsPage::saveSHP()
     QFileInfo file(settings.value("File").toString()) ;
 
     //roads
-    QString path = tr("%1/Voies-%2.SHP").arg(file.absoluteDir().absolutePath()).arg(file.baseName());
+    QString path = tr("%1/Voies-%2.shp").arg(file.absoluteDir().absolutePath()).arg(file.baseName());
 
 
 
@@ -224,6 +224,8 @@ void RoadsPage::saveSHP()
         SHPClose( shapeFile );
         DBFClose(dbfFile);
 
-        mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
+        mainWindow->log(path);
+mainWindow->log(path.replace(".shp",".shx"));
+mainWindow->log(path.replace(".shx",".dbf"));
 
      }

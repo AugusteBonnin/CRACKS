@@ -49,8 +49,12 @@ CropPage::CropPage(MainWindow *parent) :
     docForm = new CropDocForm(parent) ;
     paramForm = new CropParamForm(parent , this) ;
 
+    remap(quadWidget->polygon);
+
     parent->action_next->setEnabled(true);
 
+    computed = true ;
+initDone = true ;
 }
 
 CropPage::~CropPage()
@@ -77,13 +81,14 @@ void CropPage::nextPhase()
     if (!settings.value("Apply0",QVariant(true)).toBool())
     {
         mainWindow->croppedImage = mainWindow->initialImage ;
+        if (settings.value("CropForm-SaveJPG",false).toBool())
+        {
+         mainWindow->trySaveImage(tr("Recadrage-"),mainWindow->croppedImage);
+
+        }
     }
 
-    if (settings.value("CropForm-SaveJPG",false).toBool())
-    {
-     mainWindow->trySaveImage(tr("Recadrage-"),mainWindow->croppedImage);
 
-    }
 }
 
 void CropPage::prevPhase()
@@ -93,6 +98,7 @@ void CropPage::prevPhase()
 
 void CropPage::reinit()
 {
+    computed = true ;
     quadWidget->setFullImage(mainWindow->initialImage);
     quadWidget->initSourcePolygon();
 
@@ -100,6 +106,8 @@ void CropPage::reinit()
     zoomWidget->initSourcePolygon();
 
     remap(quadWidget->polygon);
+
+    initDone = true ;
 }
 
 void CropPage::initImages()

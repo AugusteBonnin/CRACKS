@@ -25,6 +25,7 @@ public:
     DocForm * docForm;
 
     bool computed ;
+    bool initDone;
     };
 
 #endif // PAGE_H

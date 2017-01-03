@@ -115,6 +115,8 @@ KDTree2D::PointCloud point_cloud;
     void trySaveImage(const QString & pre,const QImage & image);
     void trySaveDoubleImage(QString pre, DoubleImage *image);
     QSettings settings;
+    void setPhase(int p);
+    void repeatPhases();
 public slots :
     void nextPhase();
     void prevPhase();

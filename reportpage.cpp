@@ -5,6 +5,9 @@
 #include "ui_reportpage.h"
 #include "mainwindow.h"
 
+#include <QDir>
+#include <QFileInfo>
+#include <QProgressDialog>
 #include <QTimer>
 
 ReportPage::ReportPage(MainWindow *parent) :
@@ -53,7 +56,31 @@ void ReportPage::postInit(void)
     mainWindow->setActionsEnabled(true);
 }
 
+void ReportPage::batchLoop()
+{
+
+}
+
 ReportPage::~ReportPage()
 {
     delete ui;
+}
+
+void ReportPage::nextPhase()
+{
+
+    switch (settings.value("IntroParamForm-Operation",QVariant(0)).toUInt())
+    {
+    case 0 :
+        exit(0);
+        break ;
+    case 1 :
+        mainWindow->repeatPhases();
+        exit(0);
+        break ;
+    case 2 :
+
+         break ;
+    }
+
 }

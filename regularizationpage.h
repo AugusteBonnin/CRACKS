@@ -34,7 +34,6 @@ private slots:
     void on_compute_clicked();
 
 private:
-    bool computed ;
 };
 
 #endif // REGULARIZATIONFORM_H

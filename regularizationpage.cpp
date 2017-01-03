@@ -44,7 +44,7 @@ RegularizationPage::RegularizationPage(MainWindow *parent) :
     sw2->setVisible(settings.value("Crop/Unit",false).toBool());
     setLayout(layout);
 
-
+    initDone = true ;
     computed = false ;
 
     mainWindow->action_next->setEnabled(true);
@@ -100,6 +100,7 @@ void RegularizationPage::reinit()
     originalWidget->setFullImage(originalImage);
     resultWidget->setFullImage(originalImage);
 
+    initDone = true ;
     computed = false ;
 }
 

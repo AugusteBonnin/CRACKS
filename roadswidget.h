@@ -2,6 +2,7 @@
 #define ROADSWIDGET_H
 
 #include "customtypes.h"
+#include "page.h"
 #include "scrollableopenglwidget.h"
 
 #include <QObject>
@@ -10,7 +11,7 @@ class RoadsWidget : public ScrollableOpenGLWidget
 {
     Q_OBJECT
 public:
-    RoadsWidget(Form * parent);
+    RoadsWidget(Page *parent);
 
     // QOpenGLWidget interface
 public slots:

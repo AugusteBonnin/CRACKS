@@ -9,6 +9,7 @@
 #include <QDockWidget>
 #include <QFileInfo>
 #include <QHBoxLayout>
+#include <QProgressDialog>
 #include <QSettings>
 #include <QTextBrowser>
 
@@ -89,6 +90,71 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     QSettings settings;
     settings.setValue("geometry", saveGeometry());
+}
+
+void MainWindow::setPhase(int p)
+{
+    phase = p ;
+    stackedWidget->setCurrentIndex(phase);
+    restorePhase();
+   ( (Page*)(stackedWidget->currentWidget()))->reinit();
+    repaint() ;
+
+}
+
+void MainWindow::repeatPhases(){
+    QStringList files = settings.value("FileList").toStringList() ;
+
+    QProgressDialog progressDialog(tr("Traitement en cours..."),tr("Annuler le traitement"), 8, 8*(files.count()-1), this);
+    progressDialog.setWindowModality(Qt::WindowModal);
+    QDir dir(settings.value("IntroParamForm-File-1").toString());
+    QString new_dir_path = tr("Dossier %1").arg(QFileInfo(files[0]).baseName());
+    QDir new_dir(dir.absoluteFilePath(new_dir_path));
+    new_dir.removeRecursively();
+    dir.mkdir(new_dir_path);
+    dir.cd(new_dir_path);
+    for (int f = 0 ; f < logStrings.count() ; f++)
+       {
+        QString new_path = dir.absoluteFilePath(QFileInfo(logStrings[f]).fileName()) ;
+        QFile::remove(new_path);
+        QFile::rename(logStrings[f],new_path);
+    }
+
+    for (int i = 1 ; i < files.count() ; i ++ )
+    {
+        logStrings.clear();
+        QDir dir(settings.value("IntroParamForm-File-1").toString());
+        settings.setValue("File",dir.absoluteFilePath(files[i]));
+        QString new_dir_path = tr("Dossier %1").arg(QFileInfo(files[i]).baseName());
+        QDir new_dir(dir.absoluteFilePath(new_dir_path));
+        new_dir.removeRecursively();
+        dir.mkdir(new_dir_path);
+        dir.cd(new_dir_path);
+        for (int phase = 1 ; phase < 9 ; phase++)
+        {
+           setPhase(phase);
+            while (! ( (Page*)(stackedWidget->currentWidget()))->initDone)
+                qApp->processEvents();
+
+            ( (Page*)(stackedWidget->currentWidget()))->nextPhase();
+            qApp->processEvents();
+
+            progressDialog.setValue(progressDialog.value()+1);
+            qApp->processEvents();
+            if(progressDialog.wasCanceled())
+                break ;
+        }
+
+        for (int f = 0 ; f < logStrings.count() ; f++)
+        {
+            QString new_path = dir.absoluteFilePath(QFileInfo(logStrings[f]).fileName()) ;
+            QFile::remove(new_path);
+            QFile::rename(logStrings[f],new_path);
+
+        }
+
+    }
+
 }
 
 void MainWindow::nextPhase()
@@ -237,7 +303,7 @@ void MainWindow::trySaveImage(const QString &pre, const QImage &image)
 
     QString fileName = tr("%1/%2%3").arg(file.absoluteDir().absolutePath()).arg(pre).arg(file.fileName());
     if (image.save(fileName))
-        log(tr("%1 a bien été enregistrée.").arg(fileName));
+        log(tr("%1").arg(fileName));
     else
         log(tr("<FONT COLOR=\"RED\">%1 n'a pas été enregistrée.</FONT>").arg(fileName));
 

@@ -51,7 +51,7 @@ void MapResult::saveImage()
     }
     settings.endArray();
     if(image.save(path))
-       mainWindow->log(tr("%1 a bien été enregistrée.").arg(path));
+       mainWindow->log(tr("%1").arg(path));
    else
         mainWindow->log(tr("<FONT COLOR=RED>%1 n'a pas été enregistrée.</FONT>").arg(path));
  }

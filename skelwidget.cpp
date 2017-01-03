@@ -231,6 +231,8 @@ void SkelWidget::buildSkel2()
     mainWindow->setActionsEnabled(true);
 
    update() ;
+
+   ((Page*)parent())->initDone = true ;
 }
 
 void SkelWidget::explorePoint(int i)

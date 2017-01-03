@@ -12,7 +12,7 @@
 void SkelPage::saveSVG()
 {
     QFileInfo file(settings.value("File").toString());
-    QString path = tr("%1/Squelettisation-%2.SVG").arg(file.absoluteDir().absolutePath()).arg(file.fileName());
+    QString path = tr("%1/Squelettisation-%2.svg").arg(file.absoluteDir().absolutePath()).arg(file.fileName());
     QFile data(path);
     if (data.open(QFile::WriteOnly)) {
         QTextStream out(&data);
@@ -35,14 +35,14 @@ void SkelPage::saveSVG()
         out << "</svg>\n" ;
     }
     data.close() ;
-    mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
+    mainWindow->log(tr("%1").arg(path));
 
 }
 
 void SkelPage::saveSHP()
 {
     QFileInfo file(settings.value("File").toString());
-    QString path = tr("%1/Squelettisation-%2.SHP").arg(file.absoluteDir().absolutePath()).arg(file.fileName());
+    QString path = tr("%1/Squelettisation-%2.shp").arg(file.absoluteDir().absolutePath()).arg(file.fileName());
     SHPHandle shapeFile = SHPCreate( path.toStdString().c_str(), SHPT_ARC );
     DBFHandle dbfFile = DBFCreate(path.toStdString().c_str()) ;
 
@@ -79,7 +79,9 @@ void SkelPage::saveSHP()
     SHPClose( shapeFile );
     DBFClose(dbfFile);
 
-    mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
+    mainWindow->log(path);
+    mainWindow->log(path.replace(".shp",".shx"));
+    mainWindow->log(path.replace(".shx",".dbf"));
 
 }
 
@@ -103,6 +105,8 @@ QVBoxLayout * layout = new QVBoxLayout;
 
     QTimer::singleShot(200,widget,SLOT(buildSkel()));
 
+   initDone = false ;
+
     repaint() ;
 }
 
@@ -112,7 +116,9 @@ SkelPage::~SkelPage()
 
 void SkelPage::reinit()
 {
+    initDone = false ;
     widget->buildSkel();
+
 }
 
 void SkelPage::nextPhase()

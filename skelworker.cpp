@@ -174,6 +174,7 @@ void SkelWorker::run()
 
     //Insert the polygons into a constrained triangulation
 Triangulation & cdt = mainWindow->cdt;
+cdt.clear();
 
 
     for (int i = 0 ; i < connected_components.count() ; i++)

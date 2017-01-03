@@ -88,6 +88,7 @@ OpeningPage::OpeningPage(MainWindow *parent) :
     paramForm = new OpeningParamForm(parent,this);
     docForm = new OpeningDocForm(parent);
 
+    initDone = false ;
 
     QTimer::singleShot(0,this,SLOT(initImages())) ;
 }
@@ -177,6 +178,7 @@ void OpeningPage::initImages()
     mainWindow->action_next->setEnabled(true);
 
     computed = false ;
+    initDone = true ;
 
 }
 
