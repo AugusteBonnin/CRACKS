@@ -163,6 +163,9 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
     roads_edges.clear();
     index_junction.clear();
 
+    mainWindow->histoIntData.clear();
+    mainWindow->histoDoubleData.clear();
+
     //line strings computing
     mainWindow->progress->setMaximum(skel_children.count());
 
@@ -471,7 +474,7 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
     for(int i = 0 ; i < junctions.count() ; i++)
     {
         int degree = junctions[i].arrivals.count() ;
-        if (degree)
+        if ((degree==1)||(degree>=3))
         {
             valid_junctions<<second_degrees_of_junctions.count();
             degrees_of_junctions << degree ;
@@ -867,12 +870,13 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
         QVector<QPointF> contour ;
 
 
-        if (junctions[i].arrivals.count())
+        if (valid_junctions[i]>-1)
         {
             QVector<float> pre_junction_vbo ;
             for (int j = 0 ; j < junctions[i].centers_indices.count() ; j++)
             {
-                float radius = skel_distance[junctions[i].centers_indices[j]] ;
+                float radius = skel_distance[junctions[i].centers_indices[j]]
+                        * radiusFactor;
                 float x = skel_vertices[junctions[i].centers_indices[j]].x() ;
                 float y = skel_vertices[junctions[i].centers_indices[j]].y() ;
 
@@ -888,7 +892,8 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
 
 
             std::vector<Point_2> hull(circles.size());
-            std::vector<Point_2>::iterator ptr = CGAL::convex_hull_2( circles.begin(), circles.end(), hull.begin() );
+            std::vector<Point_2>::iterator ptr = CGAL::convex_hull_2
+                    ( circles.begin(), circles.end(), hull.begin() );
 
             std::vector<Point_2>::iterator it;
             for (it = hull.begin(); it < ptr ; it++)
