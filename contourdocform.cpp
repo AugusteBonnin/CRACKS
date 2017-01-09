@@ -5,7 +5,7 @@
 ContourDocForm::ContourDocForm(MainWindow *parent) :
     DocForm(parent)
 {
-    browser->setSource(QUrl("doc/contour.html"));
+    browser->setUrl(QUrl("file://"+QApplication::applicationDirPath()+tr("/doc/aide.html#Contour")));
 }
 
 ContourDocForm::~ContourDocForm()

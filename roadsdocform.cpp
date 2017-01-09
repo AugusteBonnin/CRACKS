@@ -5,7 +5,7 @@
 RoadsDocForm::RoadsDocForm(MainWindow *parent) :
     DocForm(parent)
 {
-    browser->setSource(QUrl("doc/roads.html"));
+    browser->setUrl(QUrl("file://"+QApplication::applicationDirPath()+tr("/doc/aide.html#Voies")));
 }
 
 RoadsDocForm::~RoadsDocForm()

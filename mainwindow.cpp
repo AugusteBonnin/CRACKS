@@ -197,7 +197,8 @@ void MainWindow::restorePhase()
     restoreState(settings.value(QString("windowState%1").arg(phase)).toByteArray());
 
     docWidget->setWidget(page->getDocForm());
-    restoreDockWidget(docWidget);
+    docWidget->setMinimumSize(QSize(320,240));
+     restoreDockWidget(docWidget);
     paramWidget->setWidget(page->getParamForm());
     restoreDockWidget(paramWidget);
 
@@ -234,7 +235,7 @@ void MainWindow::receiveProgressIncrement(int inc)
 void MainWindow::openBrowser(QUrl link)
 {
     QTextBrowser * browser = new QTextBrowser;
-    browser->setSource(link);
+    browser->setUrl(link);
     browser->show() ;
 }
 
@@ -262,7 +263,7 @@ void MainWindow::on_actionAide_2_triggered()
         docWidget = new QDockWidget(tr("Aide"),this);
         docWidget->setWidget(((Page*)stackedWidget->currentWidget())->getDocForm());
 
-        addDockWidget(Qt::TopDockWidgetArea,docWidget);
+        addDockWidget(Qt::LeftDockWidgetArea,docWidget);
     }
 
     docWidget->show();

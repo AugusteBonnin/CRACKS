@@ -5,7 +5,7 @@
 HistoDocForm::HistoDocForm(MainWindow *parent) :
     DocForm(parent)
 {
-    browser->setSource(QUrl("doc/introduction.html"));
+    browser->setUrl(QUrl("file://"+QApplication::applicationDirPath()+tr("/doc/aide.html#Histogrammes")));
 }
 
 HistoDocForm::~HistoDocForm()

@@ -3,7 +3,7 @@
 MapDocForm::MapDocForm(MainWindow *parent) :
     DocForm(parent)
 {
-    browser->setSource(QUrl("doc/opening.html"));
+    browser->setUrl(QUrl("file://"+QApplication::applicationDirPath()+tr("/doc/aide.html#Cartes")));
 }
 
 MapDocForm::~MapDocForm()

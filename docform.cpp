@@ -6,8 +6,7 @@
 DocForm::DocForm(MainWindow *mainWindow) : Form(mainWindow)
 {
 QGridLayout *layout = new QGridLayout(this) ;
-browser = new QTextBrowser(this) ;
-browser->setOpenLinks(false);
+browser = new QWebEngineView(this) ;
 QObject::connect(browser,SIGNAL(anchorClicked(QUrl)),mainWindow,SLOT(openBrowser(QUrl)));
 layout->addWidget(browser);
 setLayout(layout);

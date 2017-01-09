@@ -552,8 +552,8 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
                 DoubleSidedEdge edge =  double_sided_edges[i];
 
                 if ((!edge_treated[i])&&
-                        ((!junctions[edge.first_junction].equivalent.contains(i))||
-                         (!junctions[edge.second_junction].equivalent.contains(i))))
+                        (((!junctions[edge.first_junction].equivalent.contains(i))||
+                         (!junctions[edge.second_junction].equivalent.contains(i)))))
                 {
                     edge_treated[i] = true ;
                     int prev = i , current ;
@@ -661,7 +661,7 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
     mainWindow->roads_vbo.create() ;
     mainWindow->roads_vbo.bind() ;
     mainWindow->roads_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
-    mainWindow->roads_vbo.allocate(pre_roads_vbo.constData(),pre_roads_vbo.count()*sizeof(GLfloat));
+    mainWindow->roads_vbo.allocate(pre_roads_vbo.constData(),pre_roads_vbo.count()*sizeof(float));
 
     if (mainWindow->roads_index_vbo->isCreated())
         mainWindow->roads_index_vbo->destroy();
@@ -687,6 +687,7 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
     mainWindow->black_roads_vbo.allocate(pre_roads_vbo.constData(),pre_roads_vbo.count()*sizeof(GLfloat));
 
     QVector<unsigned int>  &pre_valid_roads_index_vbo = mainWindow->pre_valid_roads_index_vbo;
+
 
     QVector<int> &valid_roads = mainWindow->valid_roads;
     valid_roads.clear();

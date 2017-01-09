@@ -6,7 +6,7 @@
 RegularizationDocForm::RegularizationDocForm(MainWindow *parent) :
     DocForm(parent)
 {
-    browser->setSource(QUrl("doc/regularisation.html"));
+    browser->setUrl(QUrl("file://"+QApplication::applicationDirPath()+tr("/doc/aide.html#Regularisation")));
 }
 
 RegularizationDocForm::~RegularizationDocForm()

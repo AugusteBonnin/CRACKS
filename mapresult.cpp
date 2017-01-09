@@ -7,8 +7,6 @@
 #include <QPainter>
 #include <QSettings>
 #include "ui_intmapresult.h"
-#include <QtSvg>
-#include <QSvgGenerator>
 
 MapResult::MapResult(QString name,MapPage * parent,int index) : Result(name,parent) , index(index)
   , ui(new Ui::IntMapResult) , mainWindow(parent->getMainWindow())

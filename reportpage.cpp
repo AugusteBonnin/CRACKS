@@ -1,9 +1,8 @@
-#include "mapdocform.h"
-#include "mapparamform.h"
 #include "reportpage.h"
 #include "reportparamform.h"
 #include "ui_reportpage.h"
 #include "mainwindow.h"
+#include "reportdocform.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -17,7 +16,7 @@ ReportPage::ReportPage(MainWindow *parent) :
     ui->setupUi(this);
 
     paramForm = new ReportParamForm(parent,this) ;
-    docForm = new MapDocForm(parent);
+    docForm = new ReportDocForm(parent);
 
     ui->textEdit->append(mainWindow->logStrings.join('\n'));
     ui->textEdit->append(tr("Soit un total de %1 fichiers.\n").arg(mainWindow->logStrings.count()));

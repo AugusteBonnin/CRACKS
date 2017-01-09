@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui svg
+QT       += core gui webenginewidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -98,7 +98,8 @@ SOURCES += main.cpp\
     reportparamform.cpp \
     scalewidget.cpp \
     openingscalewidget.cpp \
-    openglscalewidget.cpp
+    openglscalewidget.cpp \
+    reportdocform.cpp
 
 HEADERS  += mainwindow.h \
     statsform.h \
@@ -182,7 +183,8 @@ HEADERS  += mainwindow.h \
     reportparamform.h \
     scalewidget.h \
     openingscalewidget.h \
-    openglscalewidget.h
+    openglscalewidget.h \
+    reportdocform.h
 
 FORMS    += mainwindow.ui \
     statsform.ui \
@@ -208,4 +210,17 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
     images.qrc
+
+DISTFILES += \
+    introduction.html \
+    bilan.html \
+    cartes.html \
+    contour.html \
+    histogrammes.html \
+    ouverture.html \
+    recadrage.html \
+    regularisation.html \
+    squelettisation.html \
+    voies.html \
+    aide.html
 
