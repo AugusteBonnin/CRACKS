@@ -98,11 +98,11 @@ void RoadsWidget::paintGL()
         mainWindow->line_program->enableAttributeArray(PROGRAM_COLOR_ATTRIBUTE);
         mainWindow->line_program->setAttributeBuffer(PROGRAM_VERTEX_ATTRIBUTE, GL_FLOAT, 0, 2, 6 * sizeof(GLfloat));
         mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
-        glDrawArrays(GL_LINE_STRIP,0,mainWindow->places_contours_line_strings[i].count());
+        glDrawArrays(GL_LINE_STRIP,0,mainWindow->junctions_contours_vbos[i]->size()/(6*sizeof(float)));
         mainWindow->junctions_contours_vbos[i]->release();
     }
     //junctions colors
-    for (int i = 0 ; i < mainWindow->junctions_contours_vbos.count() ; i++)
+    for (int i = 0 ; i < mainWindow->junctions_bg_vbos.count() ; i++)
     {
         mainWindow->junctions_bg_vbos[i]->bind();
         mainWindow->line_program->setUniformValue("matrix", m);
@@ -110,7 +110,7 @@ void RoadsWidget::paintGL()
         mainWindow->line_program->enableAttributeArray(PROGRAM_COLOR_ATTRIBUTE);
         mainWindow->line_program->setAttributeBuffer(PROGRAM_VERTEX_ATTRIBUTE, GL_FLOAT, 0, 2, 6 * sizeof(GLfloat));
         mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
-        glDrawArrays(GL_POLYGON,0,mainWindow->places_contours_line_strings[i].count());
+        glDrawArrays(GL_POLYGON,0,mainWindow->junctions_bg_vbos[i]->size()/(6*sizeof(float)));
         mainWindow->junctions_bg_vbos[i]->release();
     }
     //roads
@@ -982,7 +982,7 @@ void RoadsWidget::explorePoint(int i)
 
 }
 
-void RoadsWidget::exploreEdge(const int first,const int second)
+void RoadsWidget::exploreEdge( int first, int second)
 {
     int current = second ;
     int prev = first ;
@@ -1124,6 +1124,11 @@ void RoadsWidget::exploreEdge(const int first,const int second)
                 mean_angleB = mean_angleA-180;
                 truncated_str.clear() ;
                 truncated_str << first << last ;
+
+                first_point_A = skel_vertices[first] ;
+                first_point_B = skel_vertices[last] ;
+
+                mean_width = (first_width+second_width)*.5f;
 
 
             }

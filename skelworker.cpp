@@ -495,7 +495,7 @@ cdt.clear();
                 str << current ;
 
                 QSettings settings;
-                if (((skel_distance[str[0]]))<length*settings.value("Skel/Prune",2.0).toDouble())
+                if (skel_distance[current]>=length*settings.value("Skel/Prune",2.0).toDouble())
                 {
                     something_happend = true ;
 

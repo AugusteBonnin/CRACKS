@@ -26,7 +26,7 @@ public:
     explicit RoadsPage(MainWindow *parent = 0);
     ~RoadsPage();
 
-    QString getTitle(){return tr("Voies et places");}
+    QString getTitle(){return tr("Voies et places (6/8)");}
     QString getNextTooltip(){return tr("Passer à la phase Histogrammes");}
     QString getPrevTooltip(){return tr("Revenir à la phase Squelettisation");}
 

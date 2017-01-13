@@ -29,7 +29,7 @@ public:
 
     explicit ContourPage(MainWindow *parent = 0);
     ~ContourPage();
-    QString getTitle(){return tr("Contour");}
+    QString getTitle(){return tr("Contour (4/8)");}
     QString getPrevTooltip(){return tr("Revenir à la phase Ouverture");}
     QString getNextTooltip(){return tr("Passer à la phase Squelettisation");}
 void nextPhase();

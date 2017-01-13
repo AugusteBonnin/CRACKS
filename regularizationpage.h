@@ -25,7 +25,7 @@ public:
     void nextPhase();
     void prevPhase();
     void reinit() ;
-    QString getTitle(){return tr("Régularisation");}
+    QString getTitle(){return tr("Régularisation (2/8)");}
     QString getPrevTooltip(){return tr("Revenir à la phase Recadrage");}
     QString getNextTooltip(){return tr("Passer à la phase Ouverture");}
 

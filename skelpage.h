@@ -17,7 +17,7 @@ class SkelPage : public Page
 public:
     explicit SkelPage(MainWindow *parent = 0);
     ~SkelPage();
-    QString getTitle(){return tr("Squelettisation") ; }
+    QString getTitle(){return tr("Squelettisation (5/8)") ; }
     QString getPrevTooltip(){return tr("Revenir à la phase Contour") ; }
     QString getNextTooltip(){return tr("Passer à la phase Voies et Places") ; }
 void nextPhase() ;

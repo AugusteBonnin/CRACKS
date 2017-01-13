@@ -23,7 +23,7 @@ public:
     explicit OpeningPage(MainWindow *parent = 0);
     ~OpeningPage();
     DoubleImage * originalImage , * outputImage , *minImage ;
-    QString getTitle(){return tr("Ouverture");}
+    QString getTitle(){return tr("Ouverture (3/8)");}
     QString getNextTooltip(){return tr("Passer à la phase Contour");}
     QString getPrevTooltip(){return tr("Revenir à la phase Régularisation");}
 
