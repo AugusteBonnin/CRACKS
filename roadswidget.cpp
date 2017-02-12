@@ -745,7 +745,7 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
                         number_of_valid_distances ++ ;
                 }
         }
-        if (number_of_valid_distances>mainWindow->getRoadsJunctions().count()/2)
+        if (number_of_valid_distances>mainWindow->getRoadsJunctions().count()/10)
             valid_roads << i ;
 
         qApp->processEvents();

@@ -97,15 +97,15 @@ void MainWindow::setPhase(int p)
     phase = p ;
     stackedWidget->setCurrentIndex(phase);
     restorePhase();
-   ( (Page*)(stackedWidget->currentWidget()))->reinit();
+    ( (Page*)(stackedWidget->currentWidget()))->reinit();
     repaint() ;
 
 }
 
-void MainWindow::repeatPhases(){
+void MainWindow::batchProcess(){
     QStringList files = settings.value("FileList").toStringList() ;
 
-    QProgressDialog progressDialog(tr("Traitement en cours..."),tr("Annuler le traitement"), 8, 8*(files.count()-1), this);
+    QProgressDialog progressDialog(tr("Traitement en cours..."),tr("Annuler le traitement"), 8, 8*files.count(), this);
     progressDialog.setWindowModality(Qt::WindowModal);
     QDir dir(settings.value("IntroParamForm-File-1").toString());
     QString new_dir_path = tr("Dossier %1").arg(QFileInfo(files[0]).baseName());
@@ -114,7 +114,7 @@ void MainWindow::repeatPhases(){
     dir.mkdir(new_dir_path);
     dir.cd(new_dir_path);
     for (int f = 0 ; f < logStrings.count() ; f++)
-       {
+    {
         QString new_path = dir.absoluteFilePath(QFileInfo(logStrings[f]).fileName()) ;
         QFile::remove(new_path);
         QFile::rename(logStrings[f],new_path);
@@ -125,6 +125,7 @@ void MainWindow::repeatPhases(){
         logStrings.clear();
         QDir dir(settings.value("IntroParamForm-File-1").toString());
         settings.setValue("File",dir.absoluteFilePath(files[i]));
+        initialImage.load(dir.absoluteFilePath(files[i]));
         QString new_dir_path = tr("Dossier %1").arg(QFileInfo(files[i]).baseName());
         QDir new_dir(dir.absoluteFilePath(new_dir_path));
         new_dir.removeRecursively();
@@ -132,7 +133,7 @@ void MainWindow::repeatPhases(){
         dir.cd(new_dir_path);
         for (int phase = 1 ; phase < 9 ; phase++)
         {
-           setPhase(phase);
+            setPhase(phase);
             while (! ( (Page*)(stackedWidget->currentWidget()))->initDone)
                 qApp->processEvents();
 
@@ -152,6 +153,134 @@ void MainWindow::repeatPhases(){
             QFile::rename(logStrings[f],new_path);
 
         }
+
+    }
+
+}
+
+void::MainWindow::organizeSequenceFiles(QStringList dirs_paths)
+{
+    for (int i = 0 ; i < logStrings.count() ; i++)
+    {
+        for (int j = 0 ; j < dirs_paths.count() ; j++)
+            if (logStrings[i].startsWith(dirs_paths[j]))
+            {
+                QDir dir(dirs_paths[j]);
+                QString new_path = dir.absoluteFilePath(QFileInfo(logStrings[i]).fileName()) ;
+                QFile::remove(new_path);
+                QFile::rename(logStrings[i],new_path);
+            }
+
+    }
+}
+
+bool MainWindow::isOnPicture(int e)
+{
+    DoubleSidedEdge & dse = double_sided_edges_copy[e] ;
+    QVector<int> str = dse.truncated_str ;
+    double total = 0 ;
+    for (int i = 0 ; i < str.count() ; i++)
+    {
+        QPointF & point = skelVertices[str[i]];
+        if (settings.value("Contour/Invert").toBool())
+        {
+        if (openedImage->subPixel(point.x(),point.y())< settings.value("ThresholdForm-Threshold").toDouble() )
+         total ++;
+        }
+        else
+            if (openedImage->subPixel(point.x(),point.y())> settings.value("ThresholdForm-Threshold").toDouble() )
+            total++;
+
+    }
+    total/=str.count();
+
+    const double ratio = .9 ;
+    return (total>ratio);
+}
+
+void MainWindow::dynamicalAnalysis(){
+    QStringList files = settings.value("FileList").toStringList() ;
+
+    double_sided_edges_copy = double_sided_edges ;
+
+    QProgressDialog progressDialog(tr("Traitement en cours..."),tr("Annuler le traitement"), 8, 8*files.count(), this);
+    progressDialog.setWindowModality(Qt::WindowModal);
+
+    QSet<QString> dirs_paths_set ;
+    for (int i = 0 ; i < logStrings.count(); i++)
+    {
+        QString key = logStrings[i].left(logStrings[i].indexOf(files[files.count()-1])-1);
+        dirs_paths_set.insert(key);
+    }
+
+    QDir dir(settings.value("IntroParamForm-File-2").toString());
+
+    QStringList dirs_paths = dirs_paths_set.toList() ;
+    for (int i = 0 ; i < dirs_paths.count(); i++)
+    {
+        QDir new_dir(dirs_paths[i]);
+        new_dir.removeRecursively();
+        dir.mkdir(QFileInfo(dirs_paths[i]).fileName());
+    }
+
+    organizeSequenceFiles(dirs_paths);
+
+    QSet<int> remaining_edges;
+double_sided_edges_birth.clear();
+    for (int i = 0 ; i < double_sided_edges.count() ; i++)
+    {
+        double_sided_edges_birth << files.count() -1;
+
+        remaining_edges.insert(i);
+    }
+
+    for (int i = 0 ; i < files.count() -1; i ++ )
+    {
+        logStrings.clear();
+        settings.setValue("File",dir.absoluteFilePath(files[i]));
+        initialImage.load(dir.absoluteFilePath(files[i]));
+        for (int phase = 1 ; phase < 4 ; phase++)
+        {
+            setPhase(phase);
+            while (! ( (Page*)(stackedWidget->currentWidget()))->initDone)
+                qApp->processEvents();
+
+            ( (Page*)(stackedWidget->currentWidget()))->nextPhase();
+            qApp->processEvents();
+
+            progressDialog.setValue(progressDialog.value()+1);
+            qApp->processEvents();
+            if(progressDialog.wasCanceled())
+                break ;
+        }
+
+        QList<int> remainings = remaining_edges.toList() ;
+        for (int j = 0 ; j < remainings.count() ; j++)
+            if (isOnPicture(remainings[i]))
+            {
+                remaining_edges.remove(remainings[j]);
+                double_sided_edges_birth[remainings[j]]=i;
+            }
+
+        for (int phase = 4 ; phase < 9 ; phase++)
+        {
+            setPhase(phase);
+            while (! ( (Page*)(stackedWidget->currentWidget()))->initDone)
+                qApp->processEvents();
+
+            ( (Page*)(stackedWidget->currentWidget()))->nextPhase();
+            qApp->processEvents();
+
+            progressDialog.setValue(progressDialog.value()+1);
+            qApp->processEvents();
+            if(progressDialog.wasCanceled())
+                break ;
+        }
+
+        organizeSequenceFiles(dirs_paths);
+
+        if(progressDialog.wasCanceled())
+            break ;
 
     }
 
@@ -198,7 +327,7 @@ void MainWindow::restorePhase()
 
     docWidget->setWidget(page->getDocForm());
     docWidget->setMinimumSize(QSize(320,240));
-     restoreDockWidget(docWidget);
+    restoreDockWidget(docWidget);
     paramWidget->setWidget(page->getParamForm());
     restoreDockWidget(paramWidget);
 

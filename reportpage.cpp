@@ -74,11 +74,12 @@ void ReportPage::nextPhase()
         exit(0);
         break ;
     case 1 :
-        mainWindow->repeatPhases();
+        mainWindow->batchProcess();
         exit(0);
         break ;
     case 2 :
-
+        mainWindow->dynamicalAnalysis();
+        exit(0);
          break ;
     }
 

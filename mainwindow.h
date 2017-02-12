@@ -116,7 +116,8 @@ KDTree2D::PointCloud point_cloud;
     void trySaveDoubleImage(QString pre, DoubleImage *image);
     QSettings settings;
     void setPhase(int p);
-    void repeatPhases();
+    void batchProcess();
+    void dynamicalAnalysis();
 public slots :
     void nextPhase();
     void prevPhase();
@@ -149,6 +150,8 @@ private:
     QVector<QVector<unsigned int> > skelChildren ;
     QVector<float> skelDistanceToBoundary ;
     QVector<DoubleSidedEdge> double_sided_edges ;
+    QVector<DoubleSidedEdge> double_sided_edges_copy ;
+    QVector<int> double_sided_edges_birth ;
 
 
     QVector<QPointF> contourVertices ;
@@ -167,6 +170,8 @@ void setPageTitle(QString str);
 
 void restorePhase();
 void savePhase();
+void organizeSequenceFiles(QStringList dirs_paths);
+bool isOnPicture(int e);
 } ;
 
 #endif // MAINWINDOW_H
