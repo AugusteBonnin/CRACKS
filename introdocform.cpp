@@ -6,7 +6,7 @@
 IntroDocForm::IntroDocForm(MainWindow *parent) :
     DocForm(parent)
 {
-    browser->setUrl(QUrl("file://"+QApplication::applicationDirPath()+tr("/doc/aide.html#Introduction")));
+    browser->setUrl (tr("qrc:/docs/aide.html#Introduction"));
 }
 
 IntroDocForm::~IntroDocForm()

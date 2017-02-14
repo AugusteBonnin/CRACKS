@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    Q_INIT_RESOURCE(images);
+    Q_INIT_RESOURCE(resources);
 
     QSurfaceFormat format;
         format.setDepthBufferSize(0);

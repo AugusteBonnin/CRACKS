@@ -45,6 +45,8 @@ mainWindow->log(tr("%1").arg(path));
 
 void ContourPage::saveSHP()
 {
+    double scale = 1.0 / qMax(mainWindow->openedQImage.width(),mainWindow->openedQImage.height());
+
     QFileInfo file(settings.value("File").toString());
 
     QString path(tr("%1/Contour-%2.shp").arg(file.absoluteDir().absolutePath()).arg(file.fileName()));
@@ -59,14 +61,14 @@ QPointF point ;
         do
         {
             point = mainWindow->getContourVertices()[j] ;
-            padfX.append(point.x());
-            padfY.append(point.y());
+            padfX.append(point.x()*scale);
+            padfY.append(point.y()*scale);
             j = mainWindow->getNextPointIndex()[j] ;
         }while (j!=mainWindow->getConnectedComponentsStarts()[i]) ;
 
         point = mainWindow->getContourVertices()[j] ;
-        padfX.append(point.x());
-        padfY.append(point.y());
+        padfX.append(point.x()*scale);
+        padfY.append(point.y()*scale);
 
 
 

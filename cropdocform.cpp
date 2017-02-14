@@ -5,7 +5,7 @@
 CropDocForm::CropDocForm(MainWindow *parent) :
     DocForm(parent)
 {
-    browser->setUrl(QUrl("file://"+QApplication::applicationDirPath()+tr("/doc/aide.html#Recadrage")));
+    browser->setUrl(tr("qrc:/docs/aide.html#Recadrage"));
 }
 
 CropDocForm::~CropDocForm()

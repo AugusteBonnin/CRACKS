@@ -5,7 +5,7 @@
 SkelDocForm::SkelDocForm(MainWindow *parent) :
     DocForm(parent)
 {
-    browser->setUrl(QUrl("file://"+QApplication::applicationDirPath()+tr("/doc/aide.html#Squelettisation")));
+    browser->setUrl(tr("qrc:/docs/aide.html#Squelettisation"));
 }
 
 SkelDocForm::~SkelDocForm()

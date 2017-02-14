@@ -4,7 +4,7 @@
 ReportDocForm::ReportDocForm(MainWindow *parent) :
     DocForm(parent)
 {
-    browser->setUrl(QUrl("file://"+QApplication::applicationDirPath()+tr("/doc/aide.html#Bilan")));
+    browser->setUrl(tr("qrc:/docs/aide.html#Bilan"));
 }
 
 ReportDocForm::~ReportDocForm()

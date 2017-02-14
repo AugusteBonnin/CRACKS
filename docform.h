@@ -3,8 +3,8 @@
 
 #include "form.h"
 
-#include <QWebEngineView>
 #include <QApplication>
+#include <QTextBrowser>
 
 
 
@@ -13,7 +13,7 @@ class DocForm : public Form
 public:
     DocForm(MainWindow * mainWindow);
 protected:
-    QWebEngineView * browser ;
+    QTextBrowser * browser ;
 };
 
 #endif // DOCFORM_H

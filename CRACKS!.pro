@@ -4,9 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += core gui webenginewidgets
+QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.8
 
 TARGET = CRACKS!
 
@@ -209,7 +211,7 @@ FORMS    += mainwindow.ui \
     reportparamform.ui
 
 RESOURCES += \
-    images.qrc
+    resources.qrc
 
 DISTFILES += \
     introduction.html \

@@ -5,7 +5,7 @@
 OpeningDocForm::OpeningDocForm(MainWindow *parent) :
     DocForm(parent)
 {
-    browser->setUrl(QUrl("file://"+QApplication::applicationDirPath()+tr("/doc/aide.html#Ouverture")));
+    browser->setUrl(tr("qrc:/docs/aide.html#Ouverture"));
 }
 
 OpeningDocForm::~OpeningDocForm()

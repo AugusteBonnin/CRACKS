@@ -41,6 +41,8 @@ void SkelPage::saveSVG()
 
 void SkelPage::saveSHP()
 {
+    double scale = 1.0 / qMax(mainWindow->openedQImage.width(),mainWindow->openedQImage.height());
+
     QFileInfo file(settings.value("File").toString());
     QString path = tr("%1/Squelettisation-%2.shp").arg(file.absoluteDir().absolutePath()).arg(file.fileName());
     SHPHandle shapeFile = SHPCreate( path.toStdString().c_str(), SHPT_ARC );
@@ -57,8 +59,8 @@ void SkelPage::saveSHP()
         for (int j = 0 ; j < mainWindow->getDoubleSidedEdges()[i].str.count() ; j++)
         {
             QPointF point = mainWindow->getSkelVertices()[mainWindow->getDoubleSidedEdges()[i].str[j]];
-            padfX.append(point.x());
-            padfY.append(point.y());
+            padfX.append(point.x()*scale);
+            padfY.append(point.y()*scale);
         }
 
 

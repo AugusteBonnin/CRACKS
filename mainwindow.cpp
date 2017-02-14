@@ -34,8 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     addToolBar(toolbar);
     toolbar->setIconSize(QSize(96,96));
 
-    QIcon icon_next(QString(":/next640.png")) ;
-    QIcon icon_back(QString(":/prev640.png")) ;
+    QIcon icon_next(QString(":/images/next640.png")) ;
+    QIcon icon_back(QString(":/images/prev640.png")) ;
 
     action_back = toolbar->addAction(icon_back,QString("BACK") );
     connect(action_back,SIGNAL(triggered(bool)),this,SLOT(prevPhase()));
@@ -262,20 +262,20 @@ double_sided_edges_birth.clear();
                 double_sided_edges_birth[remainings[j]]=i;
             }
 
-        for (int phase = 4 ; phase < 9 ; phase++)
-        {
-            setPhase(phase);
-            while (! ( (Page*)(stackedWidget->currentWidget()))->initDone)
-                qApp->processEvents();
+//        for (int phase = 4 ; phase < 9 ; phase++)
+//        {
+//            setPhase(phase);
+//            while (! ( (Page*)(stackedWidget->currentWidget()))->initDone)
+//                qApp->processEvents();
 
-            ( (Page*)(stackedWidget->currentWidget()))->nextPhase();
-            qApp->processEvents();
+//            ( (Page*)(stackedWidget->currentWidget()))->nextPhase();
+//            qApp->processEvents();
 
-            progressDialog.setValue(progressDialog.value()+1);
-            qApp->processEvents();
-            if(progressDialog.wasCanceled())
-                break ;
-        }
+//            progressDialog.setValue(progressDialog.value()+1);
+//            qApp->processEvents();
+//            if(progressDialog.wasCanceled())
+//                break ;
+//        }
 
         organizeSequenceFiles(dirs_paths);
 

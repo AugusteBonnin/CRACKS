@@ -128,6 +128,8 @@ void RoadsPage::saveSVG()
 
 void RoadsPage::saveSHP()
 {
+    double scale = 1.0 / qMax(mainWindow->openedQImage.width(),mainWindow->openedQImage.height());
+
     QFileInfo file(settings.value("File").toString()) ;
 
     //roads
@@ -162,8 +164,8 @@ void RoadsPage::saveSHP()
             for (int j = 0 ; j < mainWindow->roads_line_strings[mainWindow->valid_roads[i]].count() ; j++)
             {
                 QPointF &point = mainWindow->roads_line_strings[mainWindow->valid_roads[i]][j];
-                padfX.append(point.x());
-                padfY.append(point.y());
+                padfX.append(point.x()*scale);
+                padfY.append(point.y()*scale);
             }
 
 
