@@ -1,6 +1,7 @@
 #include "contourpage.h"
 #include "croppage.h"
 #include "histopage.h"
+#include "histopagefactories.h"
 #include "intropage.h"
 #include "mappage.h"
 #include "openingpage.h"
@@ -43,7 +44,7 @@ QWidget * Phase::newFromPhase(uint phase, MainWindow *mainWindow)
         widget  = new RoadsPage(mainWindow);
         break ;
     case 7 :
-        widget  = new HistoPage(mainWindow);
+        widget = createSimpleHistoPage(mainWindow) ;
         break ;
     case 8 :
         widget  = new MapPage(mainWindow);
@@ -57,3 +58,9 @@ QWidget * Phase::newFromPhase(uint phase, MainWindow *mainWindow)
     return widget ;
 }
 
+QWidget * Phase::createSimpleHistoPage(MainWindow*mainWindow)
+{
+    SimpleHistoPageFactory factory;
+    QWidget * widget  = factory.createHistoPage(mainWindow);
+    return widget;
+}

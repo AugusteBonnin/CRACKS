@@ -126,9 +126,6 @@ public slots :
 protected:
     void closeEvent(QCloseEvent *event);
 private slots:
-    void on_actionStatistiques_triggered();
-
-    void on_action1_Introduction_triggered();
 
     void on_actionAide_2_triggered();
 

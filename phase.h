@@ -13,6 +13,8 @@ static QWidget * newFromPhase(uint phase, MainWindow *mainWindow) ;
 signals:
 
 public slots:
+private:
+static QWidget *createSimpleHistoPage(MainWindow *mainWindow);
 };
 
 #endif // PHASE_H

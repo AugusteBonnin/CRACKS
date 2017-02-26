@@ -284,6 +284,24 @@ double_sided_edges_birth.clear();
 
     }
 
+    histoIntData << double_sided_edges_birth ;
+
+    QVector<int> roads_birth,roads_death,roads_life_span;
+    for (int i = 0 ; i < roads_edges.count() ; i++)
+    {
+        int min = INT_MAX ;
+        int max = INT_MIN ;
+        for (int j = 0 ; j < roads_edges[i].count() ; j++)
+        {
+            min = qMin(min,double_sided_edges_birth[roads_edges[i][j]]);
+            max = qMax(max,double_sided_edges_birth[roads_edges[i][j]]);
+       }
+    roads_birth << min ;
+    roads_death << max ;
+    roads_life_span << max - min ;
+    }
+
+histoIntData <<  roads_birth << roads_death << roads_life_span ;
 }
 
 void MainWindow::nextPhase()
@@ -298,6 +316,7 @@ void MainWindow::nextPhase()
     phase++ ;
 
     QWidget * widget = Phase::newFromPhase(phase,this);
+
     stackedWidget->addWidget(widget);
     stackedWidget->setCurrentIndex(phase);
     //showMaximized();
@@ -368,20 +387,6 @@ void MainWindow::openBrowser(QUrl link)
     browser->show() ;
 }
 
-void MainWindow::on_action1_Introduction_triggered()
-{
-    QList<QAction*> list = ui->menuPhase->actions();
-    for (int i = 1 ; i < list.count() ; i++)
-    {
-        list[i]->setChecked(false);
-    }
-    stackedWidget->setCurrentIndex(0);
-}
-
-void MainWindow::on_actionStatistiques_triggered()
-{
-    stackedWidget->setCurrentIndex(1);
-}
 
 
 

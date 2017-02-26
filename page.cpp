@@ -15,3 +15,13 @@ void Page::screenshot(QImage &image)
     render(&painter);
 }
 
+void Page::setDocForm(DocForm *value)
+{
+    docForm = value;
+}
+
+void Page::setParamForm(ParamForm *value)
+{
+    paramForm = value;
+}
+

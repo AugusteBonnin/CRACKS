@@ -25,7 +25,8 @@ public:
     void reinit() ;
 
     QVector<HistoResult *> histoResults;
-QStackedWidget * container;
+    QStackedWidget * container;
+    void addHistoResult(HistoResult *result);
 public slots:
     void setFont();
 private slots:

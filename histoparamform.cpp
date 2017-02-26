@@ -13,32 +13,30 @@ HistoParamForm::HistoParamForm(MainWindow *parent,HistoPage * page) :
 
     ui->comboBox->setCurrentIndex(0);
 
-    settings.beginReadArray("Histo");
+    QString path=page->getTitle()+"/";
 
     for (int i = 0 ; i < page->histoResults.count() ; i++ )
     {
         ui->comboBox->addItem(page->histoResults[i]->getName(),page->histoResults[i]->getName());
-        settings.setArrayIndex(i);
-        if (settings.value("SaveJPG",false).toBool()||settings.value("SaveCSV",false).toBool())
+        QString path2 = path + page->histoResults[i]->getName() +"/" ;
+                if (settings.value(path2+"SaveJPG",false).toBool()||settings.value(path2+"SaveCSV",false).toBool())
             ui->comboBox->setItemText(i,"+"+ui->comboBox->itemData(i).toString());
         else
             ui->comboBox->setItemText(i,ui->comboBox->itemData(i).toString());
     }
+    QString path2 = path + page->histoResults[0]->getName() +"/" ;
 
-    settings.setArrayIndex(0);
-    ui->checkBox->setChecked(settings.value("SaveJPG",false).toBool());
-    ui->groupBox->setEnabled(settings.value("SaveJPG",false).toBool());
-    ui->radioButton->setChecked(settings.value("72dpi",true).toBool());
+    ui->checkBox->setChecked(settings.value(path2+"SaveJPG",false).toBool());
+    ui->groupBox->setEnabled(settings.value(path2+"SaveJPG",false).toBool());
+    ui->radioButton->setChecked(settings.value(path2+"72dpi",true).toBool());
     ui->radioButton_2->setChecked(!ui->radioButton->isChecked());
-    ui->checkBox->setChecked(settings.value("SaveCSV",false).toBool());
-
-    settings.endArray();
+    ui->checkBox->setChecked(settings.value(path2+"SaveCSV",false).toBool());
 
     //connect(ui->radioButton,SIGNAL(toggled(bool)),this,SLOT(onRadioButtonChange()));
     //connect(ui->radioButton_2,SIGNAL(toggled(bool)),this,SLOT(onRadioButtonChange()));
 
-    font = QFont(settings.value("Font",QFont().toString()).toString()) ;
-    fontSize = settings.value("FontSize",12).toInt() ;
+    font = QFont(settings.value(path+"Font",QFont().toString()).toString()) ;
+    fontSize = settings.value(path+"FontSize",12).toInt() ;
     font.setPixelSize(fontSize);
 
     ui->spinBox_3->setValue(fontSize) ;

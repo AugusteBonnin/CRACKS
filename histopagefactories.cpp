@@ -1,0 +1,82 @@
+#include "histopagefactories.h"
+#include "histopage.h"
+#include "mainwindow.h"
+#include "histoparamform.h"
+#include "histodocform.h"
+#include <QAction>
+
+HistoPage *
+SimpleHistoPageFactory::createHistoPage(MainWindow*mainWindow)
+{
+    HistoPage * histoPage = new HistoPage(mainWindow);
+
+    IntHistoResult * ihr =  new IntHistoResult(histoPage,QObject::tr("Degré des places"),mainWindow->histoIntData[0],0) ;
+    histoPage->addHistoResult(ihr);
+
+    IntHistoResult * second =  new IntHistoResult(histoPage,QObject::tr("Degré second des places"),mainWindow->histoIntData[1],1) ;
+    histoPage->addHistoResult(second);
+
+    IntHistoResult * third =  new IntHistoResult(histoPage,QObject::tr("Degré QObject::troisième des places"),mainWindow->histoIntData[2],2) ;
+    histoPage->addHistoResult(third);
+
+    DoubleRangedHistoResult * dhr =  new DoubleRangedHistoResult(histoPage,QObject::tr("Différence d'angle aux places"),mainWindow->histoDoubleData[0],3,0,180) ;
+    histoPage->addHistoResult(dhr);
+
+    DoubleHistoResult * closeness =  new DoubleHistoResult(histoPage,QObject::tr("Accessibilité des voies"),mainWindow->histoDoubleData[1],4) ;
+    histoPage->addHistoResult(closeness);
+
+    IntHistoResult * degree =  new IntHistoResult(histoPage,QObject::tr("Degré des voies"),mainWindow->histoIntData[3],5) ;
+    histoPage->addHistoResult(degree);
+
+    DoubleHistoResult * ortho =  new DoubleHistoResult(histoPage,QObject::tr("Orthogonalité des voies"),mainWindow->histoDoubleData[2],6) ;
+    histoPage->addHistoResult(ortho);
+
+    DoubleHistoResult * spacing =  new DoubleHistoResult(histoPage,QObject::tr("Espacement des voies"),mainWindow->histoDoubleData[3],7) ;
+    histoPage->addHistoResult(spacing);
+
+
+    DoubleHistoResult * length_roads =  new DoubleHistoResult(histoPage,QObject::tr("Longeur odométrique des voies"),mainWindow->histoDoubleData[4],8) ;
+    histoPage->addHistoResult(length_roads);
+
+    DoubleHistoResult * length_edges =  new DoubleHistoResult(histoPage,QObject::tr("Longeur odométrique des arcs"),mainWindow->histoDoubleData[5],9) ;
+    histoPage->addHistoResult(length_edges);
+
+    IntHistoResult * length_topo =  new IntHistoResult(histoPage,QObject::tr("Longeur topologique des voies"),mainWindow->histoIntData[4],10) ;
+    histoPage->addHistoResult(length_topo);
+
+    histoPage->setParamForm( new HistoParamForm(mainWindow,histoPage)) ;
+    histoPage->setDocForm( new HistoDocForm(mainWindow) );
+
+    histoPage->paramForm->setEnabled(true);
+    mainWindow->action_next->setEnabled(true);
+
+    return histoPage ;
+
+}
+
+HistoPage *
+DynamicHistoPageFactory::createHistoPage(MainWindow*mainWindow)
+{
+    HistoPage * histoPage = new HistoPage(mainWindow);
+
+    IntHistoResult * birth =
+            new IntHistoResult(histoPage,QObject::tr("Image de naissance des voies"),mainWindow->histoIntData[6],10) ;
+    histoPage->addHistoResult(birth);
+
+    IntHistoResult * death =
+            new IntHistoResult(histoPage,QObject::tr("Image de mort des voies"),mainWindow->histoIntData[7],10) ;
+    histoPage->addHistoResult(death);
+
+    IntHistoResult * lifespan =
+            new IntHistoResult(histoPage,QObject::tr("Durée de vie des voies"),mainWindow->histoIntData[8],10) ;
+    histoPage->addHistoResult(lifespan);
+
+    histoPage->setParamForm( new HistoParamForm(mainWindow,histoPage)) ;
+    histoPage->setDocForm( new HistoDocForm(mainWindow) );
+
+    histoPage->paramForm->setEnabled(true);
+    mainWindow->action_next->setEnabled(true);
+
+    return histoPage ;
+
+}

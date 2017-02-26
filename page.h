@@ -26,6 +26,8 @@ public:
 
     bool computed ;
     bool initDone;
-    };
+    void setParamForm(ParamForm *value);
+    void setDocForm(DocForm *value);
+};
 
 #endif // PAGE_H
