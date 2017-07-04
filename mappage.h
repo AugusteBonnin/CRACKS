@@ -17,15 +17,13 @@ class MapPage : public Page
 public:
     explicit MapPage(MainWindow *parent = 0);
     ~MapPage();
-    QString getTitle() {return tr("Cartes (8/8)") ;}
-    QString getPrevTooltip() {return tr("Revenir à la phase 7 : Histogrammes") ;}
-    QString getNextTooltip() {return tr("Passer à la phase 9 : Bilan") ;}
     void nextPhase() ;
     void prevPhase() {} ;
     void reinit() ;
 
     QVector<MapResult*> results;
-QStackedWidget * container;
+    QStackedWidget * container;
+    void addMapResult(MapResult *result);
 public slots:
     void setFont();
 private slots:

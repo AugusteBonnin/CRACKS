@@ -79,7 +79,6 @@ void ReportPage::nextPhase()
         break ;
     case 2 :
         mainWindow->dynamicalAnalysis();
-        exit(0);
          break ;
     }
 

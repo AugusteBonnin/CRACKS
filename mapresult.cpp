@@ -16,7 +16,7 @@ MapResult::MapResult(QString name,MapPage * parent,int index) : Result(name,pare
 
 }
 
-void MapResult::saveImage()
+void MapResult::saveImage(bool screenshot)
 {
     QImage image ;
     QSettings settings;
@@ -25,9 +25,7 @@ void MapResult::saveImage()
             .arg(file.absoluteDir().absolutePath())
             .arg(resultName)
             .arg(file.fileName()) ;
-    settings.beginReadArray("Maps");
-    settings.setArrayIndex(index);
-    if (settings.value("Screenshot",true).toBool())
+    if (screenshot)
     {
         image = QImage(size(),QImage::Format_ARGB32);
         QPainter painter(&image);
@@ -47,23 +45,23 @@ void MapResult::saveImage()
         resize(oldSize);
         widget->resetToSavedState();
     }
-    settings.endArray();
+
     if(image.save(path))
-       mainWindow->log(tr("%1").arg(path));
-   else
+        mainWindow->log(tr("%1").arg(path));
+    else
         mainWindow->log(tr("<FONT COLOR=RED>%1 n'a pas été enregistrée.</FONT>").arg(path));
- }
+}
 
 
 void MapResult::saveSVG()
 {
 
-        QSettings settings ;
-        QFileInfo file(settings.value("File").toString()) ;
-        QString path = tr("%1/Cartes-%2-%3.SVG").arg(file.absoluteDir().absolutePath())
-                .arg(resultName).arg(file.baseName()) ;
-        widget->saveSVG(path);
-        mainWindow->log(tr("%1 a bien été enregistré.").arg(path));
+    QSettings settings ;
+    QFileInfo file(settings.value("File").toString()) ;
+    QString path = tr("%1/Cartes-%2-%3.SVG").arg(file.absoluteDir().absolutePath())
+            .arg(resultName).arg(file.baseName()) ;
+    widget->saveSVG(path);
+    mainWindow->log(tr("%1").arg(path));
 
 }
 

@@ -63,13 +63,12 @@ page->container->setCurrentIndex(index);
 
 void HistoParamForm::updateCheckBox()
 {
-    settings.beginReadArray("Histo");
-    settings.setArrayIndex(ui->comboBox->currentIndex());
-    bool checked = settings.value("SaveJPG",false).toBool() ;
+    QString path = page->getTitle()+"/" + page->histoResults[page->container->currentIndex()]->getName() +"/" ;
+    bool checked = settings.value(path+"SaveJPG",false).toBool() ;
     ui->checkBox->setChecked(checked);
-    ui->checkBox_2->setChecked(settings.value("SaveCSV",false).toBool());
+    ui->checkBox_2->setChecked(settings.value(path+"SaveCSV",false).toBool());
 
-    bool dpi72 = settings.value("72dpi",true).toBool() ;
+    bool dpi72 = settings.value(path+"72dpi",true).toBool() ;
     ui->radioButton->setChecked(dpi72);
     ui->radioButton_2->setChecked(!dpi72);
 
@@ -81,15 +80,14 @@ void HistoParamForm::updateCheckBox()
 
 void HistoParamForm::on_checkBox_toggled(bool checked)
 {
-    settings.beginWriteArray("Histo");
-    settings.setArrayIndex(ui->comboBox->currentIndex());
-    settings.setValue("SaveJPG",checked);
+    QString path = page->getTitle()+"/" + page->histoResults[page->container->currentIndex()]->getName() +"/" ;
+    settings.setValue(path+"SaveJPG",checked);
 
-    if (settings.value("SaveJPG",false).toBool()||settings.value("SaveCSV",false).toBool())
+    if (settings.value(path+"SaveJPG",false).toBool()||settings.value(path+"SaveCSV",false).toBool())
         ui->comboBox->setCurrentText("+"+ui->comboBox->currentData().toString());
     else
         ui->comboBox->setCurrentText(ui->comboBox->currentData().toString());
-    settings.endArray();
+
     ui->groupBox->setEnabled(checked);
 }
 
@@ -125,11 +123,10 @@ void HistoParamForm::on_spinBox_3_valueChanged(int arg1)
 
 void HistoParamForm::on_radioButton_toggled(bool checked)
 {
-    settings.beginWriteArray("Histo");
-    settings.setArrayIndex(ui->comboBox->currentIndex());
-    settings.setValue("72dpi",checked);
-    settings.endArray();
-    page->histoResults[ui->comboBox->currentIndex()]->makeImage() ;
+    QString path = page->getTitle()+"/" + page->histoResults[page->container->currentIndex()]->getName() +"/" ;
+    settings.setValue(path+"72dpi",checked);
+
+            page->histoResults[ui->comboBox->currentIndex()]->makeImage() ;
 }
 
 void HistoParamForm::on_spinBox_valueChanged(int arg1)
@@ -141,14 +138,12 @@ void HistoParamForm::on_spinBox_valueChanged(int arg1)
 
 void HistoParamForm::on_checkBox_2_clicked(bool checked)
 {
-    settings.beginWriteArray("Histo");
-    settings.setArrayIndex(ui->comboBox->currentIndex());
-    settings.setValue("SaveCSV",checked);
-    if (settings.value("SaveJPG",false).toBool()||settings.value("SaveCSV",false).toBool())
+    QString path = page->getTitle()+"/" + page->histoResults[page->container->currentIndex()]->getName() +"/" ;
+    settings.setValue(path+"SaveCSV",checked);
+    if (settings.value(path+"SaveJPG",false).toBool()||settings.value(path+"SaveCSV",false).toBool())
         ui->comboBox->setCurrentText("+"+ui->comboBox->currentData().toString());
     else
         ui->comboBox->setCurrentText(ui->comboBox->currentData().toString());
 
-    settings.endArray();
 
 }

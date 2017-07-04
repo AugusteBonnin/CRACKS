@@ -174,23 +174,33 @@ void::MainWindow::organizeSequenceFiles(QStringList dirs_paths)
     }
 }
 
-bool MainWindow::isOnPicture(int e)
+bool MainWindow::isOnPicture(int e,double treshold)
 {
-    DoubleSidedEdge & dse = double_sided_edges_copy[e] ;
+    DoubleSidedEdge & dse = double_sided_edges[e] ;
     QVector<int> str = dse.truncated_str ;
     double total = 0 ;
     for (int i = 0 ; i < str.count() ; i++)
     {
         QPointF & point = skelVertices[str[i]];
+//        if (settings.value("Contour/Invert").toBool())
+//        {
+//            if (openedImage->subPixel(point.x(),point.y())>treshold)
+//                total ++;
+//        }
+//        else
+//            if (openedImage->subPixel(point.x(),point.y())<treshold)
+//                total++;
+
+        QRgb pixel = openedQImage.pixel(point.x(),point.y()) ;
+        int gray = qBlue(pixel);
         if (settings.value("Contour/Invert").toBool())
         {
-        if (openedImage->subPixel(point.x(),point.y())< settings.value("ThresholdForm-Threshold").toDouble() )
-         total ++;
+            if (gray<127)
+                total ++;
         }
         else
-            if (openedImage->subPixel(point.x(),point.y())> settings.value("ThresholdForm-Threshold").toDouble() )
-            total++;
-
+            if (gray>127)
+                total++;
     }
     total/=str.count();
 
@@ -225,8 +235,9 @@ void MainWindow::dynamicalAnalysis(){
 
     organizeSequenceFiles(dirs_paths);
 
+
     QSet<int> remaining_edges;
-double_sided_edges_birth.clear();
+    double_sided_edges_birth.clear();
     for (int i = 0 ; i < double_sided_edges.count() ; i++)
     {
         double_sided_edges_birth << files.count() -1;
@@ -254,28 +265,32 @@ double_sided_edges_birth.clear();
                 break ;
         }
 
+        double threshold = settings.value("ThresholdForm-Threshold").toInt() *.0001;
+        threshold = threshold*(openedImage->getMax()-openedImage->getMin())+openedImage->getMin();
+
+
         QList<int> remainings = remaining_edges.toList() ;
         for (int j = 0 ; j < remainings.count() ; j++)
-            if (isOnPicture(remainings[i]))
+            if (isOnPicture(remainings[i],threshold))
             {
                 remaining_edges.remove(remainings[j]);
                 double_sided_edges_birth[remainings[j]]=i;
             }
 
-//        for (int phase = 4 ; phase < 9 ; phase++)
-//        {
-//            setPhase(phase);
-//            while (! ( (Page*)(stackedWidget->currentWidget()))->initDone)
-//                qApp->processEvents();
+        //        for (int phase = 4 ; phase < 9 ; phase++)
+        //        {
+        //            setPhase(phase);
+        //            while (! ( (Page*)(stackedWidget->currentWidget()))->initDone)
+        //                qApp->processEvents();
 
-//            ( (Page*)(stackedWidget->currentWidget()))->nextPhase();
-//            qApp->processEvents();
+        //            ( (Page*)(stackedWidget->currentWidget()))->nextPhase();
+        //            qApp->processEvents();
 
-//            progressDialog.setValue(progressDialog.value()+1);
-//            qApp->processEvents();
-//            if(progressDialog.wasCanceled())
-//                break ;
-//        }
+        //            progressDialog.setValue(progressDialog.value()+1);
+        //            qApp->processEvents();
+        //            if(progressDialog.wasCanceled())
+        //                break ;
+        //        }
 
         organizeSequenceFiles(dirs_paths);
 
@@ -287,21 +302,23 @@ double_sided_edges_birth.clear();
     histoIntData << double_sided_edges_birth ;
 
     QVector<int> roads_birth,roads_death,roads_life_span;
-    for (int i = 0 ; i < roads_edges.count() ; i++)
+    for (int i = 0 ; i < valid_roads.count() ; i++)
     {
         int min = INT_MAX ;
         int max = INT_MIN ;
-        for (int j = 0 ; j < roads_edges[i].count() ; j++)
+        for (int j = 0 ; j < roads_edges[valid_roads[i]].count() ; j++)
         {
-            min = qMin(min,double_sided_edges_birth[roads_edges[i][j]]);
-            max = qMax(max,double_sided_edges_birth[roads_edges[i][j]]);
-       }
-    roads_birth << min ;
-    roads_death << max ;
-    roads_life_span << max - min ;
+            min = qMin(min,double_sided_edges_birth[roads_edges[valid_roads[i]][j]]);
+            max = qMax(max,double_sided_edges_birth[roads_edges[valid_roads[i]][j]]);
+        }
+        roads_birth << min ;
+        roads_death << max ;
+        roads_life_span << max - min ;
     }
 
-histoIntData <<  roads_birth << roads_death << roads_life_span ;
+    histoIntData <<  roads_birth << roads_death << roads_life_span ;
+
+    phase = 9 ;
 }
 
 void MainWindow::nextPhase()
@@ -319,7 +336,7 @@ void MainWindow::nextPhase()
 
     stackedWidget->addWidget(widget);
     stackedWidget->setCurrentIndex(phase);
-    //showMaximized();
+    showFullScreen();
 
     restorePhase();
 }

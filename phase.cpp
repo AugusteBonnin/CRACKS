@@ -3,7 +3,7 @@
 #include "histopage.h"
 #include "histopagefactories.h"
 #include "intropage.h"
-#include "mappage.h"
+#include "mappagefactory.h"
 #include "openingpage.h"
 #include "phase.h"
 #include "regularizationpage.h"
@@ -47,13 +47,24 @@ QWidget * Phase::newFromPhase(uint phase, MainWindow *mainWindow)
         widget = createSimpleHistoPage(mainWindow) ;
         break ;
     case 8 :
-        widget  = new MapPage(mainWindow);
+        widget  = createSimpleMapPage(mainWindow);
         break ;
     case 9 :
         widget  = new ReportPage(mainWindow);
         break ;
+    case 10 :
+        widget = createDynamicHistoPage(mainWindow);
+        break ;
 
-    }
+    case 11 :
+        widget = createDynamicMapPage(mainWindow);
+        break ;
+
+    case 12 :
+        exit(0);
+        break ;
+
+     }
 
     return widget ;
 }
@@ -63,4 +74,25 @@ QWidget * Phase::createSimpleHistoPage(MainWindow*mainWindow)
     SimpleHistoPageFactory factory;
     QWidget * widget  = factory.createHistoPage(mainWindow);
     return widget;
+}
+
+QWidget * Phase::createDynamicHistoPage(MainWindow*mainWindow)
+{
+    DynamicHistoPageFactory factory;
+    QWidget * widget  = factory.createHistoPage(mainWindow);
+    return widget;
+}
+
+QWidget *Phase::createSimpleMapPage(MainWindow *mainWindow)
+{
+    SimpleMapPageFactory factory;
+    QWidget * widget = factory.createMapPage(mainWindow) ;
+    return widget ;
+}
+
+QWidget *Phase::createDynamicMapPage(MainWindow *mainWindow)
+{
+    DynamicMapPageFactory factory;
+    QWidget * widget = factory.createMapPage(mainWindow) ;
+    return widget ;
 }

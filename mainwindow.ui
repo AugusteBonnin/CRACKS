@@ -20,92 +20,9 @@
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuPhase">
-    <property name="title">
-     <string>Phase</string>
-    </property>
-    <addaction name="action1_Introduction"/>
-    <addaction name="action2_D_tourage"/>
-    <addaction name="actionR_gularisation_de_l_clairage"/>
-    <addaction name="actionElimination_des_d_tails_non_significatifs"/>
-    <addaction name="actionContour"/>
-    <addaction name="actionVectorisation"/>
-    <addaction name="actionVoies"/>
-   </widget>
-   <widget class="QMenu" name="menuR_sultats">
-    <property name="title">
-     <string>Résultats</string>
-    </property>
-    <widget class="QMenu" name="menuIndicareurs_Morphologiques">
-     <property name="title">
-      <string>Indicareurs morphologiques</string>
-     </property>
-     <widget class="QMenu" name="menuCartes_2">
-      <property name="title">
-       <string>Cartes</string>
-      </property>
-      <widget class="QMenu" name="menuD_floutage_2">
-       <property name="title">
-        <string>Défloutage des sommets</string>
-       </property>
-       <addaction name="actionIt_ration_5"/>
-       <addaction name="actionIt_ration_6"/>
-       <addaction name="actionIt_ration_7"/>
-       <addaction name="actionIt_ration_N_2"/>
-      </widget>
-      <addaction name="actionAccessibilit_3"/>
-      <addaction name="actionDegr_3"/>
-      <addaction name="actionOrthogonalit_2"/>
-      <addaction name="actionEspacement_3"/>
-      <addaction name="menuD_floutage_2"/>
-      <addaction name="actionDegr_des_places_2"/>
-     </widget>
-     <widget class="QMenu" name="menuHistogrammes_2">
-      <property name="title">
-       <string>Histogrammes</string>
-      </property>
-      <addaction name="actionLongueur_des_voies"/>
-      <addaction name="actionNb_de_segments_par_voie"/>
-      <addaction name="actionAccessibilit_4"/>
-      <addaction name="actionDegr_4"/>
-      <addaction name="actionOrthogonalit_3"/>
-      <addaction name="actionEspacement_4"/>
-      <addaction name="actionAngles_aux_carrefours"/>
-      <addaction name="actionDegr_des_places"/>
-     </widget>
-     <addaction name="menuCartes_2"/>
-     <addaction name="menuHistogrammes_2"/>
-    </widget>
-    <widget class="QMenu" name="menuIndicateurs_temporels">
-     <property name="title">
-      <string>Indicateurs temporels</string>
-     </property>
-     <widget class="QMenu" name="menuCartes">
-      <property name="title">
-       <string>Cartes</string>
-      </property>
-      <addaction name="actionDate_de_naissance_des_voies"/>
-      <addaction name="actionDate_de_naissance_des_voies_2"/>
-      <addaction name="actionDate_de_mort_des_voies"/>
-     </widget>
-     <widget class="QMenu" name="menuHistogrammes">
-      <property name="title">
-       <string>Histogrammes</string>
-      </property>
-      <addaction name="actionNb_de_segments_par_date_de_naissance"/>
-      <addaction name="actionNb_de_voies_par_date_de_naissance"/>
-      <addaction name="actionNb_de_voies_par_date_de_mort"/>
-     </widget>
-     <addaction name="menuCartes"/>
-     <addaction name="menuHistogrammes"/>
-    </widget>
-    <addaction name="menuIndicareurs_Morphologiques"/>
-    <addaction name="menuIndicateurs_temporels"/>
-    <addaction name="actionStatistiques"/>
-   </widget>
    <widget class="QMenu" name="menuQSkel3">
     <property name="title">
      <string>CRACKS!</string>
@@ -122,8 +39,6 @@
     <addaction name="actionParam_tres"/>
    </widget>
    <addaction name="menuQSkel3"/>
-   <addaction name="menuPhase"/>
-   <addaction name="menuR_sultats"/>
    <addaction name="menuMontrer"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">

@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
 
 TARGET = CRACKS!
 
@@ -102,7 +102,8 @@ SOURCES += main.cpp\
     openingscalewidget.cpp \
     openglscalewidget.cpp \
     reportdocform.cpp \
-    histopagefactories.cpp
+    histopagefactories.cpp \
+    mappagefactory.cpp
 
 HEADERS  += mainwindow.h \
     statsform.h \
@@ -188,7 +189,8 @@ HEADERS  += mainwindow.h \
     openingscalewidget.h \
     openglscalewidget.h \
     reportdocform.h \
-    histopagefactories.h
+    histopagefactories.h \
+    mappagefactory.h
 
 FORMS    += mainwindow.ui \
     statsform.ui \

@@ -108,18 +108,18 @@ void DoubleHistoWidget::paintEvent(QPaintEvent *event)
     }
 
     //mean
-    int x,y;
-    y = height()*(1-mean(0)/(float)max_class_count) ;
-    x = width() * .5f/(float)class_count.count() ;
-    for (int i = 0 ; i < class_count.count() ; i++)
-    {
-        int x2,y2;
-        y2 = height()*(1-mean(i)/(float)max_class_count) ;
-        x2 = width() * (i+.5f)/(float)class_count.count() ;
-        painter.drawLine(x,y,x2,y2);
-        x = x2 ;
-        y = y2 ;
-    }
+//    int x,y;
+//    y = height()*(1-mean(0)/(float)max_class_count) ;
+//    x = width() * .5f/(float)class_count.count() ;
+//    for (int i = 0 ; i < class_count.count() ; i++)
+//    {
+//        int x2,y2;
+//        y2 = height()*(1-mean(i)/(float)max_class_count) ;
+//        x2 = width() * (i+.5f)/(float)class_count.count() ;
+//        painter.drawLine(x,y,x2,y2);
+//        x = x2 ;
+//        y = y2 ;
+//    }
 
 }
 

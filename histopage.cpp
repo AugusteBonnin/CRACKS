@@ -50,7 +50,7 @@ void HistoPage::nextPhase()
         if (settings.value(path2+"SaveCSV",false).toBool())
             histoResults[i]->saveCSV();
        }
-    settings.endArray();
+
 }
 
 void HistoPage::setFont() {

@@ -168,7 +168,7 @@ void setPageTitle(QString str);
 void restorePhase();
 void savePhase();
 void organizeSequenceFiles(QStringList dirs_paths);
-bool isOnPicture(int e);
+bool isOnPicture(int e, double treshold);
 } ;
 
 #endif // MAINWINDOW_H

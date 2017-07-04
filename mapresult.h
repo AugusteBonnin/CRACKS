@@ -22,7 +22,7 @@ protected:
 public:
     MapResult(QString name, MapPage *parent, int index);
 public slots:
-    void saveImage();
+    void saveImage(bool screenshot);
     void saveSVG();
 protected :
     Ui::IntMapResult *ui;

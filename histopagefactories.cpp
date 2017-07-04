@@ -16,7 +16,7 @@ SimpleHistoPageFactory::createHistoPage(MainWindow*mainWindow)
     IntHistoResult * second =  new IntHistoResult(histoPage,QObject::tr("Degré second des places"),mainWindow->histoIntData[1],1) ;
     histoPage->addHistoResult(second);
 
-    IntHistoResult * third =  new IntHistoResult(histoPage,QObject::tr("Degré QObject::troisième des places"),mainWindow->histoIntData[2],2) ;
+    IntHistoResult * third =  new IntHistoResult(histoPage,QObject::tr("Degré troisième des places"),mainWindow->histoIntData[2],2) ;
     histoPage->addHistoResult(third);
 
     DoubleRangedHistoResult * dhr =  new DoubleRangedHistoResult(histoPage,QObject::tr("Différence d'angle aux places"),mainWindow->histoDoubleData[0],3,0,180) ;
@@ -44,6 +44,10 @@ SimpleHistoPageFactory::createHistoPage(MainWindow*mainWindow)
     IntHistoResult * length_topo =  new IntHistoResult(histoPage,QObject::tr("Longeur topologique des voies"),mainWindow->histoIntData[4],10) ;
     histoPage->addHistoResult(length_topo);
 
+    histoPage->title = QObject::tr("Histogrammes (7/8)") ;
+    histoPage->prevTooltip = QObject::tr("Revenir à la phase 6 : Voies et Places") ;
+    histoPage->nextTooltip = QObject::tr("Passer à la phase 8 : Cartes") ;
+
     histoPage->setParamForm( new HistoParamForm(mainWindow,histoPage)) ;
     histoPage->setDocForm( new HistoDocForm(mainWindow) );
 
@@ -70,6 +74,11 @@ DynamicHistoPageFactory::createHistoPage(MainWindow*mainWindow)
     IntHistoResult * lifespan =
             new IntHistoResult(histoPage,QObject::tr("Durée de vie des voies"),mainWindow->histoIntData[8],10) ;
     histoPage->addHistoResult(lifespan);
+
+    histoPage->title = QObject::tr("Histogrammes dynamiques (1/2)") ;
+    histoPage->prevTooltip = QObject::tr("Revenir à la phase 9 : Bilan") ;
+    histoPage->nextTooltip = QObject::tr("Passer à la phase 2 : Cartes dynamiques") ;
+
 
     histoPage->setParamForm( new HistoParamForm(mainWindow,histoPage)) ;
     histoPage->setDocForm( new HistoDocForm(mainWindow) );
