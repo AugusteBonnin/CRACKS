@@ -14,7 +14,7 @@ DoubleHistoWidget::DoubleHistoWidget(QWidget *parent,QVector<double> & data) :
     max = -INFINITY ;
     for (int i = 0 ; i < data.count() ; i++)
     {
-        if (isnan(data[i])||isinf(data[i])) continue ;
+        //if (isnan(data[i])||isinf(data[i])) continue ;
         if (min>data[i]) min = data[i];
         if (max<data[i]) max = data[i];
     }
@@ -25,7 +25,7 @@ DoubleHistoWidget::DoubleHistoWidget(QWidget *parent,QVector<double> & data) :
     for (int i = 0 ; i < data.count() ; i++)
     {
         int idx ;
-        if (isnan(data[i])||isinf(data[i])) continue ;
+        //if (isnan(data[i])||isinf(data[i])) continue ;
 
             idx= (int)(class_count.count()*(data[i]-min)/(max-min)) ;
             if (idx==class_count.count()) idx-- ;
@@ -61,7 +61,7 @@ void DoubleHistoWidget::paintEvent(QPaintEvent *event)
     max_class_count = 0 ;
     for (int i = 0 ; i < data.count() ; i++)
     {
-        if (isnan(data[i])||isinf(data[i])) continue ;
+        //if (isnan(data[i])||isinf(data[i])) continue ;
 
             int idx = (int)(class_count.count()*(data[i]-min)/(max-min)) ;
         if (idx==class_count.count()) idx-- ;

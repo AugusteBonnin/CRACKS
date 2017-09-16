@@ -1,5 +1,4 @@
 #include "intrangedmapresult.h"
-#include "mapdocform.h"
 #include "mappagefactory.h"
 #include "doublemapresult.h"
 #include "mapparamform.h"
@@ -27,7 +26,7 @@ MapPage *SimpleMapPageFactory::createMapPage(MainWindow * mainWindow)
     mapPage->nextTooltip = QObject::tr("Passer à la phase 9 : Bilan") ;
 
     mapPage->setParamForm( new MapParamForm(mainWindow,mapPage) );
-    mapPage->setDocForm( new MapDocForm(mainWindow) );
+    mapPage->setDocForm( new DocForm(mainWindow,QObject::tr("qrc:/docs/aide.html#Cartes")) );
 
     mapPage->paramForm->setEnabled(true);
     mainWindow->setActionsEnabled(true);
@@ -50,7 +49,7 @@ MapPage *DynamicMapPageFactory::createMapPage(MainWindow *mainWindow)
     mapPage->nextTooltip = QObject::tr("Quitter CRACKS!") ;
 
     mapPage->setParamForm( new MapParamForm(mainWindow,mapPage) );
-    mapPage->setDocForm( new MapDocForm(mainWindow) );
+    mapPage->setDocForm( new DocForm(mainWindow,QObject::tr("qrc:/docs/aide.html#Cartes")) );
 
     mapPage->paramForm->setEnabled(true);
     mainWindow->setActionsEnabled(true);

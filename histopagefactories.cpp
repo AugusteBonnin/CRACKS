@@ -2,7 +2,6 @@
 #include "histopage.h"
 #include "mainwindow.h"
 #include "histoparamform.h"
-#include "histodocform.h"
 #include <QAction>
 
 HistoPage *
@@ -49,7 +48,7 @@ SimpleHistoPageFactory::createHistoPage(MainWindow*mainWindow)
     histoPage->nextTooltip = QObject::tr("Passer à la phase 8 : Cartes") ;
 
     histoPage->setParamForm( new HistoParamForm(mainWindow,histoPage)) ;
-    histoPage->setDocForm( new HistoDocForm(mainWindow) );
+    histoPage->setDocForm( new DocForm(mainWindow,QObject::tr("qrc:/docs/aide.html#Histogrammes")) );
 
     histoPage->paramForm->setEnabled(true);
     //mainWindow->action_next->setEnabled(true);
@@ -81,7 +80,7 @@ DynamicHistoPageFactory::createHistoPage(MainWindow*mainWindow)
 
 
     histoPage->setParamForm( new HistoParamForm(mainWindow,histoPage)) ;
-    histoPage->setDocForm( new HistoDocForm(mainWindow) );
+    histoPage->setDocForm( new DocForm(mainWindow,QObject::tr("qrc:/docs/aide.html#Histogrammes")) );
 
     histoPage->paramForm->setEnabled(true);
     //mainWindow->action_next->setEnabled(true);

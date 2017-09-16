@@ -19,7 +19,7 @@ IntroPage::IntroPage(MainWindow *parent) :
     setLayout(layout) ;
 
     paramForm = new IntroParamForm(parent,this) ;
-    docForm = new IntroDocForm(parent) ;
+    docForm = new DocForm(parent,tr("qrc:/docs/aide.html#Introduction")) ;
 
 ////parent->action_next->setEnabled(true);
 

@@ -1,4 +1,3 @@
-#include "mapdocform.h"
 #include "mappage.h"
 #include "mapparamform.h"
 #include "mainwindow.h"

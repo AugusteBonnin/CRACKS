@@ -8,10 +8,10 @@
 
 
 
-class DocForm : public Form
+class DocForm : public QTextBrowser
 {
 public:
-    DocForm(MainWindow * mainWindow);
+    DocForm(QWidget * parent, QString url);
 protected:
     QTextBrowser * browser ;
 };

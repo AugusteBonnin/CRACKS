@@ -15,7 +15,7 @@
 RegularizationPage::RegularizationPage(MainWindow *parent) :
     Page(parent)
 {
-    docForm = new RegularizationDocForm(parent);
+    docForm = new DocForm(parent,tr("qrc:/docs/aide.html#Regularisation"));
 
     paramForm = new RegularizationParamForm(parent,this);
     originalImage = mainWindow->croppedImage ;

@@ -1,4 +1,3 @@
-#include "introdocform.h"
 #include "intropage.h"
 #include "introparamform.h"
 #include "mainwindow.h"
@@ -411,7 +410,7 @@ void MainWindow::receiveProgressIncrement(int inc)
 void MainWindow::openBrowser(QUrl link)
 {
     QTextBrowser * browser = new QTextBrowser;
-    browser->setUrl(link);
+    //browser->setUrl(link);
     browser->show() ;
 }
 

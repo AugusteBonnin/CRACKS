@@ -1,6 +1,5 @@
 #include "dilatationworker.h"
 #include "erosionworker.h"
-#include "openingdocform.h"
 #include "openingpage.h"
 #include "openingparamform.h"
 #include "scalewidget.h"
@@ -86,7 +85,7 @@ OpeningPage::OpeningPage(MainWindow *parent) :
     connect(resultZoomWidget,SIGNAL(mouseReleased()),this,SLOT(preview()));
 
     paramForm = new OpeningParamForm(parent,this);
-    docForm = new OpeningDocForm(parent);
+    docForm = new DocForm(parent,tr("qrc:/docs/aide.html#Ouverture"));
 
     initDone = false ;
 

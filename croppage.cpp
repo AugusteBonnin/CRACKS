@@ -46,7 +46,7 @@ CropPage::CropPage(MainWindow *parent) :
     zoomWidget->setZoomImage(mainWindow->initialImage);
     zoomWidget->initSourcePolygon();
 
-    docForm = new CropDocForm(parent) ;
+    docForm = new DocForm(parent,tr("qrc:/docs/aide.html#Recadrage")) ;
     paramForm = new CropParamForm(parent , this) ;
 
     remap(quadWidget->polygon);

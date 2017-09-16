@@ -3,7 +3,6 @@
 
 #include "form.h"
 #include "imagewidget.h"
-#include "introdocform.h"
 #include "introparamform.h"
 #include "page.h"
 

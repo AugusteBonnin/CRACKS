@@ -3,12 +3,8 @@
 
 #include <QGridLayout>
 #include <QUrl>
-DocForm::DocForm(MainWindow *mainWindow) : Form(mainWindow)
+DocForm::DocForm(QWidget *parent, QString url) : QTextBrowser(parent)
 {
-QGridLayout *layout = new QGridLayout(this) ;
-browser = new QTextBrowser(this) ;
-QObject::connect(browser,SIGNAL(anchorClicked(QUrl)),mainWindow,SLOT(openBrowser(QUrl)));
-layout->addWidget(browser);
-setLayout(layout);
-
+setSource(QUrl(url));
+setOpenLinks(true);
 }

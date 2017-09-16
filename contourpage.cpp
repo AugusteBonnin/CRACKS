@@ -1,4 +1,3 @@
-#include "contourdocform.h"
 #include "contourpage.h"
 #include "contourparamform.h"
 #include "mainwindow.h"
@@ -113,7 +112,7 @@ widget->setFixedHeight(512);
 
     connect(widget,SIGNAL(ScaleChanged(double)),scale,SLOT(ScaleChanged(double)));
 
-    docForm = new ContourDocForm(parent);
+    docForm = new DocForm(parent,tr("qrc:/docs/aide.html#Contour"));
     paramForm = new ContourParamForm(parent,this);
 
     QTimer::singleShot(0,this,SLOT(setImages())) ;

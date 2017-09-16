@@ -1,5 +1,4 @@
 #include "openglscalewidget.h"
-#include "roadsdocform.h"
 #include "roadspage.h"
 #include "roadsparamform.h"
 #include <QDir>
@@ -13,7 +12,7 @@
 RoadsPage::RoadsPage(MainWindow *parent) :
     Page(parent)
 { 
-    docForm = new RoadsDocForm(parent);
+    docForm = new DocForm(parent,tr("qrc:/docs/aide.html#Voies"));
     paramForm = new RoadsParamForm(parent,this);
 
     QVBoxLayout * layout = new QVBoxLayout ;

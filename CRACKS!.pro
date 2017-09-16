@@ -46,7 +46,6 @@ SOURCES += main.cpp\
     kdtree2d.cpp \
     dynamicalanalysis.cpp \
     batchprocessing.cpp \
-    introdocform.cpp \
     introparamform.cpp \
     docform.cpp \
     paramform.cpp \
@@ -54,26 +53,18 @@ SOURCES += main.cpp\
     intropage.cpp \
     cropparamform.cpp \
     croppage.cpp \
-    cropdocform.cpp \
     regularizationparamform.cpp \
     regularizationpage.cpp \
-    regularizationdocform.cpp \
-    openingdocform.cpp \
     openingparamform.cpp \
     openingpage.cpp \
-    contourdocform.cpp \
     contourparamform.cpp \
     contourpage.cpp \
-    skeldocform.cpp \
     skelparamform.cpp \
     skelpage.cpp \
-    roadsdocform.cpp \
     roadsparamform.cpp \
     roadspage.cpp \
     histoparamform.cpp \
-    cartoparamform.cpp \
     histopage.cpp \
-    histodocform.cpp \
     result.cpp \
     historesult.cpp \
     inthistoresult.cpp \
@@ -84,7 +75,6 @@ SOURCES += main.cpp\
     rangeddoublehistowidget.cpp \
     doublerangedhistoresult.cpp \
     mapparamform.cpp \
-    mapdocform.cpp \
     intmapresult.cpp \
     colorbadge.cpp \
     intcolorbadge.cpp \
@@ -101,7 +91,6 @@ SOURCES += main.cpp\
     scalewidget.cpp \
     openingscalewidget.cpp \
     openglscalewidget.cpp \
-    reportdocform.cpp \
     histopagefactories.cpp \
     mappagefactory.cpp \
     frame.cpp
@@ -133,7 +122,6 @@ HEADERS  += mainwindow.h \
     kdtree2d.h \
     dynamicalanalysis.h \
     batchprocessing.h \
-    introdocform.h \
     introparamform.h \
     docform.h \
     paramform.h \
@@ -141,26 +129,18 @@ HEADERS  += mainwindow.h \
     intropage.h \
     cropparamform.h \
     croppage.h \
-    cropdocform.h \
     regularizationparamform.h \
     regularizationpage.h \
-    regularizationdocform.h \
-    openingdocform.h \
     openingparamform.h \
     openingpage.h \
-    contourdocform.h \
     contourparamform.h \
     contourpage.h \
-    skeldocform.h \
     skelparamform.h \
     skelpage.h \
-    roadsdocform.h \
     roadsparamform.h \
     roadspage.h \
     histoparamform.h \
-    cartoparamform.h \
     histopage.h \
-    histodocform.h \
     result.h \
     historesult.h \
     inthistoresult.h \
@@ -171,7 +151,6 @@ HEADERS  += mainwindow.h \
     rangeddoublehistowidget.h \
     doublerangedhistoresult.h \
     mapparamform.h \
-    mapdocform.h \
     intmapresult.h \
     colorbadge.h \
     intcolorbadge.h \
@@ -189,7 +168,6 @@ HEADERS  += mainwindow.h \
     scalewidget.h \
     openingscalewidget.h \
     openglscalewidget.h \
-    reportdocform.h \
     histopagefactories.h \
     mappagefactory.h \
     frame.h

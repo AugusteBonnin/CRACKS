@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "skeldocform.h"
 #include "skelpage.h"
 #include "skelparamform.h"
 #include "ui_skelform.h"
@@ -90,7 +89,7 @@ void SkelPage::saveSHP()
 SkelPage::SkelPage(MainWindow *parent) :
     Page(parent)
 {
-    docForm = new SkelDocForm(parent);
+    docForm = new DocForm(parent,tr("qrc:/docs/aide.html#Squelettisation"));
     paramForm = new SkelParamForm(parent,this);
 
 QVBoxLayout * layout = new QVBoxLayout;
