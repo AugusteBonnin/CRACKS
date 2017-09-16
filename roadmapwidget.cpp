@@ -114,7 +114,11 @@ void RoadMapWidget::initializeGL()
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 
-    glLineWidth(3);
+    glLineWidth(5);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
 }
 
 void RoadMapWidget::resizeGL(int w, int h)

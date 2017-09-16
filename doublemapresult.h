@@ -10,7 +10,7 @@ namespace Ui {
 class IntMapResult;
 }
 
-#define CLASS_COUNT 10
+#define LIMITS_COUNT 5
 
 class DoubleMapResult : public MapResult
 {

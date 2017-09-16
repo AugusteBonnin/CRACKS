@@ -1,5 +1,6 @@
 #include "contourpage.h"
 #include "croppage.h"
+#include "frame.h"
 #include "histopage.h"
 #include "histopagefactories.h"
 #include "intropage.h"
@@ -16,9 +17,9 @@ Phase::Phase()
 
 }
 
-QWidget * Phase::newFromPhase(uint phase, MainWindow *mainWindow)
+Frame * Phase::newFromPhase(uint phase, MainWindow *mainWindow)
 {
-    QWidget * widget ;
+    Page * widget ;
     switch (phase)
     {
     case 0 :
@@ -66,33 +67,33 @@ QWidget * Phase::newFromPhase(uint phase, MainWindow *mainWindow)
 
      }
 
-    return widget ;
+    return new Frame(mainWindow,widget) ;
 }
 
-QWidget * Phase::createSimpleHistoPage(MainWindow*mainWindow)
+Page * Phase::createSimpleHistoPage(MainWindow*mainWindow)
 {
     SimpleHistoPageFactory factory;
-    QWidget * widget  = factory.createHistoPage(mainWindow);
+    Page * widget  = factory.createHistoPage(mainWindow);
     return widget;
 }
 
-QWidget * Phase::createDynamicHistoPage(MainWindow*mainWindow)
+Page * Phase::createDynamicHistoPage(MainWindow*mainWindow)
 {
     DynamicHistoPageFactory factory;
-    QWidget * widget  = factory.createHistoPage(mainWindow);
+    Page * widget  = factory.createHistoPage(mainWindow);
     return widget;
 }
 
-QWidget *Phase::createSimpleMapPage(MainWindow *mainWindow)
+Page *Phase::createSimpleMapPage(MainWindow *mainWindow)
 {
     SimpleMapPageFactory factory;
-    QWidget * widget = factory.createMapPage(mainWindow) ;
+    Page * widget = factory.createMapPage(mainWindow) ;
     return widget ;
 }
 
-QWidget *Phase::createDynamicMapPage(MainWindow *mainWindow)
+Page *Phase::createDynamicMapPage(MainWindow *mainWindow)
 {
     DynamicMapPageFactory factory;
-    QWidget * widget = factory.createMapPage(mainWindow) ;
+    Page * widget = factory.createMapPage(mainWindow) ;
     return widget ;
 }

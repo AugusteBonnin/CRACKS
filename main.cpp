@@ -13,14 +13,13 @@ int main(int argc, char *argv[])
         format.setDepthBufferSize(0);
         format.setStencilBufferSize(0);
         format.setAlphaBufferSize(8);
-        format.setVersion(2, 0);
+        format.setVersion(2, 1);
         format.setProfile(QSurfaceFormat::CoreProfile);
         QSurfaceFormat::setDefaultFormat(format);
 
     QApplication a(argc, argv);
 
     MainWindow w;
-    //w.showMaximized();
-w.showFullScreen();
+
     return a.exec();
 }

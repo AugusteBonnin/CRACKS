@@ -43,7 +43,8 @@ void SkelWidget::initializeGL()
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 
-    glLineWidth(3);
+    glLineWidth(5);
+    glEnable(GL_LINE_SMOOTH);
 
     mainWindow->skel_index_vbo = new QOpenGLBuffer(QOpenGLBuffer::IndexBuffer) ;
     mainWindow->faces_index_vbo = new QOpenGLBuffer(QOpenGLBuffer::IndexBuffer) ;

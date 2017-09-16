@@ -81,32 +81,32 @@ void IntMapResult::paintEvent(QPaintEvent *e)
 QColor IntMapResult::colorFor(float alpha)
 {
     QColor color;
-    if (alpha<.166f)
+    if (alpha<.25f)
     {
-        color.setBlueF(.5f*(1+6*alpha));
-        color.setGreenF(0);
-        color.setRedF(.5f-3*alpha);
+        color.setBlueF(1.0f);
+        color.setGreenF(4*alpha);
+        color.setRedF(0);
     }
     else
     if (alpha<.5f)
     {
-        color.setBlueF(1.0f-3.0f*(alpha-.166f));
-        color.setGreenF(3.0f*(alpha-.166f));
+        color.setBlueF(1.0f-4*(alpha-.25f));
+        color.setGreenF(1.0f);
         color.setRedF(0);
     }
     else
-        if (alpha<.833f)
+        if (alpha<.75f)
 
     {
-        color.setGreenF(1.0f-3.0f*(alpha-.5f));
-        color.setRedF(3.0f*(alpha-.5f));
+        color.setGreenF(1.0f);
+        color.setRedF(4.0f*(alpha-.5f));
         color.setBlueF(0);
     }
     else
         {
-            color.setRedF(1.0f-4.0f*(alpha-.833f));
-            color.setGreenF(2*(alpha-.833f));
-            color.setBlueF(2*(alpha-.833f));
+            color.setRedF(1.0f);
+            color.setGreenF(1.0f-4*(alpha-.75f));
+            color.setBlueF(0);
         }
     return color;
 }

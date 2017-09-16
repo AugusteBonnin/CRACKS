@@ -12,6 +12,7 @@
 #include <QProgressDialog>
 #include <QSettings>
 #include <QTextBrowser>
+#include <QToolButton>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     progress = new QProgressBar(this);
 
     statusBar()->addWidget(statusLabel);
-    statusBar()->addPermanentWidget(progress);
+    //statusBar()->addPermanentWidget(progress);
 
 
     stackedWidget = new QStackedWidget(this) ;
@@ -32,33 +33,46 @@ MainWindow::MainWindow(QWidget *parent) :
     QToolBar * toolbar = new QToolBar(this) ;
     toolbar->setObjectName(tr("Navigation"));
     addToolBar(toolbar);
-    toolbar->setIconSize(QSize(96,96));
+    toolbar->setIconSize(QSize(32,32));
 
     QIcon icon_next(QString(":/images/next640.png")) ;
     QIcon icon_back(QString(":/images/prev640.png")) ;
 
-    action_back = toolbar->addAction(icon_back,QString("BACK") );
-    connect(action_back,SIGNAL(triggered(bool)),this,SLOT(prevPhase()));
+
+    QMenu * menu = new QMenu(this) ;
+    menu->addAction(tr("Précédent"),this,SLOT(prevPhase()));
+
+    back = new QToolButton(this);
+    back->setIcon(icon_back);
+    back->setMenu(menu);
+    toolbar->addWidget(back);
 
 
     title = new QLabel("PHASE 0 : INTRODUCTION",this) ;
     QFont font = title->font() ;
-    font.setPixelSize(72);
+    font.setPixelSize(24);
     title->setFont(font) ;
     toolbar->addWidget(title );
 
-    action_next = toolbar->addAction(icon_next,QString("NEXT") );
-    connect(action_next,SIGNAL(triggered(bool)),this,SLOT(nextPhase()));
+    menu = new QMenu(this) ;
+    menu->addAction(tr("Suivant"),this,SLOT(nextPhase()));
 
-    docWidget = new QDockWidget(tr("Aide"),this);
-    docWidget->setObjectName(tr("Aide"));
+    next = new QToolButton(this);
+    next->setIcon(icon_next);
+    next->setMenu(menu);
+    toolbar->addWidget(next);
 
-    addDockWidget(Qt::TopDockWidgetArea,docWidget);
+//    docWidget = new QDockWidget(tr("Aide"),this);
+//    docWidget->setObjectName(tr("Aide"));
 
-    paramWidget = new QDockWidget(tr("Paramètres"),this);
-    paramWidget->setObjectName(tr("Paramètres"));
+//    addDockWidget(Qt::TopDockWidgetArea,docWidget);
 
-    addDockWidget(Qt::BottomDockWidgetArea,paramWidget);
+//    paramWidget = new QDockWidget(tr("Paramètres"),this);
+//    paramWidget->setObjectName(tr("Paramètres"));
+
+//    addDockWidget(Qt::BottomDockWidgetArea,paramWidget);
+
+    toolbar->addWidget(progress);
 
 
     regularizedImage = NULL ;openedImage = NULL ;
@@ -326,9 +340,9 @@ void MainWindow::nextPhase()
     savePhase() ;
 
     if (phase>=0)
-        ((Page*)(stackedWidget->currentWidget()))->nextPhase();
+        ((Frame*)(stackedWidget->currentWidget()))->page->nextPhase();
 
-    action_next->setEnabled(false);
+    //action_next->setEnabled(false);
 
     phase++ ;
 
@@ -336,7 +350,7 @@ void MainWindow::nextPhase()
 
     stackedWidget->addWidget(widget);
     stackedWidget->setCurrentIndex(phase);
-    showFullScreen();
+    showMaximized();
 
     restorePhase();
 }
@@ -353,24 +367,21 @@ void MainWindow::savePhase()
 void MainWindow::restorePhase()
 {
     QSettings settings ;
-    Page * page = (Page*)stackedWidget->currentWidget() ;
+    Frame * frame = (Frame*)stackedWidget->currentWidget() ;
 
-    setPageTitle(page->getTitle());
-    action_back->setToolTip(page->getPrevTooltip());
-    action_next->setToolTip(page->getNextTooltip());
+    setPageTitle(frame->page->getTitle());
+    //action_back->setToolTip(frame->page->getPrevTooltip());
+    //action_next->setToolTip(frame->page->getNextTooltip());
 
     restoreState(settings.value(QString("windowState%1").arg(phase)).toByteArray());
 
-    docWidget->setWidget(page->getDocForm());
-    docWidget->setMinimumSize(QSize(320,240));
-    restoreDockWidget(docWidget);
-    paramWidget->setWidget(page->getParamForm());
-    restoreDockWidget(paramWidget);
+//    docWidget->setWidget(page->getDocForm());
+//    docWidget->setMinimumSize(QSize(320,240));
+//    restoreDockWidget(docWidget);
+//    paramWidget->setWidget(page->getParamForm());
+//    restoreDockWidget(paramWidget);
 
-    action_back->setEnabled(phase);
-
-    showFullScreen();
-
+    //action_back->setEnabled(phase);
 
 }
 
@@ -409,35 +420,35 @@ void MainWindow::openBrowser(QUrl link)
 
 void MainWindow::on_actionAide_2_triggered()
 {
-    if (!docWidget)
-    {
-        docWidget = new QDockWidget(tr("Aide"),this);
-        docWidget->setWidget(((Page*)stackedWidget->currentWidget())->getDocForm());
+//    if (!docWidget)
+//    {
+//        docWidget = new QDockWidget(tr("Aide"),this);
+//        docWidget->setWidget(((Page*)stackedWidget->currentWidget())->getDocForm());
 
-        addDockWidget(Qt::LeftDockWidgetArea,docWidget);
-    }
+//        addDockWidget(Qt::LeftDockWidgetArea,docWidget);
+//    }
 
-    docWidget->show();
+//    docWidget->show();
 }
 
 void MainWindow::on_actionParam_tres_triggered()
 {
-    if (!paramWidget)
-    {
-        paramWidget = new QDockWidget(tr("Paramètres"),this);
-        paramWidget->setWidget(((Page*)stackedWidget->currentWidget())->getParamForm());
+//    if (!paramWidget)
+//    {
+//        paramWidget = new QDockWidget(tr("Paramètres"),this);
+//        paramWidget->setWidget(((Page*)stackedWidget->currentWidget())->getParamForm());
 
-        addDockWidget(Qt::BottomDockWidgetArea,paramWidget);
-    }
+//        addDockWidget(Qt::BottomDockWidgetArea,paramWidget);
+//    }
 
-    paramWidget->show();
+//    paramWidget->show();
 }
 
 void MainWindow::setActionsEnabled(bool enabled)
 {
-    action_back->setEnabled(enabled?(phase>0):false) ;
-    action_next->setEnabled(enabled);
-    Page * page = (Page*)stackedWidget->currentWidget() ;
+//    action_back->setEnabled(enabled?(phase>0):false) ;
+//    action_next->setEnabled(enabled);
+   Page * page = ((Frame*)stackedWidget->currentWidget())->page;
     page->getParamForm()->setEnabled(enabled);
 
     repaint();

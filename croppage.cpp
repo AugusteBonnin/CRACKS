@@ -51,7 +51,7 @@ CropPage::CropPage(MainWindow *parent) :
 
     remap(quadWidget->polygon);
 
-    parent->action_next->setEnabled(true);
+    ////parent->action_next->setEnabled(true);
 
     computed = true ;
 initDone = true ;

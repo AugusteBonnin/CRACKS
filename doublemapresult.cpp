@@ -30,9 +30,10 @@ DoubleMapResult::DoubleMapResult(MapPage *parent, QString titre, QVector<double>
     for (int i = 0 ; i < values.count() ; i++)
     {
         l+=values[i].length ;
-        if (l>=(parent->getMainWindow()->valid_roads_total_length*classes_limits.count()/(double)(CLASS_COUNT)))
+        if (l>(parent->getMainWindow()->valid_roads_total_length*classes_limits.count()/(double)(LIMITS_COUNT)))
             classes_limits << values[i].value ;
     }
+    classes_limits << values[values.count()-1].value ;
 
     for (int i = 0 ; i < data.count() ; i++)
     {
@@ -92,32 +93,25 @@ void DoubleMapResult::paintEvent(QPaintEvent *e)
 QColor DoubleMapResult::colorFor(float alpha)
 {
     QColor color;
-    if (alpha<.166f)
+    if (alpha<.25f)
     {
-        color.setBlueF(.5f*(1+6*alpha));
-        color.setGreenF(0);
-        color.setRedF(.5f-3*alpha);
+        color.setBlueF(1.0f-alpha*4.0f);
+        color.setGreenF(alpha*4.0f);
+        color.setRedF(.0f);
     }
     else
     if (alpha<.5f)
     {
-        color.setBlueF(1.0f-3.0f*(alpha-.166f));
-        color.setGreenF(3.0f*(alpha-.166f));
-        color.setRedF(0);
+        color.setBlueF(.0f);
+        color.setGreenF(1.0f);
+        color.setRedF((alpha-.25f)*4.0f);
     }
     else
-        if (alpha<.833f)
-
     {
-        color.setGreenF(1.0f-3.0f*(alpha-.5f));
-        color.setRedF(3.0f*(alpha-.5f));
+        color.setGreenF(1.0f-2.0f*(alpha-.5f));
+        color.setRedF(1.0f);
         color.setBlueF(0);
     }
-    else
-        {
-            color.setRedF(1.0f-4.0f*(alpha-.833f));
-            color.setGreenF(2*(alpha-.833f));
-            color.setBlueF(2*(alpha-.833f));
-        }
+
     return color;
 }

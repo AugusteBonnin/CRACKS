@@ -45,7 +45,7 @@ mainWindow->log(tr("%1").arg(path));
 
 void ContourPage::saveSHP()
 {
-    double scale = 1.0 / qMax(mainWindow->openedQImage.width(),mainWindow->openedQImage.height());
+    double scale = 1.0 ;
 
     QFileInfo file(settings.value("File").toString());
 
@@ -121,7 +121,7 @@ widget->setFixedHeight(512);
 
 void ContourPage::updateThreshold(int value)
 {
-    mainWindow->action_next->setEnabled(false);
+    //mainWindow->action_next->setEnabled(false);
     paramForm->setEnabled(false);
 
     double threshold = value*.0001;
@@ -131,7 +131,7 @@ void ContourPage::updateThreshold(int value)
 
     paramForm->setEnabled(true);
 
-    mainWindow->action_next->setEnabled(true);
+    //mainWindow->action_next->setEnabled(true);
 
     initDone = true ;
 

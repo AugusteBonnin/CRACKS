@@ -41,7 +41,7 @@ void SkelPage::saveSVG()
 
 void SkelPage::saveSHP()
 {
-    double scale = 1.0 / qMax(mainWindow->openedQImage.width(),mainWindow->openedQImage.height());
+    double scale = 1.0 ;
 
     QFileInfo file(settings.value("File").toString());
     QString path = tr("%1/Squelettisation-%2.shp").arg(file.absoluteDir().absolutePath()).arg(file.fileName());

@@ -1,6 +1,7 @@
 #ifndef PAGE_H
 #define PAGE_H
 
+#include<QSplitter>
 #include "docform.h"
 #include "paramform.h"
 
@@ -10,6 +11,7 @@ class Page : public Form
 {
 public:
     Page(MainWindow *parent);
+
 
     ParamForm * getParamForm(){ return paramForm ; }
     DocForm * getDocForm(){ return docForm ; }

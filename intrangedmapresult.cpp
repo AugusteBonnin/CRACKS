@@ -36,23 +36,23 @@ IntRangedMapResult::IntRangedMapResult(MapPage *parent, QString titre, QVector<i
         {
             if (class_value[i]-max<0)
                 ui->verticalLayout->addWidget(new IntColorBadge(this,
-                                                        colorFor((class_value[i]-min)/(float)(max-min)),
-                                                        QString("%1").arg(class_value[i])
-                                                        )
-                                      );
+                                                                colorFor((class_value[i]-min)/(float)(max-min)),
+                                                                QString("%1").arg(class_value[i])
+                                                                )
+                                              );
             else if (class_value[i]==max)
                 ui->verticalLayout->addWidget(new IntColorBadge(this,
-                                                        colorFor((class_value[i]-min)/(float)(max-min)),
-                                                        tr("%1 et +").arg(class_value[i])
-                                                        )
-                                      );
-}
+                                                                colorFor((class_value[i]-min)/(float)(max-min)),
+                                                                tr("%1 et +").arg(class_value[i])
+                                                                )
+                                              );
+        }
         else if (class_value[i]==min)
             ui->verticalLayout->addWidget(new IntColorBadge(this,
-                                                    colorFor((class_value[i]-min)/(float)(max-min)),
-                                                    tr("%1 et -").arg(class_value[i])
-                                                    )
-                                  );
+                                                            colorFor((class_value[i]-min)/(float)(max-min)),
+                                                            tr("%1 et -").arg(class_value[i])
+                                                            )
+                                          );
     }
     ui->titre->setAlignment(Qt::AlignCenter);
     ui->titre->setText(titre);
@@ -96,43 +96,43 @@ void IntRangedMapResult::paintEvent(QPaintEvent *e)
 QColor IntRangedMapResult::colorFor(float alpha)
 {
     QColor color;
-    if (alpha<0)
+    if (alpha<.0f)
     {
-        color.setBlueF(.5f);
+        color.setBlueF(1.0f);
         color.setGreenF(0);
-        color.setRedF(.5f);
+        color.setRedF(0);
     }
-    else if (alpha<.166f)
+    else   if (alpha<.25f)
     {
-        color.setBlueF(.5f*(1+6*alpha));
-        color.setGreenF(0);
-        color.setRedF(.5f-3*alpha);
+        color.setBlueF(1.0f);
+        color.setGreenF(4*alpha);
+        color.setRedF(0);
     }
     else
         if (alpha<.5f)
         {
-            color.setBlueF(1.0f-3.0f*(alpha-.166f));
-            color.setGreenF(3.0f*(alpha-.166f));
+            color.setBlueF(1.0f-4*(alpha-.25f));
+            color.setGreenF(1.0f);
             color.setRedF(0);
         }
-        else if (alpha<.833f)
-
-        {
-            color.setGreenF(1.0f-3.0f*(alpha-.5f));
-            color.setRedF(3.0f*(alpha-.5f));
-            color.setBlueF(0);
-        }
-        else if (alpha<1)
-        {
-            color.setRedF(1.0f-4.0f*(alpha-.833f));
-            color.setGreenF(2*(alpha-.833f));
-            color.setBlueF(2*(alpha-.833f));
-        }
         else
-        {
-            color.setRedF(.333f);
-            color.setGreenF(.333f);
-            color.setBlueF(.333f);
-        }
+            if (alpha<.75f)
+
+            {
+                color.setGreenF(1.0f);
+                color.setRedF(4.0f*(alpha-.5f));
+                color.setBlueF(0);
+            }
+            else if (alpha<1.0f)
+            {
+                color.setRedF(1.0f);
+                color.setGreenF(1.0f-4*(alpha-.75f));
+                color.setBlueF(0);
+            } else
+            {
+        color.setRedF(1.0f);
+        color.setGreenF(0);
+        color.setBlueF(0);
+    }
     return color;
 }

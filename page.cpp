@@ -1,5 +1,6 @@
 #include "page.h"
 
+#include <QGridLayout>
 #include <QPainter>
 
 Page::Page(MainWindow * parent) : Form(parent) , computed(false)

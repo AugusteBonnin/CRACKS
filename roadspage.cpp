@@ -66,12 +66,12 @@ void RoadsPage::reinit()
 
 void RoadsPage::on_pushButton_2_clicked()
 {
-    mainWindow->action_next->setEnabled(false);
+    //mainWindow->action_next->setEnabled(false);
     paramForm->setEnabled(false);
     widget->buildRoads(settings.value("RoadsParamForm-ScaleFactor",QVariant(1.0)).toDouble(),
                        settings.value("RoadsParamForm-MaxAngle",QVariant(45.0)).toDouble());
     paramForm->setEnabled(true);
-    mainWindow->action_next->setEnabled(true);
+    //mainWindow->action_next->setEnabled(true);
 
 }
 
@@ -128,7 +128,7 @@ void RoadsPage::saveSVG()
 
 void RoadsPage::saveSHP()
 {
-    double scale = 1.0 / qMax(mainWindow->openedQImage.width(),mainWindow->openedQImage.height());
+    double scale = 1.0 ;
 
     QFileInfo file(settings.value("File").toString()) ;
 

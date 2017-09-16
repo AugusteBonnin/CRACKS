@@ -175,7 +175,7 @@ void OpeningPage::initImages()
 
     preview() ;
 
-    mainWindow->action_next->setEnabled(true);
+    ////mainWindow->action_next->setEnabled(true);
 
     computed = false ;
     initDone = true ;

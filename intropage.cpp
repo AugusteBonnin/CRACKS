@@ -21,7 +21,7 @@ IntroPage::IntroPage(MainWindow *parent) :
     paramForm = new IntroParamForm(parent,this) ;
     docForm = new IntroDocForm(parent) ;
 
-parent->action_next->setEnabled(true);
+////parent->action_next->setEnabled(true);
 
 }
 

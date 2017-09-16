@@ -23,7 +23,7 @@ public :
 class DynamicMapPageFactory : public MapPageFactory
 {
 public :
-    MapPage * createMapPage(MainWindow *);
+    MapPage * createMapPage(MainWindow *mainWindow);
 };
 
 #endif // MAPPAGEFACTORY_H

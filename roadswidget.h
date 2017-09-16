@@ -48,6 +48,7 @@ private:
     QVector<QPolygonF> cycles_contours;
 
     // QWidget interface
+    void addBranch(QVector<QLineF> &tree, const Arrival &arrival);
 protected:
 };
 

@@ -52,7 +52,7 @@ SimpleHistoPageFactory::createHistoPage(MainWindow*mainWindow)
     histoPage->setDocForm( new HistoDocForm(mainWindow) );
 
     histoPage->paramForm->setEnabled(true);
-    mainWindow->action_next->setEnabled(true);
+    //mainWindow->action_next->setEnabled(true);
 
     return histoPage ;
 
@@ -84,7 +84,7 @@ DynamicHistoPageFactory::createHistoPage(MainWindow*mainWindow)
     histoPage->setDocForm( new HistoDocForm(mainWindow) );
 
     histoPage->paramForm->setEnabled(true);
-    mainWindow->action_next->setEnabled(true);
+    //mainWindow->action_next->setEnabled(true);
 
     return histoPage ;
 

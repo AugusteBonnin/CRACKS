@@ -17,6 +17,7 @@
 #include <QOpenGLVertexArrayObject>
 #include <QProgressBar>
 #include <QStackedWidget>
+#include <QToolButton>
 #include <QUrl>
 
 namespace Ui {
@@ -82,7 +83,7 @@ KDTree2D::PointCloud point_cloud;
     inline QHash<int,int> & getIndexJunction(){return index_junction;}
     inline QVector<Junction> & getJunctions(){return junctions;}
     void setActionsEnabled(bool enabled);
-    QAction * action_back,*action_next;
+    QToolButton * back,*next;
 
     QVector<unsigned int> pre_roads_index_vbo;
     QVector<float> pre_roads_vbo ;
@@ -162,7 +163,7 @@ QVector<Junction> junctions ;
 QHash<int,int> index_junction ;
 QVector<QVector<int> >  roads_edges;
 
-QDockWidget *docWidget,*paramWidget;
+//QDockWidget *docWidget,*paramWidget;
 void setPageTitle(QString str);
 
 void restorePhase();

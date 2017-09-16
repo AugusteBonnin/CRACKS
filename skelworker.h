@@ -33,8 +33,8 @@ private:
 
     inline bool isFramePoint(DoubleImage * image,QPointF & point)
         {
-        return ((point.x()==0)||(point.x()==image->width()-1)||
-                (point.y()==0)||(point.y()==image->height()-1)) ;
+        return ((fabs(point.x())<.01f)||(fabs(point.x()-image->width()+1)<.01f)||
+                (fabs(point.y())<.01f)||(fabs(point.y()-image->height()+1)<.01f)) ;
     }
 
     void crop();

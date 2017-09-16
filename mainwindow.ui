@@ -31,15 +31,7 @@
     <addaction name="actionPr_f_rences"/>
     <addaction name="actionQuitter"/>
    </widget>
-   <widget class="QMenu" name="menuMontrer">
-    <property name="title">
-     <string>Montrer</string>
-    </property>
-    <addaction name="actionAide_2"/>
-    <addaction name="actionParam_tres"/>
-   </widget>
    <addaction name="menuQSkel3"/>
-   <addaction name="menuMontrer"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">

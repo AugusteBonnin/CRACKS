@@ -15,7 +15,7 @@ TARGET = CRACKS!
 TEMPLATE = app
 
 LIBS += -L/usr/local/lib  -lCGAL  -lCGAL_Core -lgmp -lmpfr
-LIBS += -L/usr/lib/x86_64-linux-gnu/ -lboost_thread -lboost_system -lz
+LIBS +=  -lboost_thread -lboost_system -lz
 LIBS += -L . -lshp
 
 INCLUDEPATH += /usr/local/include
@@ -103,7 +103,8 @@ SOURCES += main.cpp\
     openglscalewidget.cpp \
     reportdocform.cpp \
     histopagefactories.cpp \
-    mappagefactory.cpp
+    mappagefactory.cpp \
+    frame.cpp
 
 HEADERS  += mainwindow.h \
     statsform.h \
@@ -190,7 +191,8 @@ HEADERS  += mainwindow.h \
     openglscalewidget.h \
     reportdocform.h \
     histopagefactories.h \
-    mappagefactory.h
+    mappagefactory.h \
+    frame.h
 
 FORMS    += mainwindow.ui \
     statsform.ui \
