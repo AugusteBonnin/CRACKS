@@ -3,6 +3,7 @@
 
 #include <QGridLayout>
 #include <QUrl>
+
 DocForm::DocForm(QWidget *parent, QString url) : QTextBrowser(parent)
 {
 setSource(QUrl(url));
