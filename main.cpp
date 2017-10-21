@@ -1,4 +1,4 @@
-#include "cartoparamform.h"
+
 #include "histopage.h"
 #include "mapparamform.h"
 #include "mainwindow.h"

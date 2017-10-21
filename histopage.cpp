@@ -1,4 +1,3 @@
-#include "histodocform.h"
 #include "histogramlabel.h"
 #include "histopage.h"
 #include "histoparamform.h"

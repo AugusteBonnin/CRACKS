@@ -1,4 +1,3 @@
-#include "cropdocform.h"
 #include "croppage.h"
 #include "cropparamform.h"
 #include "mainwindow.h"

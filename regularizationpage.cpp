@@ -1,6 +1,5 @@
 #include "doubleimage.h"
 #include "mainwindow.h"
-#include "regularizationdocform.h"
 #include "regularizationpage.h"
 #include "regularizationparamform.h"
 #include "regularizationworker.h"
