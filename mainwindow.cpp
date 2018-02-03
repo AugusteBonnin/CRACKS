@@ -59,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
     next = new QToolButton(this);
     next->setIcon(icon_next);
     next->setMenu(menu);
+    next->setPopupMode(QToolButton::InstantPopup);
     toolbar->addWidget(next);
 
 //    docWidget = new QDockWidget(tr("Aide"),this);

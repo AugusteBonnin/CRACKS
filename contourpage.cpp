@@ -140,11 +140,11 @@ void ContourPage::setImages()
 {
     //widget->resetImage(originalQImage);
 
-    if(settings.value("Contour/Invert",false).toBool())
-        emit invertSignal() ;
+//    if(settings.value("Contour/Invert",false).toBool())
+//        ((ContourParamForm*)paramForm)->invert();
 
-    if(settings.value("Contour/KMeans",false).toBool())
-        emit kMeansSignal() ;
+//    if(settings.value("Contour/KMeans",false).toBool())
+//        ((ContourParamForm*)paramForm)->maibeKMeans();
 
     updateThreshold(settings.value("ThresholdForm-Threshold",QVariant(5000)).toInt()) ;
 }

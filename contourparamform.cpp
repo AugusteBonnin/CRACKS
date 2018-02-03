@@ -36,7 +36,7 @@ ContourParamForm::ContourParamForm(MainWindow *parent,ContourPage * page) :
 
      ui->checkBox->setChecked(settings.value("Contour/Invert",false).toBool());
 
-connect(ui->checkBox,SIGNAL(toggled(bool)),this,SLOT(invert()));
+     connect(ui->checkBox,SIGNAL(toggled(bool)),this,SLOT(invert()));
     connect(page,SIGNAL(invertSignal()),this,SLOT(invert()));
     connect(page,SIGNAL(kMeansSignal()),slider,SLOT(KMeans()));
     connect(slider,SIGNAL(valueChanged(int)),this,SLOT(onSliderChanged(int)));
@@ -63,10 +63,9 @@ ContourParamForm::~ContourParamForm()
 void ContourParamForm::on_checkBox_clicked(bool checked)
 {
     settings.setValue("Contour/Invert",checked) ;
-
     invert();
-    page->updateThreshold(slider->value());
 
+    maibeKMeans();
 }
 
 void ContourParamForm::invert()

@@ -17,7 +17,10 @@ int main(int argc, char *argv[])
         format.setProfile(QSurfaceFormat::CoreProfile);
         QSurfaceFormat::setDefaultFormat(format);
 
-    QApplication a(argc, argv);
+
+       QApplication a(argc, argv);
+
+
 
     MainWindow w;
 

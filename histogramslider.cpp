@@ -48,7 +48,7 @@ HistogramSlider::~HistogramSlider()
 void HistogramSlider::KMeans()
 {
 
-    double class0 = 0 , class1 = width() - 1 ;
+    double class0 = width()>>1 , class1 = (width()>>1 )+ 1 ;
 
     bool somethingChanged = true ;
 

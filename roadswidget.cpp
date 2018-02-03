@@ -196,6 +196,12 @@ void RoadsWidget::addBranch(QVector<QLineF> &tree,const Arrival & arrival)
 
 }
 
+typedef struct Elt{int i ; float a ;Elt(){}}Elt;
+
+bool cmp(const Elt &a, const Elt &b){
+    return a.a<b.a;
+}
+
 
 void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
 {
@@ -231,6 +237,7 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
 
     qDebug() << "flag-4" ;
 
+    QVector<QVector<QPointF> > junctions_line_strings ;
 
     int count =  0 ;
     for (int i = 0 ; i < junctions.count() ; i++)
@@ -245,7 +252,31 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
 
             junctions[i].mean_radius /= junctions[i].centers_indices.count() ;
         }
+
+        QVector<QPointF> junctions_line_string ;
+
+       QVector<Elt>  elts ;
+
+        for (int j = 0 ; j < junctions[i].arrivals.count() ; i++)
+        {
+            QLineF l(skel_vertices[junctions[i].centers_indices[0]],junctions[i].arrivals[j].point);
+            Elt elt;
+            elt.i=j;
+            elt.a = l.angle();
+            elts << elt ;
+            }
+        std::sort(elts.begin(),elts.end(),cmp);
+
+        for (int j = 0 ; j < junctions[i].arrivals.count() ; i++)
+        {
+        junctions_line_string << junctions[i].arrivals[elts[j].i].point ;
+        }
+        junctions_line_string << junctions[i].arrivals[elts[0].i].point ;
+
+junctions_line_strings << junctions_line_string ;
     }
+
+
 
     //cout << total_vertices << " total_vertices " << endl;
     //cout << double_sided_edges.count() << " double_sided_edges" << endl;
@@ -387,67 +418,67 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
                                 " and " << edge_pairs[j].j << endl ;
                                 */
                 }
-                if (tree.count())
-                {
-                    qDebug() << "flag1.5" ;
-                    for (int j = 0 ; j < arrivals.count() ; j++)
-                        if (!junctions[i].equivalent.contains(arrivals[j].edge))
-                            addBranch(tree,arrivals[j]);
-                }
-                else
-                {
-                    qDebug() << "flag1.75" ;
-                    float max_d = 0 ;
-                    int max_k = 0;
-                    int max_j = 0 ;
-                    for (int j = 0 ; j < arrivals.count() ; j++)
-                    {
-                        const Arrival & a = arrivals[j] ;
-                        for (int k = 0 ; k < arrivals.count() ; k++)
-                        {
-                            const Arrival & b = arrivals[k] ;
-                            float d = QLineF(a.point,b.point).length();
-                            if (d>max_d)
-                            {
-                                max_d=d;
-                                max_j = j ;
-                                max_k = k ;
-                            }
-                        }
-                    }
+//                if (tree.count())
+//                {
+//                    qDebug() << "flag1.5" ;
+//                    for (int j = 0 ; j < arrivals.count() ; j++)
+//                        if (!junctions[i].equivalent.contains(arrivals[j].edge))
+//                            addBranch(tree,arrivals[j]);
+//                }
+//                else
+//                {
+//                    qDebug() << "flag1.75" ;
+//                    float max_d = 0 ;
+//                    int max_k = 0;
+//                    int max_j = 0 ;
+//                    for (int j = 0 ; j < arrivals.count() ; j++)
+//                    {
+//                        const Arrival & a = arrivals[j] ;
+//                        for (int k = 0 ; k < arrivals.count() ; k++)
+//                        {
+//                            const Arrival & b = arrivals[k] ;
+//                            float d = QLineF(a.point,b.point).length();
+//                            if (d>max_d)
+//                            {
+//                                max_d=d;
+//                                max_j = j ;
+//                                max_k = k ;
+//                            }
+//                        }
+//                    }
 
-                    qDebug() << max_j << " " << max_k ;
+//                    qDebug() << max_j << " " << max_k ;
 
-                    QVector<int> & str = double_sided_edges[arrivals[max_j].edge].truncated_str ;
-                    qDebug() << str.count() ;
+//                    QVector<int> & str = double_sided_edges[arrivals[max_j].edge].truncated_str ;
+//                    qDebug() << str.count() ;
 
-                    if (!arrivals[max_j].str_inverted)
-                    {
-                        if (!arrivals[max_k].str_inverted)
-                            str.push_front(double_sided_edges[arrivals[max_k].edge].truncated_str[0]);
-                        else
-                            str.push_front(double_sided_edges[arrivals[max_k].edge].truncated_str[double_sided_edges[arrivals[max_k].edge].truncated_str.count()-1]);
-                    }
-                    else
-                    {
-                        if (!arrivals[max_k].str_inverted)
-                            str.push_back(double_sided_edges[arrivals[max_k].edge].truncated_str[0]);
-                        else
-                            str.push_back(double_sided_edges[arrivals[max_k].edge].truncated_str[double_sided_edges[arrivals[max_k].edge].truncated_str.count()-1]);
+//                    if (!arrivals[max_j].str_inverted)
+//                    {
+//                        if (!arrivals[max_k].str_inverted)
+//                            str.push_front(double_sided_edges[arrivals[max_k].edge].truncated_str[0]);
+//                        else
+//                            str.push_front(double_sided_edges[arrivals[max_k].edge].truncated_str[double_sided_edges[arrivals[max_k].edge].truncated_str.count()-1]);
+//                    }
+//                    else
+//                    {
+//                        if (!arrivals[max_k].str_inverted)
+//                            str.push_back(double_sided_edges[arrivals[max_k].edge].truncated_str[0]);
+//                        else
+//                            str.push_back(double_sided_edges[arrivals[max_k].edge].truncated_str[double_sided_edges[arrivals[max_k].edge].truncated_str.count()-1]);
 
-                    }
-                    qDebug() << "flag1.8" ;
+//                    }
+//                    qDebug() << "flag1.8" ;
 
-                    tree << QLineF(arrivals[max_j].point,arrivals[max_k].point);
-                    for (int j = 0 ; j < arrivals.count() ; j++)
-                    {
-                        if ((j!=max_j)&&(j!=max_k))
-                        {
-                            const Arrival & a = arrivals[j] ;
-                            addBranch(tree,a);
-                        }
-                    }
-                }
+//                    tree << QLineF(arrivals[max_j].point,arrivals[max_k].point);
+//                    for (int j = 0 ; j < arrivals.count() ; j++)
+//                    {
+//                        if ((j!=max_j)&&(j!=max_k))
+//                        {
+//                            const Arrival & a = arrivals[j] ;
+//                            addBranch(tree,a);
+//                        }
+//                    }
+//                }
             }
         }
     }

@@ -26,6 +26,8 @@ class ContourParamForm : public ParamForm
 public:
     explicit ContourParamForm(MainWindow *parent, ContourPage *page);
     ~ContourParamForm();
+    void maibeKMeans();
+    void invert();
 
 Ui::ContourForm *ui;
 
@@ -38,8 +40,6 @@ void on_checkBox_2_clicked(bool checked);
 
 private slots:
 
-void maibeKMeans();
-void invert();
 void checkBox_3_toggled(bool checked);
 void spinBox_valueChanged(int arg1);
 };
