@@ -24,7 +24,10 @@ private:
     QRgb randColor();
     void exploreEdge(int first, int second);
     void explorePoint(int i);
-    
+    void computeJunctionsHulls();
+    void computeJunctionsLineStrings();
+    void computeJunctionsMeanRadius();
+
     QVector<Junction> & junctions ;
     QVector<DoubleSidedEdge> & double_sided_edges;
     QVector<QSet<int> > & roads_junctions ;
@@ -38,7 +41,10 @@ private:
     QVector<unsigned int> &pre_roads_index_vbo_start;
     QVector<unsigned int> &pre_roads_index_vbo_end;
     QVector<QVector<float> > &pre_junctions_vbos;
+    QVector<int> &valid_junctions;
 
+
+    QVector<QVector<QPointF> > & junctions_line_strings ;
 
     double radiusFactor;
     void exploreGraph(int current, int pred, QVector<int> &mark);

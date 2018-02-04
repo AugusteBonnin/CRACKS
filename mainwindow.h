@@ -95,17 +95,25 @@ KDTree2D::PointCloud point_cloud;
 
     QVector<QVector<float> > pre_junctions_vbos;
     QVector<QOpenGLBuffer*> junctions_contours_vbos;
+    QVector<QOpenGLBuffer*> junctions_vbos;
     QVector<QOpenGLBuffer*> junctions_bg_vbos;
 
     QVector<QVector<int> > histoIntData;
     QVector<QVector<double> > histoDoubleData;
 
     QVector<int> valid_roads;
+    QVector<int> valid_junctions;
+
     double valid_roads_total_length;
 
     QVector<QVector<QPointF> > roads_line_strings;
     QVector<QColor> roads_line_strings_colors;
+
+    QVector<QVector<QPointF> > junctions_line_strings ;
+
     QVector<QVector<QPointF> > places_contours_line_strings;
+
+
 
     double scale ;
     QPointF center;

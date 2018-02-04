@@ -186,12 +186,7 @@ void RoadsPage::saveSHP()
             SHPDestroyObject(object);
 
         }
-        SHPClose( shapeFile );
-        DBFClose(dbfFile);
 
-        path = tr("%1/Places-%2.SHP").arg(file.absoluteDir().absolutePath()).arg(file.baseName());
-        shapeFile = SHPCreate( path.toStdString().c_str(), SHPT_ARC );
-        dbfFile = DBFCreate(path.toStdString().c_str()) ;
         int fieldNumber = DBFAddField( dbfFile,"DEGRE",FTInteger, 3, 0 );
 
         for (int i = 0 ; i < mainWindow->places_contours_line_strings.count() ; i++)

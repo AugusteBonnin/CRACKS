@@ -27,7 +27,10 @@ RoadsWidget::RoadsWidget(Page *parent) : ScrollableOpenGLWidget(parent) ,
     pre_roads_vbo(mainWindow->pre_roads_vbo) ,
     pre_roads_index_vbo_start(mainWindow->pre_roads_index_vbo_start) ,
     pre_roads_index_vbo_end(mainWindow->pre_roads_index_vbo_end),
-    pre_junctions_vbos(mainWindow->pre_junctions_vbos)
+    pre_junctions_vbos(mainWindow->pre_junctions_vbos),
+    junctions_line_strings(mainWindow->junctions_line_strings),
+    valid_junctions(mainWindow->valid_junctions)
+
 {
 
 }
@@ -114,6 +117,18 @@ void RoadsWidget::paintGL()
         glDrawArrays(GL_POLYGON,0,mainWindow->junctions_bg_vbos[i]->size()/(6*sizeof(float)));
         mainWindow->junctions_bg_vbos[i]->release();
     }
+    //junctions connexity
+//    for (int i = 0 ; i < mainWindow->junctions_vbos.count() ; i++)
+//    {
+//        mainWindow->junctions_vbos[i]->bind();
+//        mainWindow->line_program->setUniformValue("matrix", m);
+//        mainWindow->line_program->enableAttributeArray(PROGRAM_VERTEX_ATTRIBUTE);
+//        mainWindow->line_program->enableAttributeArray(PROGRAM_COLOR_ATTRIBUTE);
+//        mainWindow->line_program->setAttributeBuffer(PROGRAM_VERTEX_ATTRIBUTE, GL_FLOAT, 0, 2, 6 * sizeof(GLfloat));
+//        mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
+//        glDrawArrays(GL_LINE_STRIP,0,mainWindow->junctions_vbos[i]->size()/(6*sizeof(float)));
+//        mainWindow->junctions_vbos[i]->release();
+//    }
     //roads
     if (mainWindow->roads_vbo.isCreated())
     {
@@ -196,11 +211,7 @@ void RoadsWidget::addBranch(QVector<QLineF> &tree,const Arrival & arrival)
 
 }
 
-typedef struct Elt{int i ; float a ;Elt(){}}Elt;
 
-bool cmp(const Elt &a, const Elt &b){
-    return a.a<b.a;
-}
 
 
 void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
@@ -237,44 +248,8 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
 
     qDebug() << "flag-4" ;
 
-    QVector<QVector<QPointF> > junctions_line_strings ;
 
-    int count =  0 ;
-    for (int i = 0 ; i < junctions.count() ; i++)
-    {
-        if (junctions[i].centers_indices.count())
-        {
-            count ++ ;
-            junctions[i].mean_radius = 0 ;
 
-            for (int j = 0 ; j < junctions[i].centers_indices.count() ; j++)
-                junctions[i].mean_radius += skel_distance[junctions[i].centers_indices[j]] ;
-
-            junctions[i].mean_radius /= junctions[i].centers_indices.count() ;
-        }
-
-        QVector<QPointF> junctions_line_string ;
-
-       QVector<Elt>  elts ;
-
-        for (int j = 0 ; j < junctions[i].arrivals.count() ; i++)
-        {
-            QLineF l(skel_vertices[junctions[i].centers_indices[0]],junctions[i].arrivals[j].point);
-            Elt elt;
-            elt.i=j;
-            elt.a = l.angle();
-            elts << elt ;
-            }
-        std::sort(elts.begin(),elts.end(),cmp);
-
-        for (int j = 0 ; j < junctions[i].arrivals.count() ; i++)
-        {
-        junctions_line_string << junctions[i].arrivals[elts[j].i].point ;
-        }
-        junctions_line_string << junctions[i].arrivals[elts[0].i].point ;
-
-junctions_line_strings << junctions_line_string ;
-    }
 
 
 
@@ -409,76 +384,76 @@ junctions_line_strings << junctions_line_string ;
                         //                            " and" << edge_pairs[j].j << endl ;
                     }
                     /*else
-                    if ((edge_pairs[j].distance<60))
-                        cout << "Junction " << i << " : edge already used : "<<
-                             edge_pairs[j].i <<
-                                " and " << edge_pairs[j].j << " with distance "<< edge_pairs[j].distance << endl ;
-                else
-                        cout << "Junction " << i << " : pair too distant with distance "<< edge_pairs[j].distance << " bbetwwen " << edge_pairs[j].i <<
-                                " and " << edge_pairs[j].j << endl ;
-                                */
+                                if ((edge_pairs[j].distance<60))
+                                    cout << "Junction " << i << " : edge already used : "<<
+                                         edge_pairs[j].i <<
+                                            " and " << edge_pairs[j].j << " with distance "<< edge_pairs[j].distance << endl ;
+                            else
+                                    cout << "Junction " << i << " : pair too distant with distance "<< edge_pairs[j].distance << " bbetwwen " << edge_pairs[j].i <<
+                                            " and " << edge_pairs[j].j << endl ;
+                                            */
                 }
-//                if (tree.count())
-//                {
-//                    qDebug() << "flag1.5" ;
-//                    for (int j = 0 ; j < arrivals.count() ; j++)
-//                        if (!junctions[i].equivalent.contains(arrivals[j].edge))
-//                            addBranch(tree,arrivals[j]);
-//                }
-//                else
-//                {
-//                    qDebug() << "flag1.75" ;
-//                    float max_d = 0 ;
-//                    int max_k = 0;
-//                    int max_j = 0 ;
-//                    for (int j = 0 ; j < arrivals.count() ; j++)
-//                    {
-//                        const Arrival & a = arrivals[j] ;
-//                        for (int k = 0 ; k < arrivals.count() ; k++)
-//                        {
-//                            const Arrival & b = arrivals[k] ;
-//                            float d = QLineF(a.point,b.point).length();
-//                            if (d>max_d)
-//                            {
-//                                max_d=d;
-//                                max_j = j ;
-//                                max_k = k ;
-//                            }
-//                        }
-//                    }
+                ////                if (tree.count())
+                ////                {
+                ////                    qDebug() << "flag1.5" ;
+                ////                    for (int j = 0 ; j < arrivals.count() ; j++)
+                ////                        if (!junctions[i].equivalent.contains(arrivals[j].edge))
+                ////                            addBranch(tree,arrivals[j]);
+                ////                }
+                ////                else
+                ////                {
+                ////                    qDebug() << "flag1.75" ;
+                ////                    float max_d = 0 ;
+                ////                    int max_k = 0;
+                ////                    int max_j = 0 ;
+                ////                    for (int j = 0 ; j < arrivals.count() ; j++)
+                ////                    {
+                ////                        const Arrival & a = arrivals[j] ;
+                ////                        for (int k = 0 ; k < arrivals.count() ; k++)
+                ////                        {
+                ////                            const Arrival & b = arrivals[k] ;
+                ////                            float d = QLineF(a.point,b.point).length();
+                ////                            if (d>max_d)
+                ////                            {
+                ////                                max_d=d;
+                ////                                max_j = j ;
+                ////                                max_k = k ;
+                ////                            }
+                ////                        }
+                ////                    }
 
-//                    qDebug() << max_j << " " << max_k ;
+                ////                    qDebug() << max_j << " " << max_k ;
 
-//                    QVector<int> & str = double_sided_edges[arrivals[max_j].edge].truncated_str ;
-//                    qDebug() << str.count() ;
+                ////                    QVector<int> & str = double_sided_edges[arrivals[max_j].edge].truncated_str ;
+                ////                    qDebug() << str.count() ;
 
-//                    if (!arrivals[max_j].str_inverted)
-//                    {
-//                        if (!arrivals[max_k].str_inverted)
-//                            str.push_front(double_sided_edges[arrivals[max_k].edge].truncated_str[0]);
-//                        else
-//                            str.push_front(double_sided_edges[arrivals[max_k].edge].truncated_str[double_sided_edges[arrivals[max_k].edge].truncated_str.count()-1]);
-//                    }
-//                    else
-//                    {
-//                        if (!arrivals[max_k].str_inverted)
-//                            str.push_back(double_sided_edges[arrivals[max_k].edge].truncated_str[0]);
-//                        else
-//                            str.push_back(double_sided_edges[arrivals[max_k].edge].truncated_str[double_sided_edges[arrivals[max_k].edge].truncated_str.count()-1]);
+                ////                    if (!arrivals[max_j].str_inverted)
+                ////                    {
+                ////                        if (!arrivals[max_k].str_inverted)
+                ////                            str.push_front(double_sided_edges[arrivals[max_k].edge].truncated_str[0]);
+                ////                        else
+                ////                            str.push_front(double_sided_edges[arrivals[max_k].edge].truncated_str[double_sided_edges[arrivals[max_k].edge].truncated_str.count()-1]);
+                ////                    }
+                ////                    else
+                ////                    {
+                ////                        if (!arrivals[max_k].str_inverted)
+                ////                            str.push_back(double_sided_edges[arrivals[max_k].edge].truncated_str[0]);
+                ////                        else
+                ////                            str.push_back(double_sided_edges[arrivals[max_k].edge].truncated_str[double_sided_edges[arrivals[max_k].edge].truncated_str.count()-1]);
 
-//                    }
-//                    qDebug() << "flag1.8" ;
+                ////                    }
+                ////                    qDebug() << "flag1.8" ;
 
-//                    tree << QLineF(arrivals[max_j].point,arrivals[max_k].point);
-//                    for (int j = 0 ; j < arrivals.count() ; j++)
-//                    {
-//                        if ((j!=max_j)&&(j!=max_k))
-//                        {
-//                            const Arrival & a = arrivals[j] ;
-//                            addBranch(tree,a);
-//                        }
-//                    }
-//                }
+                ////                    tree << QLineF(arrivals[max_j].point,arrivals[max_k].point);
+                ////                    for (int j = 0 ; j < arrivals.count() ; j++)
+                ////                    {
+                ////                        if ((j!=max_j)&&(j!=max_k))
+                ////                        {
+                ////                            const Arrival & a = arrivals[j] ;
+                ////                            addBranch(tree,a);
+                ////                        }
+                ////                    }
+                ////                }
             }
         }
     }
@@ -560,7 +535,6 @@ junctions_line_strings << junctions_line_string ;
 
 
     //Gather histogram info for degree of junctions
-    QVector<int> valid_junctions;
     QVector<int> degrees_of_junctions;
     QVector<int> second_degrees_of_junctions;
     for(int i = 0 ; i < junctions.count() ; i++)
@@ -638,6 +612,9 @@ junctions_line_strings << junctions_line_string ;
     pre_roads_index_vbo_end.clear();
     mainWindow->roads_line_strings.clear();
     QVector<bool> edge_treated(double_sided_edges.count(),false) ;
+    QVector<int> list ;
+    QVector<QPointF>  line_string;
+
     for (int m = 0 ; m < mainWindow->getRoadsJunctions().count() ; m++)
     {
         QVector<int> & edges = mainWindow->getRoadsEdges()[m];
@@ -653,8 +630,9 @@ junctions_line_strings << junctions_line_string ;
             {
                 edge_treated[i] = true ;
                 int prev = i , current ;
-                QVector<int> list ;
-                QVector<QPointF>  line_string;
+
+                list.clear();
+                line_string.clear();
 
                 if (junctions[edge.first_junction].equivalent.contains(prev))
                 {
@@ -950,6 +928,66 @@ junctions_line_strings << junctions_line_string ;
     length_edges.clear();
     length_roads_topo.clear();
 
+    computeJunctionsMeanRadius();
+
+    computeJunctionsLineStrings();
+
+    computeJunctionsHulls();
+
+    ((Page*)parent())->initDone = true ;
+    update() ;
+}
+
+
+void RoadsWidget::exploreGraph(int current,int pred,QVector<int> & mark)
+{
+    Junction &junction = junctions[current] ;
+    for (int j = 0 ; j < junction.arrivals.count() ; j++)
+    {
+        Arrival &arrival = junction.arrivals[j] ;
+        DoubleSidedEdge &edge = double_sided_edges[arrival.edge] ;
+        int second_junction_idx ;
+        if (edge.first_junction==current)
+            second_junction_idx = edge.second_junction ;
+        else
+            second_junction_idx = edge.first_junction ;
+
+        if (second_junction_idx==pred)
+            continue ;
+
+        if (mark[second_junction_idx]>=0)
+        {
+            //found a crircuit
+            qDebug() << "found a circuit of length " << mark[current] - mark[second_junction_idx] ;
+        }
+        else
+        {
+            mark[second_junction_idx] = mark[current] +1;
+            exploreGraph(second_junction_idx,current , mark);
+        }
+    }
+
+}
+
+
+void RoadsWidget::explorePoint(int i)
+{
+    if (!index_junction.contains(i))
+    {
+        Junction junction;
+        junction.mean_radius = skel_distance[i];
+        junction.color = randColor() ;
+        junction.centers_indices.append(i) ;
+        junctions.append(junction) ;
+        index_junction.insert(i,junctions.count()-1);
+    }
+    for (int j = 0 ; j < skel_children[i].count() ; j++)
+        exploreEdge(i,skel_children[i][j]);
+
+}
+
+void RoadsWidget::computeJunctionsHulls()
+{
 
     QVector<float> circle;
     for (int i = 0 ; i < 40 ; i++)
@@ -969,6 +1007,12 @@ junctions_line_strings << junctions_line_string ;
         std::vector<Point_2> circles ;
         QVector<QPointF> contour ;
 
+        //push arrivals points
+        for (int j = 0 ; j < junctions[i].arrivals.count() ; j++)
+        {
+            QPointF & p = junctions[i].arrivals[j].point ;
+            circles.push_back(Point_2(p.x(),p.y()));
+        }
 
         if (valid_junctions[i]>-1)
         {
@@ -1029,56 +1073,64 @@ junctions_line_strings << junctions_line_string ;
         }
     }
     doneCurrent();
-    ((Page*)parent())->initDone = true ;
-    update() ;
 }
 
-
-void RoadsWidget::exploreGraph(int current,int pred,QVector<int> & mark)
+void RoadsWidget::computeJunctionsLineStrings()
 {
-    Junction &junction = junctions[current] ;
-    for (int j = 0 ; j < junction.arrivals.count() ; j++)
+    for (int i = 0 ; i < junctions.count() ; i++)
     {
-        Arrival &arrival = junction.arrivals[j] ;
-        DoubleSidedEdge &edge = double_sided_edges[arrival.edge] ;
-        int second_junction_idx ;
-        if (edge.first_junction==current)
-            second_junction_idx = edge.second_junction ;
-        else
-            second_junction_idx = edge.first_junction ;
-
-        if (second_junction_idx==pred)
-            continue ;
-
-        if (mark[second_junction_idx]>=0)
+        if (junctions[i].arrivals.count())
         {
-            //found a crircuit
-            qDebug() << "found a circuit of length " << mark[current] - mark[second_junction_idx] ;
-        }
-        else
-        {
-            mark[second_junction_idx] = mark[current] +1;
-            exploreGraph(second_junction_idx,current , mark);
+            QVector<QPointF> junctions_line_string ;
+            QMap<float,int> elts;
+
+            QVector<float> pre_junction_vbo;
+
+            for (int j = 0 ; j < junctions[i].arrivals.count() ; j++)
+            {
+                QLineF l(skel_vertices[junctions[i].centers_indices[0]],junctions[i].arrivals[j].point);
+                elts.insert( l.angle(),j);
+            }
+
+            QList<int> sorted = elts.values() ;
+            for (int j = 0 ; j < sorted.count() ; j++)
+            {
+                QPointF & p = junctions[i].arrivals[sorted[j]].point ;
+                junctions_line_string << p ;
+                pre_junction_vbo << p.x() << p.y() << 0 << 0 << 0 << 1 ;
+            }
+            QPointF & p = junctions[i].arrivals[sorted[0]].point ;
+            junctions_line_string << p ;
+            pre_junction_vbo << p.x() << p.y() << 0 << 0 << 0 << 1 ;
+
+            junctions_line_strings << junctions_line_string ;
+
+            QOpenGLBuffer *vbo = new QOpenGLBuffer;
+            vbo->create();
+            vbo->bind();
+            vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
+            vbo->allocate(pre_junction_vbo.constData(),pre_junction_vbo.count()*sizeof(float));
+            mainWindow->junctions_vbos << vbo ;
+
         }
     }
 
 }
 
-
-void RoadsWidget::explorePoint(int i)
+void RoadsWidget::computeJunctionsMeanRadius()
 {
-    if (!index_junction.contains(i))
+    for (int i = 0 ; i < junctions.count() ; i++)
     {
-        Junction junction;
-        junction.mean_radius = skel_distance[i];
-        junction.color = randColor() ;
-        junction.centers_indices.append(i) ;
-        junctions.append(junction) ;
-        index_junction.insert(i,junctions.count()-1);
-    }
-    for (int j = 0 ; j < skel_children[i].count() ; j++)
-        exploreEdge(i,skel_children[i][j]);
+        if (junctions[i].centers_indices.count())
+        {
+            junctions[i].mean_radius = 0 ;
 
+            for (int j = 0 ; j < junctions[i].centers_indices.count() ; j++)
+                junctions[i].mean_radius += skel_distance[junctions[i].centers_indices[j]] ;
+
+            junctions[i].mean_radius /= junctions[i].centers_indices.count() ;
+        }
+    }
 }
 
 void RoadsWidget::exploreEdge( int first, int second)
@@ -1116,33 +1168,44 @@ void RoadsWidget::exploreEdge( int first, int second)
         double mean_angleB = 0 ;
         double mean_width = 0 ;
 
-        if (euclidean_distance>(skel_distance[first]+skel_distance[last])*radiusFactor*1.414)
+
+        if (euclidean_distance>(skel_distance[first]+skel_distance[last])*radiusFactor)
         {
+            double radius = skel_distance[first]*radiusFactor;
+
             double first_width,second_width ;
             QPointF first_point_A =p0,first_point_B =p3 ;
             uint first_index_A=0,first_index_B=str.count()-1;
             QPointF p1 = p0 ;
-            for (int i = 0 ; i < str.count() ; i++)
+            for (int i = 0 ; i < str.count() -1; i++)
             {
-                if(QLineF(p0,p1).length()<skel_distance[first]*radiusFactor)
-                {
-                    first_point_A = p1 ;
-                    first_index_A = i ;
-                }
-                else break ;
                 p1 = skel_vertices[str[i]] ;
+                QPointF p1prime = skel_vertices[str[i+1]] ;
+                double r1 = QLineF(p0,p1).length() ;
+                double r2 = QLineF(p0,p1prime).length() ;
+                if((r1<radius)&&(r2>=radius))
+                {
+                    QPointF point= p1+(p1prime-p1)*(radius-r1)/(r2-r1) ;
+                    first_point_A = point ;
+                    first_index_A = i+1 ;
+                }
+
             }
 
+            radius = skel_distance[last]*radiusFactor ;
             QPointF p2 = p3 ;
-            for (int i = str.count() -1 ; i >= 0  ; i--)
+            for (int i = str.count() -1 ; i > 0  ; i--)
             {
-                if(QLineF(p3,p2).length()<skel_distance[last]*radiusFactor)
-                {
-                    first_point_B = p2 ;
-                    first_index_B = i;
-                }
-                else break ;
                 p2 = skel_vertices[str[i]] ;
+                QPointF p2prime = skel_vertices[str[i-1]] ;
+                double r1 = QLineF(p3,p2).length() ;
+                double r2 = QLineF(p3,p2prime).length() ;
+                if((r1<radius)&&(r2>=radius))
+                {
+                    first_point_B = p2+(p2prime-p2)*(radius-r1)/(r2-r1) ;
+                    first_index_B = i-1;
+                }
+
             }
 
             QLineF p1p2(first_point_A,first_point_B);
@@ -1154,9 +1217,14 @@ void RoadsWidget::exploreEdge( int first, int second)
             mean_angleB = angle - 180 ;
 
             truncated_str.clear() ;
+            truncated_str << skel_vertices.count() ;
+            skel_vertices << first_point_A ;
+
             for (int i = first_index_A ; i <= first_index_B ; i++ )
                 truncated_str << str[i] ;
 
+            truncated_str << skel_vertices.count() ;
+            skel_vertices << first_point_B ;
 
 
             first_width = skel_distance[str[first_index_A]];
