@@ -77,16 +77,19 @@ void RoadsPage::on_pushButton_2_clicked()
 
 void RoadsPage::saveSVG()
 {
+    qDebug() << "debut save svg" ;
     QFileInfo file(settings.value("File").toString()) ;
     QString path = tr("%1/Voies-%2.svg").arg(file.dir().absolutePath()).arg(file.baseName());
         QFile data(path);
         if (data.open(QFile::WriteOnly)) {
             QTextStream out(&data);
             out << "<svg version=\"1.1\" baseProfile=\"full\" xmlns=\"http://www.w3.org/2000/svg\">\n" ;
+            mainWindow->progress->setMaximum(mainWindow->places_contours_line_strings.count()-1);
 
             //places
             for (int i = 0 ; i < mainWindow->places_contours_line_strings.count() ; i++)
             {
+                mainWindow->progress->setValue(i);
                 out << "<polyline points=\"" ;
                 for (int j = 0 ; j < mainWindow->places_contours_line_strings[i].count() - 1 ; j++)
                 {
@@ -99,10 +102,12 @@ void RoadsPage::saveSVG()
 
                 out << "\" stroke=\"black\" fill=\"white\" stroke-width=\"1\"/>\n" ;
             }
+            mainWindow->progress->setMaximum(mainWindow->valid_roads.count()-1);
 
             //roads
             for (int i = 0 ; i < mainWindow->valid_roads.count() ; i++)
             {
+                mainWindow->progress->setValue(i);
                 out << "<polyline points=\"" ;
                 for (int j = 0 ; j < mainWindow->roads_line_strings[mainWindow->valid_roads[i]].count() - 1 ; j++)
                 {
@@ -121,6 +126,7 @@ void RoadsPage::saveSVG()
         }
         data.close() ;
         mainWindow->log(tr("%1").arg(path));
+        qDebug() << "fin save svg" ;
 
 }
 

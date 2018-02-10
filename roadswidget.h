@@ -27,7 +27,13 @@ private:
     void computeJunctionsHulls();
     void computeJunctionsLineStrings();
     void computeJunctionsMeanRadius();
-
+    void computeCloseness();
+    void computeOtherIndices();
+    void computeRoadsLineStrings();
+    void computeDegreeOfJunctions();
+    void computeRoadsJunctionsAndEdges();
+    void computeEdgesRoadIndex();
+    void matchJunctionsEdges(float threshold_on_B);
     QVector<Junction> & junctions ;
     QVector<DoubleSidedEdge> & double_sided_edges;
     QVector<QSet<int> > & roads_junctions ;
@@ -42,12 +48,13 @@ private:
     QVector<unsigned int> &pre_roads_index_vbo_end;
     QVector<QVector<float> > &pre_junctions_vbos;
     QVector<int> &valid_junctions;
+    QVector<int> &valid_roads ;
 
 
     QVector<QVector<QPointF> > & junctions_line_strings ;
 
     double radiusFactor;
-    void exploreGraph(int current, int pred, QVector<int> &mark);
+    void exploreGraph();
 
     QVector<QPointF> cycles_centers;
     QVector<int> cycles_lengths ;
