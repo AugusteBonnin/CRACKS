@@ -196,7 +196,7 @@ void RoadsPage::saveSHP()
         DBFClose(dbfFile);
 
         path = tr("%1/Places-%2.SHP").arg(file.absoluteDir().absolutePath()).arg(file.baseName());
-        shapeFile = SHPCreate( path.toStdString().c_str(), SHPT_ARC );
+        shapeFile = SHPCreate( path.toStdString().c_str(), SHPT_POLYGON );
         dbfFile = DBFCreate(path.toStdString().c_str()) ;
         int fieldNumber = DBFAddField( dbfFile,"DEGRE",FTInteger, 3, 0 );
 
