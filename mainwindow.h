@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "constraineddelaunaytriangulation.h"
 #include "customtypes.h"
 #include "doubleimage.h"
 #include "historesult.h"
@@ -60,7 +61,8 @@ public:
     QOpenGLBuffer circle_vbo;
     QOpenGLBuffer black_roads_vbo;
 
-    Triangulation cdt;
+    ConstrainedDelaunayTriangulation cdt;
+
 KDTree2D::PointCloud point_cloud;
     KDTree2D::my_kd_tree_2d_type *kdtree ;
     QVector<Vertex_handle> treeIdx2Handle;

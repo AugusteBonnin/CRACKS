@@ -93,7 +93,9 @@ SOURCES += main.cpp\
     histopagefactories.cpp \
     mappagefactory.cpp \
     frame.cpp \
-    skelworker2.cpp
+    skelworker.cpp \
+    skelworker2.cpp \
+    constraineddelaunaytriangulation.cpp
 
 HEADERS  += mainwindow.h \
     statsform.h \
@@ -170,7 +172,9 @@ HEADERS  += mainwindow.h \
     histopagefactories.h \
     mappagefactory.h \
     frame.h \
-    skelworker2.h
+    skelworker.h \
+    skelworker2.h \
+    constraineddelaunaytriangulation.h
 
 FORMS    += mainwindow.ui \
     statsform.ui \
