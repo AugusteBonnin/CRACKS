@@ -444,9 +444,11 @@ void MainWindow::on_actionParam_tres_triggered()
 //    paramWidget->show();
 }
 
+
+
 void MainWindow::setActionsEnabled(bool enabled)
 {
-//    action_back->setEnabled(enabled?(phase>0):false) ;
+    //    action_back->setEnabled(enabled?(phase>0):false) ;
 //    action_next->setEnabled(enabled);
    Page * page = ((Frame*)stackedWidget->currentWidget())->page;
     page->getParamForm()->setEnabled(enabled);

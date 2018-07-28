@@ -69,7 +69,6 @@ SOURCES += main.cpp\
     historesult.cpp \
     inthistoresult.cpp \
     inthistowidget.cpp \
-    skelworker.cpp \
     doublehistoresult.cpp \
     doublehistowidget.cpp \
     rangeddoublehistowidget.cpp \
@@ -93,7 +92,8 @@ SOURCES += main.cpp\
     openglscalewidget.cpp \
     histopagefactories.cpp \
     mappagefactory.cpp \
-    frame.cpp
+    frame.cpp \
+    skelworker2.cpp
 
 HEADERS  += mainwindow.h \
     statsform.h \
@@ -145,7 +145,6 @@ HEADERS  += mainwindow.h \
     historesult.h \
     inthistoresult.h \
     inthistowidget.h \
-    skelworker.h \
     doublehistoresult.h \
     doublehistowidget.h \
     rangeddoublehistowidget.h \
@@ -170,7 +169,8 @@ HEADERS  += mainwindow.h \
     openglscalewidget.h \
     histopagefactories.h \
     mappagefactory.h \
-    frame.h
+    frame.h \
+    skelworker2.h
 
 FORMS    += mainwindow.ui \
     statsform.ui \

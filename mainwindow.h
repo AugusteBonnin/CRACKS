@@ -72,6 +72,7 @@ KDTree2D::PointCloud point_cloud;
     inline QVector<QVector<unsigned int> > & getSkelChildren(){return skelChildren;}
     inline QVector<unsigned char> & getSkelColors(){return skelColors;}
     inline QVector<float> & getSkelDistanceToBoundary(){return skelDistanceToBoundary;}
+    inline QVector<bool> & getSkelPointIsExit() {return skel_point_is_exit;}
     inline QVector<QPointF> & getContourVertices(){return contourVertices;}
     inline QVector<unsigned int> & getContourIndices(){return contourIndices;}
     inline QVector<unsigned int> & getNextPointIndex(){return nextPointIndex;}
@@ -127,6 +128,7 @@ KDTree2D::PointCloud point_cloud;
     void setPhase(int p);
     void batchProcess();
     void dynamicalAnalysis();
+
 public slots :
     void nextPhase();
     void prevPhase();
@@ -155,6 +157,8 @@ private:
     QVector<unsigned char> skelColors;
     QVector<QVector<unsigned int> > skelChildren ;
     QVector<float> skelDistanceToBoundary ;
+    QVector<bool> skel_point_is_exit ;
+
     QVector<DoubleSidedEdge> double_sided_edges ;
     QVector<DoubleSidedEdge> double_sided_edges_copy ;
     QVector<int> double_sided_edges_birth ;

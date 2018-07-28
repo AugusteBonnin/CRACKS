@@ -5,7 +5,6 @@
 #include "skelpage.h"
 #include <QApplication>
 
-#include <QAction>
 
 SkelWorker::SkelWorker(MainWindow * mainWindow) : QThread() ,
     mainWindow(mainWindow),
@@ -51,6 +50,8 @@ void SkelWorker::crop()
 
     QVector<QVector<uint> > new_children(skel_children);
     QVector<QPointF> new_points(skel_points);
+
+    first_point_on_frame = skel_children.count() ;
 
 
     for (int i = 0 ; i < skel_points.count() ; i++)
@@ -237,40 +238,45 @@ void SkelWorker::run()
             {
                 if ((!current->info().in_domain()))
                 {
+                    // current & next not in domain
                     if ((!(cdt.is_infinite(next)))&&(!(cdt.is_infinite(current))))
-                   {
-                    int center_t1_idx ;
-                    CGALTriangle t1(current->vertex(0),current->vertex(1),current->vertex(2));
-                    if (centersIdx.contains(t1))
-                        center_t1_idx = centersIdx.value(t1) ;
+                    {
+                        int center_t1_idx ;
+                        CGALTriangle t1(current->vertex(0),current->vertex(1),current->vertex(2));
+                        if (centersIdx.contains(t1))
+                            center_t1_idx = centersIdx.value(t1) ;
+                        else
+                        {
+                            center_t1_idx = skel_points.count() ;
+                            centersIdx[t1] = skel_points.count() ;
+                            QPointF center = t1.center() ;
+                            QPointF A(it->point().x(),it->point().y());
+                            skel_distance.append(INFINITY) ;
+                            skel_points <<  center ;
+                            skel_children.append( QVector<unsigned int>()) ;
+                        }
+
+                        CGALTriangle t2(next->vertex(0),next->vertex(1),next->vertex(2));
+                        unsigned int center_t2_idx ;
+                        if (centersIdx.contains(t2))
+                            center_t2_idx = centersIdx.value(t2) ;
+                        else
+                        {
+                            center_t2_idx = skel_points.count() ;
+                            centersIdx[t2] = skel_points.count() ;
+                            QPointF center = t2.center() ;
+                            QPointF A(it->point().x(),it->point().y());
+                            skel_distance.append(INFINITY) ;
+                            skel_points <<  center ;
+                            skel_children.append( QVector<unsigned int>()) ;
+                        }
+
+
+                        skel_children[center_t1_idx].append( center_t2_idx );
+                    }
                     else
                     {
-                        center_t1_idx = skel_points.count() ;
-                        centersIdx[t1] = skel_points.count() ;
-                        QPointF center = t1.center() ;
-                        QPointF A(it->point().x(),it->point().y());
-                        skel_distance.append(INFINITY) ;
-                        skel_points <<  center ;
-                        skel_children.append( QVector<unsigned int>()) ;
-                    }
 
-                    CGALTriangle t2(next->vertex(0),next->vertex(1),next->vertex(2));
-                    unsigned int center_t2_idx ;
-                    if (centersIdx.contains(t2))
-                        center_t2_idx = centersIdx.value(t2) ;
-                    else
-                    {
-                        center_t2_idx = skel_points.count() ;
-                        centersIdx[t2] = skel_points.count() ;
-                        QPointF center = t2.center() ;
-                        QPointF A(it->point().x(),it->point().y());
-                        skel_distance.append(INFINITY) ;
-                        skel_points <<  center ;
-                        skel_children.append( QVector<unsigned int>()) ;
-                    }
-
-
-                    skel_children[center_t1_idx].append( center_t2_idx );
                     }
                 }
                 else //current face in domain
@@ -326,8 +332,8 @@ void SkelWorker::run()
 
                 }
             }
-                else // next face in domain
-                {
+            else // next face in domain
+            {
                 if ((!current->info().in_domain())&&(!cdt.is_infinite(current)))
                 {
                     int middle_idx ;
@@ -397,13 +403,13 @@ void SkelWorker::run()
     crop() ;
 
     //Renforcement
-//    for (int i = 0 ; i < skel_children.count() ; i++)
-//        for (int j = 0 ; j < skel_children[i].count(); j++)
-//        {
-//            int k = skel_children[i][j] ;
-//            if (!skel_children[k].contains(i))
-//                skel_children[k] << i ;
-//        }
+    //    for (int i = 0 ; i < skel_children.count() ; i++)
+    //        for (int j = 0 ; j < skel_children[i].count(); j++)
+    //        {
+    //            int k = skel_children[i][j] ;
+    //            if (!skel_children[k].contains(i))
+    //                skel_children[k] << i ;
+    //        }
 
 
     //computing skel distance
@@ -526,7 +532,8 @@ void SkelWorker::run()
         {
             QVector<unsigned int> & v = skel_children[i] ;
             QPointF & point = skel_points[i] ;
-            if ((v.count()==1)&&(!isFramePoint(mainWindow->openedImage,point)))
+            // si c'est une impasse et que ce n'est pas une sortie.
+            if ((v.count()==1)&&(first_point_on_frame>i))
                 //if (v.count()==1)
             {
                 int current = v[0] ;

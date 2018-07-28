@@ -707,16 +707,16 @@ void ContourWidget::updateThreshold(double treshold)
     }
 
     //smoothing
-    if (settings.value("Contour/Smoothing",false).toBool())
-    for (int i = 0 ; i < settings.value("Contour/SmoothingIterations",0).toInt() ; i++)
-    {
-        QVector<QPointF> new_vertices(contour_vertices.count());
-        for (int j = 0 ; j < new_vertices.count() ; j++)
-            new_vertices[j] = (contour_vertices[next_point_index[j]]+
-                    contour_vertices[prev_point_index[j]]+
-                    contour_vertices[j])/3;
-        contour_vertices = new_vertices ;
-    }
+//    if (settings.value("Contour/Smoothing",false).toBool())
+//    for (int i = 0 ; i < settings.value("Contour/SmoothingIterations",0).toInt() ; i++)
+//    {
+//        QVector<QPointF> new_vertices(contour_vertices.count());
+//        for (int j = 0 ; j < new_vertices.count() ; j++)
+//            new_vertices[j] = (contour_vertices[next_point_index[j]]+
+//                    contour_vertices[prev_point_index[j]]+
+//                    contour_vertices[j])/3;
+//        contour_vertices = new_vertices ;
+//    }
 
     //count connected components
     QVector < unsigned int> & connected_components_start = mainWindow->getConnectedComponentsStarts();

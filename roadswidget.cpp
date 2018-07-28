@@ -1163,6 +1163,8 @@ void RoadsWidget::exploreEdge( int first, int second)
             {
                 int  first_junction = index_junction.value(first) ;
                 int  second_junction = index_junction.value(last) ;
+                if (first_junction!=second_junction)
+                {
                 Junction junction = junctions[second_junction] ;
                 Junction junction2 = junctions[first_junction] ;
                 junction.mean_radius = (junction.mean_radius*junction.centers_indices.count()+
@@ -1181,7 +1183,8 @@ void RoadsWidget::exploreEdge( int first, int second)
 
                 junctions[second_junction] = junction ;
                 junctions[first_junction]= junction2 ;
-                /*Junction junction2 = junctions[first_junction] ;
+                }
+            /*Junction junction2 = junctions[first_junction] ;
             junction2.vertices.clear() ;
             junction2.arrivals.clear() ;
             junctions[first_junction] = junction2 ;*/

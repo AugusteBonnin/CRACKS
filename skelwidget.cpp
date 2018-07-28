@@ -4,6 +4,7 @@
 #include "kdtree2d.h"
 #include "skelpage.h"
 #include "skelworker.h"
+#include "skelworker2.h"
 #include <QApplication>
 
 #include <QAction>
@@ -147,7 +148,7 @@ void SkelWidget::buildSkel()
 {
     mainWindow->setActionsEnabled(false);
     mainWindow->progress->setValue(0);
-    SkelWorker * worker = new SkelWorker(mainWindow) ;
+    SkelWorker2 * worker = new SkelWorker2(mainWindow) ;
     mainWindow->progress->setMaximum(getProgressMax()+worker->getProgressMax());
 
     connect(worker,SIGNAL(finished()),this,SLOT(buildSkel2())) ;
@@ -164,24 +165,13 @@ void SkelWidget::buildSkel2()
     makeCurrent();
     skel_colors.clear() ;
 
-    qreal max_d = 0;
-    for (int i = 0 ; i < skel_distance.count() ; i++)
-    {
-        if (skel_distance[i] > max_d)
-            max_d = skel_distance[i] ;
-        emit progressIncrement(1);
-    }
 
     QVector<float> vertices ;
-    float inverse_max_d = 1.0/max_d ;
     for (int i = 0 ; i < skel_points.count() ; i++)
     {
         vertices << skel_points[i].x() << skel_points[i].y() ;
-        float c = skel_distance[i]*inverse_max_d;
-        //vertices << c << 0 << 1-c << 1;
-        vertices << 0 << 1 << 0 << 1;
-
-        emit progressIncrement(1);
+       vertices << 0 << 1 << 0 << 1;
+       emit progressIncrement(1);
     }
 
     if (mainWindow->skel_vbo.isCreated())
