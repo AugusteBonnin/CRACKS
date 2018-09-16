@@ -21,6 +21,7 @@ class RoadsPage : public Page
 
     void saveSHP();
     void saveSVG();
+    void saveCSV();
 
 public:
     explicit RoadsPage(MainWindow *parent = 0);

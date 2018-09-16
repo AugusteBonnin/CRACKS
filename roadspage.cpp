@@ -52,10 +52,12 @@ void RoadsPage::nextPhase()
         mainWindow->trySaveImage(tr("Voies et places-"),image);
 
     }
-    if (settings.value("Roads/SaveSVG",false).toBool())
+    //if (settings.value("Roads/SaveSVG",false).toBool())
         saveSVG();
-    if (settings.value("Roads/SaveSHP",false).toBool())
+    //if (settings.value("Roads/SaveSHP",false).toBool())
         saveSHP();
+
+        saveCSV();
 }
 
 void RoadsPage::reinit()
@@ -130,6 +132,38 @@ void RoadsPage::saveSVG()
 
 }
 
+void RoadsPage::saveCSV()
+{
+    QFileInfo file(settings.value("File").toString()) ;
+
+    //roads
+    QString path = tr("%1/Voies-%2.csv").arg(file.absoluteDir().absolutePath()).arg(file.baseName());
+
+    QFile data(path);
+      if (data.open(QFile::WriteOnly)) {
+          QTextStream out(&data);
+          out << tr("ACCESSIBILITE") << "," ;
+          out << tr("ORTHOGONALITE") << "," ;
+          out << tr("ESPACEMENT") << "," ;
+          out << tr("LONGUEUR") << "," ;
+          out << tr("DEGRE") << "," ;
+          out << tr("LONGUEUR_TOPO") << "\n" ;
+
+          for (int i = 0 ; i < mainWindow->valid_roads.count() ; i++)
+          {
+              for (int j = 0 ; j < mainWindow->histoDoubleData.count()-2 ; j++)
+                  out << mainWindow->histoDoubleData[j+1][i] << "," ;
+
+              out << mainWindow->histoIntData[3][i] << "," ;
+              out << mainWindow->histoIntData[4][i] << "\n" ;
+
+          }
+
+          data.close();
+      }
+
+}
+
 
 void RoadsPage::saveSHP()
 {
@@ -180,14 +214,14 @@ void RoadsPage::saveSHP()
                                                padfX.data(), padfY.data() ,NULL );
 
             int entity = SHPWriteObject( shapeFile, -1 /*for newly created shape*/, object );
-            for (int j = 0 ; j < mainWindow->histoDoubleData.count()-1 ; j++)
+            for (int j = 0 ; j < mainWindow->histoDoubleData.count()-2 ; j++)
                 DBFWriteDoubleAttribute( dbfFile,entity,fieldNumbers[j],
                                          mainWindow->histoDoubleData[j+1][i]);
 
             DBFWriteIntegerAttribute (dbfFile,entity,fieldNumbers[4],
-                                     mainWindow->histoIntData[1][i]);
+                                     mainWindow->histoIntData[3][i]);
             DBFWriteIntegerAttribute (dbfFile,entity,fieldNumbers[5],
-                                     mainWindow->histoIntData[2][i]);
+                                     mainWindow->histoIntData[4][i]);
 
             SHPDestroyObject(object);
 
