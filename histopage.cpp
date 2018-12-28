@@ -14,7 +14,6 @@
 HistoPage::HistoPage(MainWindow *parent) :
     Page(parent)
 {
-    qDebug() << "debut HistoPage::HistoPage" ;
     layout = new QGridLayout;
     container = new QStackedWidget(this) ;
 layout->addWidget(container) ;
@@ -22,7 +21,7 @@ setLayout(layout);
 
 
 initDone = true ;
-qDebug() << "fin HistoPage::HistoPage" ;
+parent->setActionsEnabled(true);
 
 }
 

@@ -12,6 +12,7 @@
 RoadsPage::RoadsPage(MainWindow *parent) :
     Page(parent)
 { 
+
     docForm = new DocForm(parent,tr("qrc:/docs/aide.html#Voies"));
     paramForm = new RoadsParamForm(parent,this);
 
@@ -29,7 +30,7 @@ RoadsPage::RoadsPage(MainWindow *parent) :
 
     connect(widget,SIGNAL(ScaleChanged(double)),sw,SLOT(ScaleChanged(double)));
 
-    QTimer::singleShot(100,this,SLOT(on_pushButton_2_clicked()));
+    QTimer::singleShot(0,this,SLOT(on_pushButton_2_clicked()));
 }
 
 RoadsPage::~RoadsPage()
@@ -67,12 +68,12 @@ void RoadsPage::reinit()
 
 void RoadsPage::on_pushButton_2_clicked()
 {
-    //mainWindow->action_next->setEnabled(false);
+    mainWindow->setActionsEnabled(false);
     paramForm->setEnabled(false);
     widget->buildRoads(settings.value("RoadsParamForm-ScaleFactor",QVariant(1.0)).toDouble(),
                        settings.value("RoadsParamForm-MaxAngle",QVariant(45.0)).toDouble());
     paramForm->setEnabled(true);
-    //mainWindow->action_next->setEnabled(true);
+    mainWindow->setActionsEnabled(true);
 
 }
 
@@ -127,7 +128,7 @@ void RoadsPage::saveSVG()
             out << "</svg>\n" ;
         }
         data.close() ;
-        mainWindow->log(tr("%1").arg(path));
+        mainWindow->appendToSavedFiles(tr("%1").arg(path));
         qDebug() << "fin save svg" ;
 
 }
@@ -265,8 +266,8 @@ void RoadsPage::saveSHP()
         SHPClose( shapeFile );
         DBFClose(dbfFile);
 
-        mainWindow->log(path);
-mainWindow->log(path.replace(".shp",".shx"));
-mainWindow->log(path.replace(".shx",".dbf"));
+        mainWindow->appendToSavedFiles(path);
+mainWindow->appendToSavedFiles(path.replace(".shp",".shx"));
+mainWindow->appendToSavedFiles(path.replace(".shx",".dbf"));
 
      }

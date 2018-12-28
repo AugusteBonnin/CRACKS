@@ -22,7 +22,7 @@ setLayout(layout);
 
 
 initDone = true ;
-
+parent->setActionsEnabled(true);
 }
 
 MapPage::~MapPage()

@@ -113,15 +113,15 @@ void IntroParamForm::validateFile()
         if (page->image.load(ui->lineEdit->text()))
         {
             settings.setValue("File",ui->lineEdit->text());
-            mainWindow->statusBar()->findChild<QLabel*>()->setText(tr("<FONT COLOR=GREEN>Le fichier %1 est bien une image.").arg(
-                                                                       settings.value("IntroParamForm-File-0",QVariant("")).toString()));
+            mainWindow->statusBar()->showMessage(tr("Le fichier %1 est bien une image.").arg(
+                                                                       settings.value("IntroParamForm-File-0",QVariant("")).toString()),2000);
             settings.setValue("IntroParamForm-File-0",QVariant(ui->lineEdit->text()));
             ok = true ;
         }
         else
         {
-            mainWindow->statusBar()->findChild<QLabel*>()->setText(
-                        tr("<FONT COLOR=RED>Le fichier %1 n'est pas une image valide.").arg(ui->lineEdit->text()));
+            mainWindow->statusBar()->showMessage(
+                        tr("Le fichier %1 n'est pas une image valide.").arg(ui->lineEdit->text()),2000);
             page->image = QImage() ;
 
         }
@@ -133,16 +133,16 @@ void IntroParamForm::validateFile()
         if (list.count()&&page->image.load(QString("%1/%2").arg(ui->lineEdit->text()).arg(list[0])))
         {
             settings.setValue("File",QString("%1/%2").arg(ui->lineEdit->text()).arg(list[0]));
-            mainWindow->statusBar()->findChild<QLabel*>()->setText(tr("<FONT COLOR=GREEN>Le dossier %1 contient %2 images.").arg(
+            mainWindow->statusBar()->showMessage(tr("Le dossier %1 contient %2 images.").arg(
                                                                        settings.value("IntroParamForm-File-1",QVariant("")).toString())
-                                                                   .arg(list.count()));
+                                                                   .arg(list.count()),2000);
             settings.setValue("IntroParamForm-File-1",QVariant(ui->lineEdit->text()));
             ok = true ;
         }
         else
         {
-            mainWindow->statusBar()->findChild<QLabel*>()->setText(tr("<FONT COLOR=RED>Le dossier %1 ne contient aucune image.").arg(
-                                                                       settings.value("IntroParamForm-File-1",QVariant("")).toString()));
+            mainWindow->statusBar()->showMessage(tr("Le dossier %1 ne contient aucune image.").arg(
+                                                                       settings.value("IntroParamForm-File-1",QVariant("")).toString()),2000);
             page->image = QImage() ;
 
         }
@@ -154,17 +154,17 @@ void IntroParamForm::validateFile()
         if (list.count()&&page->image.load(QString("%1/%2").arg(ui->lineEdit->text()).arg(list[list.count()-1])))
         {
             settings.setValue("File",QString("%1/%2").arg(ui->lineEdit->text()).arg(list[list.count()-1]));
-            mainWindow->statusBar()->findChild<QLabel*>()->setText(tr("<FONT COLOR=GREEN>Le dossier %1 contient %2 images.").arg(
+            mainWindow->statusBar()->showMessage(tr("Le dossier %1 contient %2 images.").arg(
                                                                        settings.value("IntroParamForm-File-2",QVariant("")).toString())
-                                                                   .arg(list.count()));
+                                                                   .arg(list.count()),2000);
 
             settings.setValue("IntroParamForm-File-2",QVariant(ui->lineEdit->text()));
             ok = true ;
         }
         else
         {
-            mainWindow->statusBar()->findChild<QLabel*>()->setText(tr("<FONT COLOR=RED>Le dossier %1 ne contient aucune image.").arg(
-                                                                       settings.value("IntroParamForm-File-2",QVariant("")).toString()));
+            mainWindow->statusBar()->showMessage(tr("Le dossier %1 ne contient aucune image.").arg(
+                                                                       settings.value("IntroParamForm-File-2",QVariant("")).toString()),2000);
             page->image = QImage() ;
         }
         break ;

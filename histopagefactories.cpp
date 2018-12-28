@@ -51,7 +51,7 @@ SimpleHistoPageFactory::createHistoPage(MainWindow*mainWindow)
     histoPage->setDocForm( new DocForm(mainWindow,QObject::tr("qrc:/docs/aide.html#Histogrammes")) );
 
     histoPage->paramForm->setEnabled(true);
-    //mainWindow->action_next->setEnabled(true);
+    mainWindow->next->setEnabled(true);
 
     return histoPage ;
 
@@ -83,7 +83,7 @@ DynamicHistoPageFactory::createHistoPage(MainWindow*mainWindow)
     histoPage->setDocForm( new DocForm(mainWindow,QObject::tr("qrc:/docs/aide.html#Histogrammes")) );
 
     histoPage->paramForm->setEnabled(true);
-    //mainWindow->action_next->setEnabled(true);
+    mainWindow->next->setEnabled(true);
 
     return histoPage ;
 

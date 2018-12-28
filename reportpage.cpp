@@ -17,8 +17,8 @@ ReportPage::ReportPage(MainWindow *parent) :
     paramForm = new ReportParamForm(parent,this) ;
     docForm = new DocForm(parent,tr("qrc:/docs/aide.html#Bilan"));
 
-    ui->textEdit->append(mainWindow->logStrings.join('\n'));
-    ui->textEdit->append(tr("Soit un total de %1 fichiers.\n").arg(mainWindow->logStrings.count()));
+    ui->textEdit->append(mainWindow->savedFilesPaths.join('\n'));
+    ui->textEdit->append(tr("Soit un total de %1 fichiers.\n").arg(mainWindow->savedFilesPaths.count()));
 
     switch (settings.value("IntroParamForm-Operation",QVariant(0)).toUInt())
     {
@@ -32,7 +32,7 @@ ReportPage::ReportPage(MainWindow *parent) :
                                 "Il reste %1 images à traiter qui généreront %2 fichiers. "
                                 "Cliquez sur la flèche de droite pour lancer le traitement.")
                              .arg(settings.value("FileList").toStringList().count()-1)
-                             .arg((settings.value("FileList").toStringList().count()-1)*mainWindow->logStrings.count()));
+                             .arg((settings.value("FileList").toStringList().count()-1)*mainWindow->savedFilesPaths.count()));
 
         break ;
     case 2 :
@@ -40,7 +40,7 @@ ReportPage::ReportPage(MainWindow *parent) :
                                 "Il reste %1 images à traiter qui généreront %2 fichiers. "
                                 "Cliquez sur la flèche de droite pour lancer le traitement.")
                              .arg(settings.value("FileList").toStringList().count()-1)
-                             .arg((settings.value("FileList").toStringList().count()-1)*mainWindow->logStrings.count()));
+                             .arg((settings.value("FileList").toStringList().count()-1)*mainWindow->savedFilesPaths.count()));
 
         break ;
     }

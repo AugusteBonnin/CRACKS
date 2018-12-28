@@ -14,17 +14,14 @@
 #include <QToolButton>
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    QMainWindow(parent)
 {
-    ui->setupUi(this);
+
+    statusBar()->setVisible(true);
+
 
     statusLabel = new QLabel(tr("Application chargée"),this);
     progress = new QProgressBar(this);
-
-    statusBar()->addWidget(statusLabel);
-    //statusBar()->addPermanentWidget(progress);
-
 
     stackedWidget = new QStackedWidget(this) ;
     setCentralWidget(stackedWidget);
@@ -34,56 +31,38 @@ MainWindow::MainWindow(QWidget *parent) :
     addToolBar(toolbar);
     toolbar->setIconSize(QSize(32,32));
 
-    QIcon icon_next(QString(":/images/next640.png")) ;
-    QIcon icon_back(QString(":/images/prev640.png")) ;
+    QIcon icon_next(QString(":/images/next64.png")) ;
+    QIcon icon_back(QString(":/images/prev64.png")) ;
 
-
-    QMenu * menu = new QMenu(this) ;
-    menu->addAction(tr("Précédent"),this,SLOT(prevPhase()));
-
-    back = new QToolButton(this);
+    back = new QPushButton(this);
     back->setIcon(icon_back);
-    back->setMenu(menu);
+    back->setIconSize(QSize(32,32));
+    back->setEnabled(false);
+    back->setToolTip(tr("Pas de page précédente."));
+    connect(back,SIGNAL(clicked(bool)),this,SLOT(prevPhase()));
     toolbar->addWidget(back);
 
 
-    title = new QLabel("PHASE 0 : INTRODUCTION",this) ;
+    title = new QLabel(tr("PHASE 0 : INTRODUCTION"),this) ;
     QFont font = title->font() ;
     font.setPixelSize(24);
     title->setFont(font) ;
     toolbar->addWidget(title );
 
-    menu = new QMenu(this) ;
-    menu->addAction(tr("Suivant"),this,SLOT(nextPhase()));
-
-    next = new QToolButton(this);
+    next = new QPushButton(this);
     next->setIcon(icon_next);
-    next->setMenu(menu);
-    next->setPopupMode(QToolButton::InstantPopup);
+    next->setIconSize(QSize(32,32));
+    next->setEnabled(true);
+    next->setToolTip(tr("PHASE 1 : RECADRAGE"));
+    connect(next,SIGNAL(clicked(bool)),this,SLOT(nextPhase()));
     toolbar->addWidget(next);
 
-//    docWidget = new QDockWidget(tr("Aide"),this);
-//    docWidget->setObjectName(tr("Aide"));
-
-//    addDockWidget(Qt::TopDockWidgetArea,docWidget);
-
-//    paramWidget = new QDockWidget(tr("Paramètres"),this);
-//    paramWidget->setObjectName(tr("Paramètres"));
-
-//    addDockWidget(Qt::BottomDockWidgetArea,paramWidget);
-
     toolbar->addWidget(progress);
-
 
     regularizedImage = NULL ;openedImage = NULL ;
     texture =  NULL ;
 
     kdtree = NULL ;
-
-    //    QSettings settings;
-    //    QVariant variant = settings.value("geometry") ;
-    //    if (variant!=QVariant())
-    //        restoreGeometry(variant.toByteArray());
 
     phase = -1 ;
 
@@ -127,16 +106,16 @@ void MainWindow::batchProcess(){
     new_dir.removeRecursively();
     dir.mkdir(new_dir_path);
     dir.cd(new_dir_path);
-    for (int f = 0 ; f < logStrings.count() ; f++)
+    for (int f = 0 ; f < savedFilesPaths.count() ; f++)
     {
-        QString new_path = dir.absoluteFilePath(QFileInfo(logStrings[f]).fileName()) ;
+        QString new_path = dir.absoluteFilePath(QFileInfo(savedFilesPaths[f]).fileName()) ;
         QFile::remove(new_path);
-        QFile::rename(logStrings[f],new_path);
+        QFile::rename(savedFilesPaths[f],new_path);
     }
 
     for (int i = 1 ; i < files.count() ; i ++ )
     {
-        logStrings.clear();
+        savedFilesPaths.clear();
         QDir dir(settings.value("IntroParamForm-File-1").toString());
         settings.setValue("File",dir.absoluteFilePath(files[i]));
         initialImage.load(dir.absoluteFilePath(files[i]));
@@ -160,11 +139,11 @@ void MainWindow::batchProcess(){
                 break ;
         }
 
-        for (int f = 0 ; f < logStrings.count() ; f++)
+        for (int f = 0 ; f < savedFilesPaths.count() ; f++)
         {
-            QString new_path = dir.absoluteFilePath(QFileInfo(logStrings[f]).fileName()) ;
+            QString new_path = dir.absoluteFilePath(QFileInfo(savedFilesPaths[f]).fileName()) ;
             QFile::remove(new_path);
-            QFile::rename(logStrings[f],new_path);
+            QFile::rename(savedFilesPaths[f],new_path);
 
         }
 
@@ -174,15 +153,15 @@ void MainWindow::batchProcess(){
 
 void::MainWindow::organizeSequenceFiles(QStringList dirs_paths)
 {
-    for (int i = 0 ; i < logStrings.count() ; i++)
+    for (int i = 0 ; i < savedFilesPaths.count() ; i++)
     {
         for (int j = 0 ; j < dirs_paths.count() ; j++)
-            if (logStrings[i].startsWith(dirs_paths[j]))
+            if (savedFilesPaths[i].startsWith(dirs_paths[j]))
             {
                 QDir dir(dirs_paths[j]);
-                QString new_path = dir.absoluteFilePath(QFileInfo(logStrings[i]).fileName()) ;
+                QString new_path = dir.absoluteFilePath(QFileInfo(savedFilesPaths[i]).fileName()) ;
                 QFile::remove(new_path);
-                QFile::rename(logStrings[i],new_path);
+                QFile::rename(savedFilesPaths[i],new_path);
             }
 
     }
@@ -231,9 +210,9 @@ void MainWindow::dynamicalAnalysis(){
     progressDialog.setWindowModality(Qt::WindowModal);
 
     QSet<QString> dirs_paths_set ;
-    for (int i = 0 ; i < logStrings.count(); i++)
+    for (int i = 0 ; i < savedFilesPaths.count(); i++)
     {
-        QString key = logStrings[i].left(logStrings[i].indexOf(files[files.count()-1])-1);
+        QString key = savedFilesPaths[i].left(savedFilesPaths[i].indexOf(files[files.count()-1])-1);
         dirs_paths_set.insert(key);
     }
 
@@ -261,7 +240,7 @@ void MainWindow::dynamicalAnalysis(){
 
     for (int i = 0 ; i < files.count() -1; i ++ )
     {
-        logStrings.clear();
+        savedFilesPaths.clear();
         settings.setValue("File",dir.absoluteFilePath(files[i]));
         initialImage.load(dir.absoluteFilePath(files[i]));
         for (int phase = 1 ; phase < 4 ; phase++)
@@ -342,8 +321,6 @@ void MainWindow::nextPhase()
     if (phase>=0)
         ((Frame*)(stackedWidget->currentWidget()))->page->nextPhase();
 
-    //action_next->setEnabled(false);
-
     phase++ ;
 
     QWidget * widget = Phase::newFromPhase(phase,this);
@@ -370,18 +347,12 @@ void MainWindow::restorePhase()
     Frame * frame = (Frame*)stackedWidget->currentWidget() ;
 
     setPageTitle(frame->page->getTitle());
-    //action_back->setToolTip(frame->page->getPrevTooltip());
-    //action_next->setToolTip(frame->page->getNextTooltip());
+    back->setToolTip(frame->page->getPrevTooltip());
+    next->setToolTip(frame->page->getNextTooltip());
 
     restoreState(settings.value(QString("windowState%1").arg(phase)).toByteArray());
 
-//    docWidget->setWidget(page->getDocForm());
-//    docWidget->setMinimumSize(QSize(320,240));
-//    restoreDockWidget(docWidget);
-//    paramWidget->setWidget(page->getParamForm());
-//    restoreDockWidget(paramWidget);
-
-    //action_back->setEnabled(phase);
+    back->setEnabled(phase);
 
 }
 
@@ -448,29 +419,32 @@ void MainWindow::on_actionParam_tres_triggered()
 
 void MainWindow::setActionsEnabled(bool enabled)
 {
-    //    action_back->setEnabled(enabled?(phase>0):false) ;
-//    action_next->setEnabled(enabled);
-   Page * page = ((Frame*)stackedWidget->currentWidget())->page;
-    page->getParamForm()->setEnabled(enabled);
+    back->setEnabled(enabled?(phase>0):false) ;
+    next->setEnabled(enabled);
+//    Page * page = ((Frame*)stackedWidget->currentWidget())->page;
+//    page->getParamForm()->setEnabled(enabled);
 
     repaint();
 }
 
-void MainWindow::log(QString str)
+void MainWindow::appendToSavedFiles(QString str)
 {
-    logStrings << str ;
-    statusBar()->findChild<QLabel*>()->setText(str);
+    savedFilesPaths << str ;
+    statusBar()->showMessage(str+tr(" enregistré."),2000);
 }
 
 void MainWindow::trySaveImage(const QString &pre, const QImage &image)
 {
     QFileInfo file(settings.value("File").toString());
 
-    QString fileName = tr("%1/%2%3").arg(file.absoluteDir().absolutePath()).arg(pre).arg(file.fileName());
+    QString fileName = tr("%1/%2%3.jpg").arg(file.absoluteDir().absolutePath()).arg(pre).arg(file.baseName());
     if (image.save(fileName))
-        log(tr("%1").arg(fileName));
+    {
+        appendToSavedFiles(tr("%1").arg(fileName));
+        htmlLog.append(tr("Vous avez enregistré : %1<BR>").arg(fileName));
+    }
     else
-        log(tr("<FONT COLOR=\"RED\">%1 n'a pas été enregistrée.</FONT>").arg(fileName));
+        htmlLog.append(tr("<FONT COLOR=\"RED\">%1 n'a pas été enregistrée.</FONT><BR>").arg(fileName));
 
 }
 

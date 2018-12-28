@@ -17,8 +17,8 @@
 #include <QOpenGLTexture>
 #include <QOpenGLVertexArrayObject>
 #include <QProgressBar>
+#include <QPushButton>
 #include <QStackedWidget>
-#include <QToolButton>
 #include <QUrl>
 
 namespace Ui {
@@ -86,7 +86,7 @@ KDTree2D::PointCloud point_cloud;
     inline QHash<int,int> & getIndexJunction(){return index_junction;}
     inline QVector<Junction> & getJunctions(){return junctions;}
     void setActionsEnabled(bool enabled);
-    QToolButton * back,*next;
+    QPushButton * back,*next;
 
     QVector<unsigned int> pre_roads_index_vbo;
     QVector<float> pre_roads_vbo ;
@@ -121,9 +121,10 @@ KDTree2D::PointCloud point_cloud;
     double scale ;
     QPointF center;
 
-    QStringList logStrings;
+    QString htmlLog;
+    QStringList savedFilesPaths;
 
-    void log(QString str);
+    void appendToSavedFiles(QString str);
     void trySaveImage(const QString & pre,const QImage & image);
     void trySaveDoubleImage(QString pre, DoubleImage *image);
     QSettings settings;

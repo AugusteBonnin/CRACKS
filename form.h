@@ -1,11 +1,11 @@
 #ifndef FORM_H
 #define FORM_H
 
+
 #include <QSettings>
 #include <QWidget>
 
-
-class MainWindow ;
+class MainWindow;
 
 class Form :  public QWidget
 {

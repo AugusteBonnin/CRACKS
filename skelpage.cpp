@@ -34,7 +34,7 @@ void SkelPage::saveSVG()
         out << "</svg>\n" ;
     }
     data.close() ;
-    mainWindow->log(tr("%1").arg(path));
+    mainWindow->appendToSavedFiles(tr("%1").arg(path));
 
 }
 
@@ -80,9 +80,9 @@ void SkelPage::saveSHP()
     SHPClose( shapeFile );
     DBFClose(dbfFile);
 
-    mainWindow->log(path);
-    mainWindow->log(path.replace(".shp",".shx"));
-    mainWindow->log(path.replace(".shx",".dbf"));
+    mainWindow->appendToSavedFiles(path);
+    mainWindow->appendToSavedFiles(path.replace(".shp",".shx"));
+    mainWindow->appendToSavedFiles(path.replace(".shx",".dbf"));
 
 }
 

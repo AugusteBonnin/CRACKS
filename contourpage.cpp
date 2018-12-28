@@ -39,7 +39,7 @@ QString path = tr("%1/Contour-%2.svg").arg(file.absoluteDir().absolutePath()).ar
         out << "</svg>\n" ;
     }
     data.close() ;
-mainWindow->log(tr("%1").arg(path));
+mainWindow->appendToSavedFiles(tr("%1").arg(path));
 }
 
 void ContourPage::saveSHP()
@@ -83,14 +83,15 @@ QPointF point ;
     }
     SHPClose( shapeFile );
 
-    mainWindow->log(path);
-    mainWindow->log(path.replace(".shp",".shx"));
+    mainWindow->appendToSavedFiles(path);
+    mainWindow->appendToSavedFiles(path.replace(".shp",".shx"));
 
 }
 
 ContourPage::ContourPage(MainWindow *parent) :
     Page(parent)
 {
+    initDone=false;
 
     originalImage = new DoubleImage(*(mainWindow->openedImage)) ;
     originalImage->computeMinMax();
@@ -130,7 +131,7 @@ void ContourPage::updateThreshold(int value)
 
     paramForm->setEnabled(true);
 
-    //mainWindow->action_next->setEnabled(true);
+    mainWindow->setActionsEnabled(true);
 
     initDone = true ;
 

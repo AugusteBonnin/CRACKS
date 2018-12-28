@@ -45,9 +45,9 @@ void HistoResult::saveImage()
 
     QString path(dir.filePath((tr("Histogramme-")+resultName+"-"+fileInfo.fileName())))  ;
     if(image.save(path))
-       mainWindow->log(tr("%1").arg(path));
+       mainWindow->appendToSavedFiles(tr("%1").arg(path));
    else
-       mainWindow->log(tr("<FONT COLOR=RED>%1 n'a pas été enregistré.</FONT>").arg(path));
+       mainWindow->appendToSavedFiles(tr("<FONT COLOR=RED>%1 n'a pas été enregistré.</FONT>").arg(path));
 }
 
 void HistoResult::saveCSV()
@@ -65,7 +65,7 @@ void HistoResult::saveCSV()
         ts << csv ;
 
         file.close() ;
-        mainWindow->log(tr("%1").arg(path));
+        mainWindow->appendToSavedFiles(tr("%1").arg(path));
     }
 
 }

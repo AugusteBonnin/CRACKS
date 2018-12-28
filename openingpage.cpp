@@ -13,7 +13,6 @@
 OpeningPage::OpeningPage(MainWindow *parent) :
     Page(parent)
 {
-
     originalImage = new DoubleImage(*(mainWindow->regularizedImage)) ;
     originalImage->computeMinMax();
     originalQImage = QImage(originalImage->width(),originalImage->height(),QImage::Format_ARGB32);
@@ -174,8 +173,8 @@ void OpeningPage::initImages()
 
     preview() ;
 
-    ////mainWindow->action_next->setEnabled(true);
-
+mainWindow->setActionsEnabled(true)
+        ;
     computed = false ;
     initDone = true ;
 

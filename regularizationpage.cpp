@@ -46,7 +46,7 @@ RegularizationPage::RegularizationPage(MainWindow *parent) :
     initDone = true ;
     computed = false ;
 
-    ////mainWindow->action_next->setEnabled(true);
+    parent->setActionsEnabled(true);
 
 }
 
