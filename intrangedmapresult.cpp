@@ -8,52 +8,56 @@
 
 #include <QPainter>
 
-IntRangedMapResult::IntRangedMapResult(MapPage *parent, QString titre, QVector<int> &data,int index, int min, int max, int type) :
+IntRangedMapResult::IntRangedMapResult(MapPage *parent, QString titre, QVector<int> &data,int index, int min, int max,int step, int type) :
     MapResult(titre,parent,index) ,
     data(data)
 {
+ QVector<int> classes_sup;
 
-    QSet<int> keys;
 
-    for (int i = 0 ; i  < data.count() ; i++)
-    {
-        keys.insert(data[i]);
-    }
+    for (int i = min ; i < max ; i+= step)
+        classes_sup << i ;
 
-    class_value = keys.toList() ;
-    std::sort(class_value.begin(),class_value.end());
+    QSet<int> set;
+    for (int i = 0 ; i < data.count() ; i++)
+        set.insert(data[i]);
+
+     QList<int> values = set.toList();
 
     QHash<int,int> classForValue;
-    for (int i = 0 ; i < class_value.count() ; i++)
-        classForValue.insert(class_value[i],i) ;
+    QHash<int,QVector<int> > valuesForClass;
+    for (int i = 0 ; i < values.count() ; i++)
+    {
+        int classe = 0 ;
+        while ((classe<classes_sup.count())&&(values[i]>classes_sup[classe]))
+            classe++;
+        classForValue.insert(values[i],classe) ;
+        QVector<int> v = valuesForClass.value(classe,QVector<int>());
+        v << values[i] ;
+        valuesForClass.insert(classe,v);
+    }
+
+    QVector<QColor> colorForClass;
+    int class_count = valuesForClass.keys().count();
+    for (int i =0 ; i < class_count;i++)
+    {
+        colorForClass << colorFor(i/(float)(class_count-1.0f));
+        QVector<int> class_values = valuesForClass.value(i);
+        std::sort(class_values.begin(),class_values.end());
+        if (class_values.count())
+            ui->verticalLayout->addWidget(new IntColorBadge(this,
+                                                        colorForClass[i],
+                                                        QString("[%1,%2]")
+                                                        .arg(class_values[0])
+                                      .arg(class_values[class_values.count()-1])
+                                                        )
+                                      );
+    }
 
     for (int i = 0 ; i < data.count() ; i++)
-        colors << colorFor((data[i]-min)/(float)(max-min)) ;
+        colors << colorForClass[classForValue.value(data[i])] ;
 
-    for (int i = 0 ; i < class_value.count() ; i++)
-    {
-        if (class_value[i]-min>0)
-        {
-            if (class_value[i]-max<0)
-                ui->verticalLayout->addWidget(new IntColorBadge(this,
-                                                                colorFor((class_value[i]-min)/(float)(max-min)),
-                                                                QString("%1").arg(class_value[i])
-                                                                )
-                                              );
-            else if (class_value[i]==max)
-                ui->verticalLayout->addWidget(new IntColorBadge(this,
-                                                                colorFor((class_value[i]-min)/(float)(max-min)),
-                                                                tr("%1 et +").arg(class_value[i])
-                                                                )
-                                              );
-        }
-        else if (class_value[i]==min)
-            ui->verticalLayout->addWidget(new IntColorBadge(this,
-                                                            colorFor((class_value[i]-min)/(float)(max-min)),
-                                                            tr("%1 et -").arg(class_value[i])
-                                                            )
-                                          );
-    }
+
     ui->titre->setAlignment(Qt::AlignCenter);
     ui->titre->setText(titre);
 

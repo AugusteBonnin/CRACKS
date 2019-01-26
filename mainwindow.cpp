@@ -76,7 +76,7 @@ MainWindow::~MainWindow()
     QSettings settings ;
     settings.setValue(QString("geometry"), saveGeometry());
 
-    delete ui;
+    //delete ui;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

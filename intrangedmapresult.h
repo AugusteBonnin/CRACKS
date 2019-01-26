@@ -18,7 +18,7 @@ class IntRangedMapResult : public MapResult
     QVector<QColor> colors;
     QList<int> class_value ;
 public:
-    explicit IntRangedMapResult(MapPage *parent, QString titre, QVector<int> &data,int index, int min,int max,int type);
+    explicit IntRangedMapResult(MapPage *parent, QString titre, QVector<int> &data, int index, int min, int max, int step, int type);
     ~IntRangedMapResult();
 
 private:
