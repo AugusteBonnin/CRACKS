@@ -1,11 +1,11 @@
 #include "imagewidget.h"
-#include "doublehistowidget.h"
+#include "logloghistowidget.h"
 
 #include <QPainter>
 #include <QSettings>
 #include <math.h>
 
-DoubleHistoWidget::DoubleHistoWidget(QWidget *parent,QVector<double> & data) :
+LogLogHistoWidget::LogLogHistoWidget(QWidget *parent,QVector<double> & data) :
     QWidget(parent) , data(data)
 {
 
@@ -27,7 +27,7 @@ DoubleHistoWidget::DoubleHistoWidget(QWidget *parent,QVector<double> & data) :
         int idx ;
         //if (isnan(data[i])||isinf(data[i])) continue ;
 
-            idx= (int)(class_count.count()*(data[i]-min)/(max-min)) ;
+            idx= (int)(class_count.count()*log2(1+(data[i]-min))/log2(1+(max-min))) ;
             if (idx==class_count.count()) idx-- ;
             class_count[idx]++;
             max_class_count = qMax(max_class_count,class_count[idx]) ;
@@ -35,11 +35,11 @@ DoubleHistoWidget::DoubleHistoWidget(QWidget *parent,QVector<double> & data) :
 
     }
 }
-DoubleHistoWidget::~DoubleHistoWidget()
+LogLogHistoWidget::~LogLogHistoWidget()
 {
 }
 
-double DoubleHistoWidget::mean(int i)
+double LogLogHistoWidget::mean(int i)
 {
     QSettings settings;
     int radius = settings.value("HistoPage-MeanRadius",5).toInt() ;
@@ -54,21 +54,9 @@ double DoubleHistoWidget::mean(int i)
 
     return total/count ;
 }
-void DoubleHistoWidget::paintEvent(QPaintEvent *event)
+void LogLogHistoWidget::paintEvent(QPaintEvent *event)
 {
-    QSettings settings;
-    class_count = QVector<int>(settings.value("ClassCount",100).toInt(),0);
-    max_class_count = 0 ;
-    for (int i = 0 ; i < data.count() ; i++)
-    {
-        //if (isnan(data[i])||isinf(data[i])) continue ;
 
-            int idx = (int)(class_count.count()*(data[i]-min)/(max-min)) ;
-        if (idx==class_count.count()) idx-- ;
-        class_count[idx]++;
-        max_class_count = qMax(max_class_count,class_count[idx]) ;
-
-    }
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing,true);
     QRectF rect(0,0,width(),height()) ;
@@ -127,7 +115,7 @@ void DoubleHistoWidget::paintEvent(QPaintEvent *event)
 
 }
 
-QColor DoubleHistoWidget::colorFor(float alpha)
+QColor LogLogHistoWidget::colorFor(float alpha)
 {
     QColor color;
     if (alpha<.5f)

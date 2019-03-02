@@ -1,21 +1,18 @@
 #include "histoparamform.h"
 #include "imagewidget.h"
-#include "inthistoresult.h"
-#include "inthistowidget.h"
-#include "ui_inthistowidget.h"
+#include "logloghistoresult.h"
+#include "ui_doublerangedhistoresult.h"
+#include "logloghistowidget.h"
 
 #include <QPainter>
 #include <QSettings>
 #include <QTimer>
 #include <math.h>
 
-IntHistoResult::IntHistoResult(HistoPage *parent, QString name, QVector<int> &data, int index) :
+LogLogHistoResult::LogLogHistoResult(HistoPage *parent, QString name, QVector<double> &data, int index) :
     page(parent),
-    HistoResult(name,parent,index) ,
-    ui(new Ui::IntHistoWidget)
-
+    HistoResult(name,parent,index)
 {
-
 
     QStringList strl ;
     for (int i = 0 ; i < data.count() ; i++)
@@ -26,7 +23,8 @@ IntHistoResult::IntHistoResult(HistoPage *parent, QString name, QVector<int> &da
     QGridLayout * grid = new QGridLayout;
     setLayout(grid);
 
-    IntHistoWidget * dhw = new IntHistoWidget(this,data) ;
+    LogLogHistoWidget * dhw = new LogLogHistoWidget(this,data) ;
+    //dhw->setFixedSize(QSize(400,300));
     grid->addWidget(dhw,1,2,5,8);
 
     QLabel * titre1 = new QLabel(this);
@@ -68,22 +66,20 @@ IntHistoResult::IntHistoResult(HistoPage *parent, QString name, QVector<int> &da
     titre2->setText(name);
     grid->addWidget(titre2,0,2,1,8);
 
-    QTimer::singleShot(0,this,SLOT(makeImage())) ;
-    QVector<int> & values = dhw->getValues() ;
-
-    QHBoxLayout * horizontalLayout = new QHBoxLayout;
-    grid->addLayout(horizontalLayout,6,2,1,8);
-    for (int i = 0 ; i < values.count() ;i++)
+    QHBoxLayout * horizontal_layout = new QHBoxLayout;
+    grid->addLayout(horizontal_layout,6,1,1,10);
+    for (int i = 0 ; i < 5;i++)
     {
-        QLabel *label = new QLabel(QString("%1").arg(values[i])) ;
+        QLabel * label = new QLabel(this);
         label->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
-        horizontalLayout->addWidget(label);
+        label->setText(
+                    QString::number(dhw->getMin()-1+pow(2,log2(dhw->getMax()-dhw->getMin()+1)*(i/4.0)),'f')) ;
+        horizontal_layout->addWidget(label);
     }
-
-         QTimer::singleShot(0,this,SLOT(makeImage())) ;
+    QTimer::singleShot(0,this,SLOT(makeImage())) ;
 }
 
-void IntHistoResult::paintEvent(QPaintEvent *e)
+void LogLogHistoResult::paintEvent(QPaintEvent *e)
 {
     QPainter painter(this) ;
     painter.setBrush(QBrush(Qt::white));
@@ -92,13 +88,8 @@ void IntHistoResult::paintEvent(QPaintEvent *e)
     QWidget::paintEvent(e) ;
 }
 
-QSize IntHistoResult::sizeHint() const{return QSize(640,480);}
-QSize IntHistoResult::minimumSizeHint() const{return QSize(640,480);}
-QSize IntHistoResult::maximumSizeHint() const{return QSize(640,480);}
-
-void IntHistoResult::setFont()
+void LogLogHistoResult::setFont()
 {
-
 
 }
 

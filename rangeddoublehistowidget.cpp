@@ -73,10 +73,13 @@ void RangedDoubleHistoWidget::paintEvent(QPaintEvent *event)
     pen = QPen(Qt::black);
     painter.setPen(pen);
 
+    double a = pow(max_class_count,1/9.0);
+    double b = pow(max_class_count,10.0/9.0);
+
     for (int i = 0 ; i < class_count.count() ; i++)
     {
         int x,y;
-        y = height()*(1-class_count[i]/(float)max_class_count) ;
+        y = height()*(1-log(a*class_count[i])/log(b)) ;
         rect.setTop(y);
         rect.setLeft(width()*(i/(float)class_count.count()));
         rect.setWidth(width()/(float)class_count.count()-1) ;

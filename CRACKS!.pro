@@ -95,7 +95,9 @@ SOURCES += main.cpp\
     frame.cpp \
     skelworker.cpp \
     skelworker2.cpp \
-    constraineddelaunaytriangulation.cpp
+    constraineddelaunaytriangulation.cpp \
+    logloghistoresult.cpp \
+    logloghistowidget.cpp
 
 HEADERS  += mainwindow.h \
     statsform.h \
@@ -174,7 +176,9 @@ HEADERS  += mainwindow.h \
     frame.h \
     skelworker.h \
     skelworker2.h \
-    constraineddelaunaytriangulation.h
+    constraineddelaunaytriangulation.h \
+    logloghistoresult.h \
+    logloghistowidget.h
 
 FORMS    += mainwindow.ui \
     statsform.ui \

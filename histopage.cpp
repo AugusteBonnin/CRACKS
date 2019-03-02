@@ -35,7 +35,7 @@ void
 HistoPage::addHistoResult(HistoResult * result)
 {
     histoResults << result ;
-    result->setFixedSize(QSize(800,400));
+    //result->setFixedSize(QSize(800,400));
     container->addWidget(result) ;
 
 }

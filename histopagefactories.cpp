@@ -2,6 +2,7 @@
 #include "histopage.h"
 #include "mainwindow.h"
 #include "histoparamform.h"
+#include "logloghistoresult.h"
 #include <QAction>
 
 HistoPage *
@@ -34,10 +35,10 @@ SimpleHistoPageFactory::createHistoPage(MainWindow*mainWindow)
     histoPage->addHistoResult(spacing);
 
 
-    DoubleHistoResult * length_roads =  new DoubleHistoResult(histoPage,QObject::tr("Longeur odométrique des voies"),mainWindow->histoDoubleData[4],8) ;
+    LogLogHistoResult * length_roads =  new LogLogHistoResult(histoPage,QObject::tr("Longeur odométrique des voies"),mainWindow->histoDoubleData[4],8) ;
     histoPage->addHistoResult(length_roads);
 
-    DoubleHistoResult * length_edges =  new DoubleHistoResult(histoPage,QObject::tr("Longeur odométrique des arcs"),mainWindow->histoDoubleData[5],9) ;
+    LogLogHistoResult * length_edges =  new LogLogHistoResult(histoPage,QObject::tr("Longeur odométrique des arcs"),mainWindow->histoDoubleData[5],9) ;
     histoPage->addHistoResult(length_edges);
 
     IntHistoResult * length_topo =  new IntHistoResult(histoPage,QObject::tr("Longeur topologique des voies"),mainWindow->histoIntData[4],10) ;

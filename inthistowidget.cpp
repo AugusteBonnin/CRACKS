@@ -25,7 +25,7 @@ IntHistoWidget::IntHistoWidget(QWidget *parent,QVector<int> & data) :
      while (i<sorted.count())
      {
          value = sorted[i].value ;
-         count = 1 ;
+         count = 0 ;
          while ((i<sorted.count())&&(sorted[i].value==value))
         {
             count++;
@@ -56,7 +56,7 @@ void IntHistoWidget::paintEvent(QPaintEvent *event)
     rect.setHeight(rect.height()-1);
     painter.drawRect(rect);
 
-    for (float x = 0 ; x <= 100.0f ; x+=12.5f)
+    for (float x = 0 ; x <= 100.0f ; x+=10.0f)
     {
         pen = QPen(colorFor(1.0f-x*.01f));
         painter.setPen(pen);
@@ -68,10 +68,14 @@ void IntHistoWidget::paintEvent(QPaintEvent *event)
     pen = QPen(Qt::black);
     painter.setPen(pen);
 
+    double a = pow(max_class_count,1.0/9.0);
+    double b = pow(max_class_count,10.0/9.0);
+
     for (int i = 0 ; i < class_count.count() ; i++)
     {
+        if (class_count[i]==0) continue ;
         int x,y;
-        y = height()*(1-class_count[i]/(float)max_class_count) ;
+        y = height()*(1-log(a*class_count[i])/log(b)) ;
         rect.setTop(y);
         rect.setLeft(width()*(i/(float)class_count.count()));
         rect.setWidth(width()/(float)class_count.count()-1) ;
