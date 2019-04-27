@@ -11,6 +11,7 @@
 
 class RoadMapWidget : public MapWidget
 {
+    QVector<QOpenGLBuffer*> junctions_vbos ;
 
     QOpenGLBuffer valid_roads_vbo ;
     QOpenGLBuffer * valid_roads_index_vbo ;

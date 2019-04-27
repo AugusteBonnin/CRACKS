@@ -18,7 +18,7 @@ LogLogHistoResult::LogLogHistoResult(HistoPage *parent, QString name, QVector<do
     for (int i = 0 ; i < data.count() ; i++)
         strl << QString("%1").arg(data[i]) ;
 
-    csv = strl.join(',');
+    csv = strl.join(';');
 
     QGridLayout * grid = new QGridLayout;
     setLayout(grid);
@@ -76,21 +76,9 @@ LogLogHistoResult::LogLogHistoResult(HistoPage *parent, QString name, QVector<do
                     QString::number(dhw->getMin()-1+pow(2,log2(dhw->getMax()-dhw->getMin()+1)*(i/4.0)),'f')) ;
         horizontal_layout->addWidget(label);
     }
-    QTimer::singleShot(0,this,SLOT(makeImage())) ;
-}
-
-void LogLogHistoResult::paintEvent(QPaintEvent *e)
-{
-    QPainter painter(this) ;
-    painter.setBrush(QBrush(Qt::white));
-    painter.drawRect(QRect(0,0,width()-1,height()-1));
-
-    QWidget::paintEvent(e) ;
-}
-
-void LogLogHistoResult::setFont()
-{
 
 }
+
+
 
 

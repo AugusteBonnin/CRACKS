@@ -4,6 +4,7 @@
 #include "ui_doublerangedhistoresult.h"
 #include <QPainter>
 #include <QTimer>
+#include <math.h>
 
 DoubleRangedHistoResult::DoubleRangedHistoResult(HistoPage *parent, QString name, QVector<double> &data, int index, double min, double max) :
     HistoResult(name,parent,index),
@@ -14,7 +15,7 @@ DoubleRangedHistoResult::DoubleRangedHistoResult(HistoPage *parent, QString name
     for (int i = 0 ; i < data.count() ; i++)
         strl << QString("%1").arg(data[i]) ;
 
-    csv = strl.join(',');
+    csv = strl.join(';');
 
     QGridLayout * grid = new QGridLayout;
     setLayout(grid);
@@ -69,7 +70,7 @@ DoubleRangedHistoResult::DoubleRangedHistoResult(HistoPage *parent, QString name
         label->setFixedWidth(80);
         grid->addWidget(label,6,1+i*2,1,2);
     }
-    QTimer::singleShot(0,this,SLOT(makeImage())) ;
+
 
 }
 
@@ -78,18 +79,3 @@ DoubleRangedHistoResult::~DoubleRangedHistoResult()
     delete ui;
 }
 
-
-void DoubleRangedHistoResult::paintEvent(QPaintEvent *e)
-{
-    QPainter painter(this) ;
-    painter.setBrush(QBrush(Qt::white));
-    painter.drawRect(QRect(0,0,width()-1,height()-1));
-
-    QWidget::paintEvent(e) ;
-}
-
-void DoubleRangedHistoResult::setFont()
-{
-
-
-}

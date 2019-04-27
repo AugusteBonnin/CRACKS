@@ -10,8 +10,7 @@ class MapWidget : public ScrollableOpenGLWidget
 public:
     MapWidget(MapPage *parent);
     virtual void saveSVG(QString path) = 0;
-protected :
-    MainWindow * mainWindow;
+
 };
 
 #endif // MAPWIDGET_H

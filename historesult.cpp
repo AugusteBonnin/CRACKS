@@ -19,26 +19,21 @@ void HistoResult::makeImage()
     QSettings settings;
     settings.beginReadArray("Histo");
     settings.setArrayIndex(index);
-    bool dpi72 = settings.value("72dpi",true).toBool();
-    if (dpi72)
     {
-        image = QImage(size(),QImage::Format_ARGB32);
-        QPainter painter(&image);
+        image = QPixmap(size());
+        QPainter painter;
+        painter.begin(&image);
         render(&painter);
     }
-    else
-    {
-        float scale = 300/72.0f ;
-        image = QImage(size()*scale,QImage::Format_ARGB32);
-        QPainter painter(&image);
-        QTransform transform = painter.transform() ;
-        transform.scale(scale,scale) ;
-        painter.setTransform(transform);
-        render(&painter) ;
-    }
+
 }
 void HistoResult::saveImage()
 {
+    image = QPixmap(size());
+    QPainter painter;
+    painter.begin(&image);
+    render(&painter);
+
     QSettings settings ;
     QFileInfo fileInfo(settings.value("File").toString()) ;
     QDir dir(fileInfo.absoluteDir());
@@ -68,4 +63,13 @@ void HistoResult::saveCSV()
         mainWindow->appendToSavedFiles(tr("%1").arg(path));
     }
 
+}
+
+void HistoResult::paintEvent(QPaintEvent *e)
+{
+    QPainter painter(this) ;
+    painter.setBrush(QBrush(Qt::white));
+    painter.drawRect(QRect(0,0,width()-1,height()-1));
+
+    QWidget::paintEvent(e) ;
 }

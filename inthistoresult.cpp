@@ -21,7 +21,7 @@ IntHistoResult::IntHistoResult(HistoPage *parent, QString name, QVector<int> &da
     for (int i = 0 ; i < data.count() ; i++)
         strl << QString("%1").arg(data[i]) ;
 
-    csv = strl.join(',');
+    csv = strl.join(';');
 
     QGridLayout * grid = new QGridLayout;
     setLayout(grid);
@@ -79,27 +79,6 @@ IntHistoResult::IntHistoResult(HistoPage *parent, QString name, QVector<int> &da
         label->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
         horizontalLayout->addWidget(label);
     }
-
-         QTimer::singleShot(0,this,SLOT(makeImage())) ;
-}
-
-void IntHistoResult::paintEvent(QPaintEvent *e)
-{
-    QPainter painter(this) ;
-    painter.setBrush(QBrush(Qt::white));
-    painter.drawRect(QRect(0,0,width()-1,height()-1));
-
-    QWidget::paintEvent(e) ;
-}
-
-QSize IntHistoResult::sizeHint() const{return QSize(640,480);}
-QSize IntHistoResult::minimumSizeHint() const{return QSize(640,480);}
-QSize IntHistoResult::maximumSizeHint() const{return QSize(640,480);}
-
-void IntHistoResult::setFont()
-{
-
-
 }
 
 

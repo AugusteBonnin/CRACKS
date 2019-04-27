@@ -57,27 +57,46 @@ RoadMapWidget::RoadMapWidget(MapPage *parent, QVector<QColor> & colors) : MapWid
     valid_roads_index_vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
     valid_roads_index_vbo->allocate(pre_valid_roads_index_vbo.constData(),
                                     pre_valid_roads_index_vbo.count()*sizeof(unsigned int));
+
+//places
+    QVector<QVector<float> > & pre_junctions_vbos = mainWindow->pre_junctions_vbos ;
+
+    for (int i = 0 ; i < pre_junctions_vbos.count();i++)
+    {
+        for (int k = 0 ; k < pre_junctions_vbos[i].count() ; k+=6)
+        {
+            pre_junctions_vbos[i][k+2] = 1.0f ;
+            pre_junctions_vbos[i][k+3] = 1.0f ;
+            pre_junctions_vbos[i][k+4] = 1.0f ;
+        }
+        QOpenGLBuffer *vbo = new QOpenGLBuffer;
+        vbo->create();
+        vbo->bind();
+        vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
+        vbo->allocate(pre_junctions_vbos[i].constData(),pre_junctions_vbos[i].count()*sizeof(float));
+        junctions_vbos << vbo ;
+
+    }
 }
 
 void RoadMapWidget::saveSVG(QString path)
 {
-    MainWindow * mainWindow = ((MapPage*)parent())->getMainWindow() ;
     QFile data(path);
         if (data.open(QFile::WriteOnly)) {
             QTextStream out(&data);
             out << "<svg version=\"1.1\" baseProfile=\"full\" xmlns=\"http://www.w3.org/2000/svg\">\n" ;
-
+QVector<QVector<QPointF > > & places = mainWindow->places_contours_line_strings;
             //places
-            for (int i = 0 ; i < mainWindow->places_contours_line_strings.count() ; i++)
+            for (int i = 0 ; i < places.count() ; i++)
             {
                 out << "<polyline points=\"" ;
-                for (int j = 0 ; j < mainWindow->places_contours_line_strings[i].count() - 1 ; j++)
+                for (int j = 0 ; j < places[i].count()-1 ; j++)
                 {
-                    QPointF point = mainWindow->places_contours_line_strings[i][j] ;
+                    QPointF point = places[i][j] ;
                     out << point.x() << " " << point.y() << "," ;
                 }
                 //repeat first point
-                QPointF point = mainWindow->places_contours_line_strings[i][0] ;
+                QPointF point = places[i][places[i].count()-1 ] ;
                  out << point.x() << " " << point.y() ;
 
                 out << "\" stroke=\"black\" fill=\"white\" stroke-width=\"1\"/>\n" ;
@@ -137,9 +156,34 @@ void RoadMapWidget::paintGL()
     m.scale(2*scale/width(),-2*scale/height());
     m.translate(-center.x(),-center.y());
 
-    //roads
-
     mainWindow->line_program->bind();
+
+    //junctions colors
+    for (int i = 0 ; i < junctions_vbos.count() ; i++)
+    {
+        junctions_vbos[i]->bind();
+        mainWindow->line_program->setUniformValue("matrix", m);
+        mainWindow->line_program->enableAttributeArray(PROGRAM_VERTEX_ATTRIBUTE);
+        mainWindow->line_program->enableAttributeArray(PROGRAM_COLOR_ATTRIBUTE);
+        mainWindow->line_program->setAttributeBuffer(PROGRAM_VERTEX_ATTRIBUTE, GL_FLOAT, 0, 2, 6 * sizeof(GLfloat));
+        mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
+        glDrawArrays(GL_POLYGON,0,mainWindow->places_contours_line_strings[i].count());
+        junctions_vbos[i]->release();
+    }
+    //junctions contours
+    for (int i = 0 ; i < mainWindow->junctions_contours_vbos.count() ; i++)
+    {
+        mainWindow->junctions_contours_vbos[i]->bind();
+        mainWindow->line_program->setUniformValue("matrix", m);
+        mainWindow->line_program->enableAttributeArray(PROGRAM_VERTEX_ATTRIBUTE);
+        mainWindow->line_program->enableAttributeArray(PROGRAM_COLOR_ATTRIBUTE);
+        mainWindow->line_program->setAttributeBuffer(PROGRAM_VERTEX_ATTRIBUTE, GL_FLOAT, 0, 2, 6 * sizeof(GLfloat));
+        mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
+        glDrawArrays(GL_LINE_STRIP,0,mainWindow->places_contours_line_strings[i].count());
+        mainWindow->junctions_contours_vbos[i]->release();
+    }
+
+    //roads
 
     valid_roads_vbo.bind();
     mainWindow->line_program->setUniformValue("matrix", m);

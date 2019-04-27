@@ -2,7 +2,7 @@
 #define SCROLLABLEOPENGLWIDGET_H
 
 #include "form.h"
-#include "kdtree2d.h"
+//#include "kdtree2d.h"
 
 #include <QMouseEvent>
 #include <QOpenGLFunctions>
@@ -22,10 +22,6 @@ Q_OBJECT
 public:
     ScrollableOpenGLWidget(Form *parent);
     void resetImage(QImage &image);
-    QSize sizeHint() const
-    {
-        return QSize(3000,3000);
-    }
     QImage getImage();
     QImage getScreenshot();
     void resetToSavedState();

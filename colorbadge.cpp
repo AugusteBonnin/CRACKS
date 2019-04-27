@@ -5,6 +5,7 @@
 ColorBadge::ColorBadge(QWidget *parent, QColor color) : QWidget(parent)
 {
     this->color = color ;
+    setMaximumWidth(64);
 }
 
 

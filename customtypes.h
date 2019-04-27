@@ -1,6 +1,7 @@
 #ifndef CUSTOMTYPES
 #define CUSTOMTYPES
 
+#include<math.h>
 #include <QHash>
 #include <QPointF>
 #include <QRgb>

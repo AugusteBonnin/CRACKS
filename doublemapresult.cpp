@@ -27,7 +27,7 @@ DoubleMapResult::DoubleMapResult(MapPage *parent, QString titre, QVector<double>
 
     double l = 0 ;
 
-    for (int i = 0 ; i < values.count() ; i++)
+    for (int i = 0 ; i < values.count()-1 ; i++)
     {
         l+=values[i].length ;
         if (l>(parent->getMainWindow()->valid_roads_total_length*classes_limits.count()/(double)(LIMITS_COUNT)))
@@ -43,13 +43,17 @@ DoubleMapResult::DoubleMapResult(MapPage *parent, QString titre, QVector<double>
             break ;
         colors << colorFor((c-1)/(float)(classes_limits.count()-2)) ;
 }
-
+QLabel * label;
     for (int i = 0 ; i < classes_limits.count() -1; i++)
     {
-        ui->verticalLayout->addWidget(new QLabel(QString("%1").arg((float)classes_limits[i]),this));
+        label = new QLabel(QString("%1").arg((float)classes_limits[i]),this);
+        label->setMaximumWidth(96);
+        ui->verticalLayout->addWidget(label);
         ui->verticalLayout->addWidget(new ColorBadge(this,colorFor(i/(float)(classes_limits.count()-2))));
     }
-    ui->verticalLayout->addWidget(new QLabel(QString("%1").arg((float)classes_limits[classes_limits.count()-1]),this));
+    label = new QLabel(QString("%1").arg((float)classes_limits[classes_limits.count()-1]),this);
+    label->setMaximumWidth(96);
+     ui->verticalLayout->addWidget(label);
 
     ui->titre->setAlignment(Qt::AlignCenter);
     ui->titre->setText(titre);

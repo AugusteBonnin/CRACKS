@@ -42,13 +42,10 @@ HistoPage::addHistoResult(HistoResult * result)
 
 void HistoPage::nextPhase()
 {
-    QString path = getTitle()+"/";
     for (int i = 0 ; i < histoResults.count() ; i++)
     {
-        QString path2 = path+histoResults[i]->getName()+"/";
-        if (settings.value(path2+"SaveJPG",false).toBool())
-            histoResults[i]->saveImage();
-        if (settings.value(path2+"SaveCSV",false).toBool())
+        container->setCurrentIndex(i);
+             histoResults[i]->saveImage();
             histoResults[i]->saveCSV();
        }
 

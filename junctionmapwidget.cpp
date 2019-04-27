@@ -42,8 +42,7 @@ void JunctionMapWidget::saveSVG(QString path)
                     QPointF point = mainWindow->places_contours_line_strings[i][j] ;
                     out << point.x() << " " << point.y() << "," ;
                 }
-                //repeat first point
-                QPointF point = mainWindow->places_contours_line_strings[i][0] ;
+                QPointF point = mainWindow->places_contours_line_strings[i][mainWindow->places_contours_line_strings[i].count() - 1] ;
                  out << point.x() << " " << point.y() ;
 
                 out << "\" stroke=\"black\" fill=\""+

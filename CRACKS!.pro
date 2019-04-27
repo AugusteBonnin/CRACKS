@@ -4,21 +4,23 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui svg
+
+CONFIG += c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.14
 
 TARGET = CRACKS!
 
 TEMPLATE = app
 
 LIBS += -L/usr/local/lib  -lCGAL  -lCGAL_Core -lgmp -lmpfr
-LIBS +=  -lboost_thread -lboost_system -lz
+LIBS +=  -lboost_thread -lboost_system -L/usr/lib -lz
 LIBS += -L . -lshp
 
-INCLUDEPATH += /usr/local/include
+INCLUDEPATH +=   /usr/local/include /usr/include
 
 SOURCES += main.cpp\
         mainwindow.cpp \

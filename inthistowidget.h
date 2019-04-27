@@ -20,8 +20,6 @@ int max_class_count;
 public:
     explicit IntHistoWidget(QWidget *parent, QVector<int> &data);
     ~IntHistoWidget();
-QSize sizeHint() const {return QSize(640,480);}
-QSize minimumSizeHint() const {return QSize(640,480);}
 int getMaxCount() {return max_class_count ;}
 int getDataCount() {return data.count() ;}
 int getClassCount() {return class_count.count() ;}

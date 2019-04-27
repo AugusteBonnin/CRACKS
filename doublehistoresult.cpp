@@ -20,7 +20,7 @@ DoubleHistoResult::DoubleHistoResult(HistoPage *parent, QString name, QVector<do
     for (int i = 0 ; i < data.count() ; i++)
         strl << QString("%1").arg(data[i]) ;
 
-    csv = strl.join(',');
+    csv = strl.join(';');
 
     QGridLayout * grid = new QGridLayout;
     setLayout(grid);
@@ -77,21 +77,9 @@ DoubleHistoResult::DoubleHistoResult(HistoPage *parent, QString name, QVector<do
         label->setText(QString::number((i/4.0)*(dhw->getMax()-dhw->getMin())+dhw->getMin(),'f')) ;
         horizontal_layout->addWidget(label);
     }
-    QTimer::singleShot(0,this,SLOT(makeImage())) ;
-}
-
-void DoubleHistoResult::paintEvent(QPaintEvent *e)
-{
-    QPainter painter(this) ;
-    painter.setBrush(QBrush(Qt::white));
-    painter.drawRect(QRect(0,0,width()-1,height()-1));
-
-    QWidget::paintEvent(e) ;
-}
-
-void DoubleHistoResult::setFont()
-{
 
 }
+
+
 
 

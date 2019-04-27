@@ -1,6 +1,4 @@
 
-#include "histopage.h"
-#include "mapparamform.h"
 #include "mainwindow.h"
 #include <QApplication>
 #include <QSurfaceFormat>

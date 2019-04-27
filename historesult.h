@@ -3,6 +3,7 @@
 
 #include "result.h"
 
+#include <QStackedWidget>
 #include <QString>
 
 class HistoPage ;
@@ -13,7 +14,7 @@ class HistoResult : public Result
     Q_OBJECT
     MainWindow *mainWindow ;
 protected :
-    QImage image;
+    QPixmap image;
     QString csv ;
     int index ;
 
@@ -21,10 +22,13 @@ public:
     HistoResult(QString name, HistoPage *parent, int index);
     void saveCSV();
     void saveImage() ;
-    QImage & getImage(){return image;}
+    QPixmap & getImage(){return image;}
 
 public slots:
     void makeImage();
+protected:
+    void paintEvent(QPaintEvent *);
+
     };
 
 #endif // HISTORESULT_H

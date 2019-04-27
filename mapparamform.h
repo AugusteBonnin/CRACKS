@@ -23,12 +23,6 @@ public:
 
 private slots:
     void on_comboBox_currentIndexChanged(int index);
-    void on_checkBox_clicked(bool checked);
-
-    void on_checkBox_3_clicked(bool checked);
-
-    void on_radioButton_4_toggled(bool checked);
-
 private:
     Ui::MapParamForm *ui;
 };

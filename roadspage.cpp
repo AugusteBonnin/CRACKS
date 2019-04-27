@@ -35,6 +35,9 @@ RoadsPage::RoadsPage(MainWindow *parent) :
 
 RoadsPage::~RoadsPage()
 {
+    delete docForm;
+    delete paramForm;
+
 }
 
 void RoadsPage::nextPhase()
@@ -88,19 +91,19 @@ void RoadsPage::saveSVG()
             QTextStream out(&data);
             out << "<svg version=\"1.1\" baseProfile=\"full\" xmlns=\"http://www.w3.org/2000/svg\">\n" ;
             mainWindow->progress->setMaximum(mainWindow->places_contours_line_strings.count()-1);
-
+            QVector<QVector<QPointF> >  & places = mainWindow->places_contours_line_strings ;
             //places
-            for (int i = 0 ; i < mainWindow->places_contours_line_strings.count() ; i++)
+            for (int i = 0 ; i < places.count() ; i++)
             {
                 mainWindow->progress->setValue(i);
                 out << "<polyline points=\"" ;
-                for (int j = 0 ; j < mainWindow->places_contours_line_strings[i].count() - 1 ; j++)
+                for (int j = 0 ; j < places[i].count() - 1 ; j++)
                 {
-                    QPointF point = mainWindow->places_contours_line_strings[i][j] ;
+                    QPointF point = places[i][j] ;
                     out << point.x() << " " << point.y() << "," ;
                 }
                 //repeat first point
-                QPointF point = mainWindow->places_contours_line_strings[i][0] ;
+                QPointF point = places[i][places[i].count() - 1] ;
                  out << point.x() << " " << point.y() ;
 
                 out << "\" stroke=\"black\" fill=\"white\" stroke-width=\"1\"/>\n" ;
@@ -143,19 +146,19 @@ void RoadsPage::saveCSV()
     QFile data(path);
       if (data.open(QFile::WriteOnly)) {
           QTextStream out(&data);
-          out << tr("ACCESSIBILITE") << "," ;
-          out << tr("ORTHOGONALITE") << "," ;
-          out << tr("ESPACEMENT") << "," ;
-          out << tr("LONGUEUR") << "," ;
-          out << tr("DEGRE") << "," ;
+          out << tr("ACCESSIBILITE") << ";" ;
+          out << tr("ORTHOGONALITE") << ";" ;
+          out << tr("ESPACEMENT") << ";" ;
+          out << tr("LONGUEUR") << ";" ;
+          out << tr("DEGRE") << ";" ;
           out << tr("LONGUEUR_TOPO") << "\n" ;
 
           for (int i = 0 ; i < mainWindow->valid_roads.count() ; i++)
           {
               for (int j = 0 ; j < mainWindow->histoDoubleData.count()-2 ; j++)
-                  out << mainWindow->histoDoubleData[j+1][i] << "," ;
+                  out << mainWindow->histoDoubleData[j+1][i] << ";" ;
 
-              out << mainWindow->histoIntData[3][i] << "," ;
+              out << mainWindow->histoIntData[3][i] << ";" ;
               out << mainWindow->histoIntData[4][i] << "\n" ;
 
           }
