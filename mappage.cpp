@@ -42,12 +42,11 @@ void MapPage::nextPhase()
    for (int i = 0 ; i < results.count() ; i++)
     {
         QString path2 = path+results[i]->getName() +"/" ;
-        if (settings.value(path2+"SaveJPG",false).toBool())
+        //if (settings.value(path2+"SaveJPG",false).toBool())
             results[i]->saveImage(settings.value(path2+"Screenshot",true).toBool());
         //if (settings.value(path2+"SaveSVG",false).toBool())
             results[i]->saveSVG();
         }
-    settings.endArray();
 }
 
 void MapPage::setFont() {
