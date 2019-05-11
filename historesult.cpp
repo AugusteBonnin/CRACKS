@@ -4,6 +4,7 @@
 #include <QFileInfo>
 #include <QPainter>
 #include <QSettings>
+#include <QSvgGenerator>
 #include <QTextStream>
 #include "histopage.h"
 #include "mainwindow.h"
@@ -64,6 +65,29 @@ void HistoResult::saveCSV()
     }
 
 }
+
+void HistoResult::saveSVG()
+{
+
+    QSettings settings ;
+    QFileInfo file(settings.value("File").toString()) ;
+    QString path = tr("%1/Histo-%2-%3.SVG").arg(file.absoluteDir().absolutePath())
+            .arg(resultName).arg(file.baseName()) ;
+    //widget->saveSVG(path);
+    QSvgGenerator generator;
+    generator.setFileName(path);
+    generator.setSize(size());
+    generator.setViewBox(rect());
+    generator.setTitle(tr("%1-%2").arg(file.baseName()).arg(resultName));
+
+    QPainter painter(&generator);
+    render(&painter);
+    painter.end();
+
+    mainWindow->appendToSavedFiles(QString("%1").arg(path));
+
+}
+
 
 void HistoResult::paintEvent(QPaintEvent *e)
 {

@@ -158,18 +158,7 @@ void RoadMapWidget::paintGL()
 
     mainWindow->line_program->bind();
 
-    //junctions colors
-    for (int i = 0 ; i < junctions_vbos.count() ; i++)
-    {
-        junctions_vbos[i]->bind();
-        mainWindow->line_program->setUniformValue("matrix", m);
-        mainWindow->line_program->enableAttributeArray(PROGRAM_VERTEX_ATTRIBUTE);
-        mainWindow->line_program->enableAttributeArray(PROGRAM_COLOR_ATTRIBUTE);
-        mainWindow->line_program->setAttributeBuffer(PROGRAM_VERTEX_ATTRIBUTE, GL_FLOAT, 0, 2, 6 * sizeof(GLfloat));
-        mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
-        glDrawArrays(GL_POLYGON,0,mainWindow->places_contours_line_strings[i].count());
-        junctions_vbos[i]->release();
-    }
+
     //junctions contours
     for (int i = 0 ; i < mainWindow->junctions_contours_vbos.count() ; i++)
     {
@@ -182,7 +171,18 @@ void RoadMapWidget::paintGL()
         glDrawArrays(GL_LINE_STRIP,0,mainWindow->places_contours_line_strings[i].count());
         mainWindow->junctions_contours_vbos[i]->release();
     }
-
+    //junctions colors
+    for (int i = 0 ; i < junctions_vbos.count() ; i++)
+    {
+        junctions_vbos[i]->bind();
+        mainWindow->line_program->setUniformValue("matrix", m);
+        mainWindow->line_program->enableAttributeArray(PROGRAM_VERTEX_ATTRIBUTE);
+        mainWindow->line_program->enableAttributeArray(PROGRAM_COLOR_ATTRIBUTE);
+        mainWindow->line_program->setAttributeBuffer(PROGRAM_VERTEX_ATTRIBUTE, GL_FLOAT, 0, 2, 6 * sizeof(GLfloat));
+        mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
+        glDrawArrays(GL_POLYGON,0,mainWindow->places_contours_line_strings[i].count());
+        junctions_vbos[i]->release();
+    }
     //roads
 
     valid_roads_vbo.bind();

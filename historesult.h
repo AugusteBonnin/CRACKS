@@ -24,6 +24,7 @@ public:
     void saveImage() ;
     QPixmap & getImage(){return image;}
 
+    void saveSVG();
 public slots:
     void makeImage();
 protected:

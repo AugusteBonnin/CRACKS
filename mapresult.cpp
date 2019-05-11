@@ -72,7 +72,7 @@ void MapResult::saveSVG()
     render(&painter);
     painter.end();
 
-    mainWindow->appendToSavedFiles(tr("%1").arg(path));
+    mainWindow->appendToSavedFiles(QString("%1").arg(path));
 
 }
 

@@ -45,7 +45,7 @@ void HistoPage::nextPhase()
     for (int i = 0 ; i < histoResults.count() ; i++)
     {
         container->setCurrentIndex(i);
-             histoResults[i]->saveImage();
+             histoResults[i]->saveSVG();
             histoResults[i]->saveCSV();
        }
 
