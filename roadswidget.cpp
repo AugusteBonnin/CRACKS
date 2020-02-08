@@ -142,7 +142,7 @@ void RoadsWidget::paintGL()
         mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
 
         mainWindow->roads_index_vbo->bind();
-        glDrawElements(GL_LINES, mainWindow->roads_index_vbo->size()/sizeof(unsigned int), GL_UNSIGNED_INT,0);
+        glDrawElements(GL_LINES, mainWindow->roads_index_vbo->size()/sizeof(GL_UNSIGNED_INT), GL_UNSIGNED_INT,0);
         mainWindow->roads_vbo.release();
         mainWindow->roads_index_vbo->release();
     }

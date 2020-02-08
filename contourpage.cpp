@@ -127,7 +127,9 @@ void ContourPage::updateThreshold(int value)
     double threshold = value*.0001;
     widget->updateThreshold(threshold*(originalImage->getMax()-originalImage->getMin())+originalImage->getMin());
 
-    ((ContourParamForm*)paramForm)->ui->label_3->setText(tr("Nombre d'ilots distincts : %1").arg(getMainWindow()->getConnectedComponentsStarts().count()));
+    ((ContourParamForm*)paramForm)->ui->label_3->setText(tr("Nombre d'ilots distincts : %1\nRatio noirs/total : %2")
+                                                         .arg(getMainWindow()->getConnectedComponentsStarts().count())
+                                                         .arg(getMainWindow()->ratio_black_pixels));
 
     paramForm->setEnabled(true);
 
