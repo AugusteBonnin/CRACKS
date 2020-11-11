@@ -787,7 +787,7 @@ void ContourWidget::updateThreshold(double treshold)
 
     //make grid
     QImage grid_image(mainWindow->openedQImage);
-    int p = 0 ;
+    int black_pixels = 0 ;
     for (int j = 0 ; j < doubleImage->height() ; j++)
         for (int i = 0 ; i < doubleImage->width() ; i++)
             if (doubleImage->pixel(i,j)>treshold)
@@ -799,11 +799,13 @@ void ContourWidget::updateThreshold(double treshold)
             {
                 QRgb pixel = 0xFF0000FF ;
                 grid_image.setPixel(i,j,pixel);
+                black_pixels++;
             }
     if (mainWindow->texture)
         delete mainWindow->texture ;
     mainWindow->texture = new QOpenGLTexture(grid_image);
     mainWindow->texture->setBorderColor(127,127,127,255);
+    mainWindow->ratio_black_pixels = black_pixels/(double)(doubleImage->height()*doubleImage->width());
     doneCurrent();
 
 

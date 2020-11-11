@@ -116,7 +116,7 @@ KDTree2D::PointCloud point_cloud;
 
     QVector<QVector<QPointF> > places_contours_line_strings;
 
-
+    double ratio_black_pixels;
 
     double scale ;
     QPointF center;
