@@ -104,8 +104,8 @@ KDTree2D::PointCloud point_cloud;
     QVector<QVector<uint32_t> > histoIntData;
     QVector<QVector<double> > histoDoubleData;
 
-    QVector<uint32_t> valid_roads;
-    QVector<uint32_t> valid_junctions;
+    QVector<int32_t> valid_roads;
+    QVector<int32_t> valid_junctions;
 
     double valid_roads_total_length;
 

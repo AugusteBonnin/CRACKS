@@ -639,7 +639,7 @@ void RoadsWidget::computeRoadsLineStrings()
     QVector<bool> edge_treated(double_sided_edges.count(),false) ;
     QVector<uint32_t> list ;
 
-#define ROADS_NO_EDGE (-1)
+const uint32_t ROADS_NO_EDGE =(-1);
 
     for (uint32_t m = 0 ; m < mainWindow->getRoadsEdges().count() ; m++)
     {
@@ -676,7 +676,7 @@ void RoadsWidget::computeRoadsLineStrings()
                 else
                 {
                     //add to line string double_sided_edges[currentEdgeIdx].truncated_str inverted
-                    for (uint32_t k = double_sided_edges[currentEdgeIdx].truncated_str.count()-1;k>=0;k--)
+                    for (int32_t k = double_sided_edges[currentEdgeIdx].truncated_str.count()-1;k>=0;k--)
                         list << double_sided_edges[currentEdgeIdx].truncated_str[k];
 
                     lastJunctionIdx = double_sided_edges[currentEdgeIdx].first_junction;

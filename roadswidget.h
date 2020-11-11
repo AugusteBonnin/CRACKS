@@ -47,8 +47,8 @@ private:
     QVector<uint32_t> &pre_roads_index_vbo_start;
     QVector<uint32_t> &pre_roads_index_vbo_end;
     QVector<QVector<float> > &pre_junctions_vbos;
-    QVector<uint32_t> &valid_junctions;
-    QVector<uint32_t> &valid_roads ;
+    QVector<int32_t> &valid_junctions;
+    QVector<int32_t> &valid_roads ;
 
 
     QVector<QVector<QPointF> > & junctions_line_strings ;
