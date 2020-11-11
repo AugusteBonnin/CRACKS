@@ -111,7 +111,7 @@ void JunctionMapWidget::paintGL()
 
     mainWindow->roads_index_vbo->bind();
     glLineWidth(3);
-    glDrawElements(GL_LINES, mainWindow->roads_index_vbo->size()/sizeof(unsigned int), GL_UNSIGNED_INT,0);
+    glDrawElements(GL_LINES, mainWindow->roads_index_vbo->size()/sizeof(uint32_t), GL_UNSIGNED_INT,0);
     mainWindow->black_roads_vbo.release();
     mainWindow->roads_index_vbo->release();
 

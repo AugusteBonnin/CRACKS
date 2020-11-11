@@ -14,11 +14,11 @@ class IntMapResult : public MapResult
 {
     Q_OBJECT
 
-    QVector<int> &data;
+    QVector<uint32_t> &data;
     QVector<QColor> colors;
     QList<int> class_value ;
 public:
-    explicit IntMapResult(MapPage *parent, QString titre, QVector<int> &data, int index, int type);
+    explicit IntMapResult(MapPage *parent, QString titre, QVector<uint32_t> &data, int index, int type);
     ~IntMapResult();
 
 private:

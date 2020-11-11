@@ -212,7 +212,7 @@ void ContourWidget::paintGL()
         mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
 
         mainWindow->contour_index_vbo->bind();
-        glDrawElements(GL_LINES, mainWindow->contour_index_vbo->size()>>2, GL_UNSIGNED_INT,0);
+        glDrawElements(GL_LINES, mainWindow->contour_index_vbo->size()/sizeof(uint32_t), GL_UNSIGNED_INT,0);
         mainWindow->contour_vbo.release();
         mainWindow->contour_index_vbo->release();
     }
@@ -688,6 +688,7 @@ void ContourWidget::updateThreshold(double treshold)
 
     QVector<bool> not_counted(contour_vertices.count(),true);
 
+    int counted = 0 ;
     for (int i = 0 ; i  < next_point_index.count() ; i++)
     {
         int i0 = prev_point_index[i] ;
@@ -703,6 +704,7 @@ void ContourWidget::updateThreshold(double treshold)
             prev_point_index[i2] = i0;
             next_point_index[i0] = i2;
             not_counted[i] = false ;
+            counted++;
         }
     }
 
@@ -722,7 +724,7 @@ void ContourWidget::updateThreshold(double treshold)
     QVector < unsigned int> & connected_components_start = mainWindow->getConnectedComponentsStarts();
     connected_components_start.clear();
 
-    mainWindow->progress->setValue(0) ;
+    mainWindow->progress->setValue(counted) ;
     mainWindow->progress->setMaximum(contour_vertices.count()) ;
 
     contour_indices.clear() ;
@@ -732,28 +734,21 @@ void ContourWidget::updateThreshold(double treshold)
     {
         not_counted[current] = false ;
 
-        unsigned int count = 1 ;
-        QVector<int> history ;
-
-        int found = -1 ;
+        int start = current ;
 
         do {
-            history << current ;
             contour_indices.append(current);
             contour_indices.append(next_point_index[current]);
             not_counted[current] = false ;
-
+            counted++;
             current = next_point_index[current];
-            count++ ;
-            found = history.indexOf(current) ;
-        } while (found==-1);
+        } while (current!=start);
 
         current = not_counted.indexOf(true);
 
-        if (count>3)
-        connected_components_start.append(history[found]);
+        connected_components_start.append(start);
 
-        mainWindow->progress->setValue(mainWindow->progress->value()+count);
+        mainWindow->progress->setValue(counted);
         qApp->processEvents();
     }
 

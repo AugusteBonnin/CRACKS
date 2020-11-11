@@ -194,7 +194,7 @@ void RoadMapWidget::paintGL()
 
     valid_roads_index_vbo->bind();
     glLineWidth(3);
-    glDrawElements(GL_LINES, valid_roads_index_vbo->size()/sizeof(unsigned int), GL_UNSIGNED_INT,0);
+    glDrawElements(GL_LINES, valid_roads_index_vbo->size()/sizeof(uint32_t), GL_UNSIGNED_INT,0);
     valid_roads_vbo.release();
     valid_roads_index_vbo->release();
 

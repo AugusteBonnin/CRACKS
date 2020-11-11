@@ -22,8 +22,8 @@ protected:
     void paintGL();
 private:
     QRgb randColor();
-    void exploreEdge(int first, int second);
-    void explorePoint(int i);
+    void exploreEdge(uint32_t first, uint32_t second);
+    void explorePoint(uint32_t i);
     void computeJunctionsHulls();
     void computeJunctionsLineStrings();
     void computeJunctionsMeanRadius();
@@ -36,19 +36,19 @@ private:
     void matchJunctionsEdges(float threshold_on_B);
     QVector<Junction> & junctions ;
     QVector<DoubleSidedEdge> & double_sided_edges;
-    QVector<QSet<int> > & roads_junctions ;
-    QVector<QVector<int> > & roads_edges;
-    QHash<int,int> & index_junction;
-    QVector<QVector<unsigned int> > & skel_children;
+    QVector<QSet<uint32_t> > & roads_junctions ;
+    QVector<QVector<uint32_t> > & roads_edges;
+    QHash<uint32_t,uint32_t> & index_junction;
+    QVector<QVector<uint32_t> > & skel_children;
     QVector<QPointF> & skel_vertices;
     QVector<float> & skel_distance ;
-    QVector<unsigned int> &pre_roads_index_vbo;
+    QVector<uint32_t> &pre_roads_index_vbo;
     QVector<float> &pre_roads_vbo ;
-    QVector<unsigned int> &pre_roads_index_vbo_start;
-    QVector<unsigned int> &pre_roads_index_vbo_end;
+    QVector<uint32_t> &pre_roads_index_vbo_start;
+    QVector<uint32_t> &pre_roads_index_vbo_end;
     QVector<QVector<float> > &pre_junctions_vbos;
-    QVector<int> &valid_junctions;
-    QVector<int> &valid_roads ;
+    QVector<uint32_t> &valid_junctions;
+    QVector<uint32_t> &valid_roads ;
 
 
     QVector<QVector<QPointF> > & junctions_line_strings ;
@@ -57,7 +57,7 @@ private:
     void exploreGraph();
 
     QVector<QPointF> cycles_centers;
-    QVector<int> cycles_lengths ;
+    QVector<uint32_t> cycles_lengths ;
     QVector<QPolygonF> cycles_contours;
 
     // QWidget interface

@@ -11,7 +11,7 @@
 #include <QPainter>
 #include <QTextStream>
 
-IntMapResult::IntMapResult(MapPage *parent, QString titre, QVector<int> &data,int index, int type) :
+IntMapResult::IntMapResult(MapPage *parent, QString titre, QVector<uint32_t> &data, int index, int type) :
     MapResult(titre,parent,index),
     data(data)
 {

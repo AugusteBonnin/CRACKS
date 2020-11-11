@@ -9,7 +9,7 @@
 #include <QTimer>
 #include <math.h>
 
-IntHistoResult::IntHistoResult(HistoPage *parent, QString name, QVector<int> &data, int index) :
+IntHistoResult::IntHistoResult(HistoPage *parent, QString name, QVector<uint32_t> &data, uint32_t index) :
     page(parent),
     HistoResult(name,parent,index) ,
     ui(new Ui::IntHistoWidget)

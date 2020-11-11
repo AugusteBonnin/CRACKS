@@ -8,7 +8,7 @@
 
 #include <QPainter>
 
-IntRangedMapResult::IntRangedMapResult(MapPage *parent, QString titre, QVector<int> &data,int index, int min, int max,int step, int type) :
+IntRangedMapResult::IntRangedMapResult(MapPage *parent, QString titre, QVector<uint32_t> &data, int index, int min, int max, int step, int type) :
     MapResult(titre,parent,index) ,
     data(data)
 {

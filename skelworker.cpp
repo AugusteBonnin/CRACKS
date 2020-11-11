@@ -157,8 +157,8 @@ void SkelWorker::run()
     cdt.mark_domains();
 
 
-    QMap<QPair<Vertex_handle,Vertex_handle>,int> middlesIdx;
-    QMap<CGALTriangle,int> & centersIdx = mainWindow->centersIdx;
+    QMap<QPair<Vertex_handle,Vertex_handle>,uint32_t> middlesIdx;
+    QMap<CGALTriangle,uint32_t> & centersIdx = mainWindow->centersIdx;
     centersIdx.clear();
     skel_points.clear();
     skel_children.clear() ;

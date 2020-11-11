@@ -4,7 +4,7 @@
 
 #include <QPainter>
 
-IntHistoWidget::IntHistoWidget(QWidget *parent,QVector<int> & data) :
+IntHistoWidget::IntHistoWidget(QWidget *parent,QVector<uint32_t> & data) :
     QWidget(parent) , data(data)
 {
 

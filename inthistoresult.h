@@ -21,7 +21,7 @@ class IntHistoResult : public HistoResult
     Ui::IntHistoWidget *ui;
 
 public:
-    IntHistoResult(HistoPage *parent,QString name , QVector<int> &data, int index);
+    IntHistoResult(HistoPage *parent,QString name , QVector<uint32_t> &data, uint32_t index);
 
 
 };

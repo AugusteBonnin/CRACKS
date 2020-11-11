@@ -170,9 +170,9 @@ void::MainWindow::organizeSequenceFiles(QStringList dirs_paths)
 bool MainWindow::isOnPicture(int e,double treshold)
 {
     DoubleSidedEdge & dse = double_sided_edges[e] ;
-    QVector<int> str = dse.truncated_str ;
+    QVector<uint32_t> str = dse.truncated_str ;
     double total = 0 ;
-    for (int i = 0 ; i < str.count() ; i++)
+    for (uint32_t i = 0 ; i < str.count() ; i++)
     {
         QPointF & point = skelVertices[str[i]];
 //        if (settings.value("Contour/Invert").toBool())
@@ -294,11 +294,11 @@ void MainWindow::dynamicalAnalysis(){
 
     histoIntData << double_sided_edges_birth ;
 
-    QVector<int> roads_birth,roads_death,roads_life_span;
-    for (int i = 0 ; i < valid_roads.count() ; i++)
+    QVector<uint32_t> roads_birth,roads_death,roads_life_span;
+    for (uint32_t i = 0 ; i < valid_roads.count() ; i++)
     {
-        int min = INT_MAX ;
-        int max = INT_MIN ;
+        uint32_t min = INT_MAX ;
+        uint32_t max = 0 ;
         for (int j = 0 ; j < roads_edges[valid_roads[i]].count() ; j++)
         {
             min = qMin(min,double_sided_edges_birth[roads_edges[valid_roads[i]][j]]);

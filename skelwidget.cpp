@@ -137,7 +137,7 @@ void SkelWidget::paintGL()
         mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
 
         mainWindow->skel_index_vbo->bind();
-        glDrawElements(GL_LINES, mainWindow->skel_index_vbo->size()>>2, GL_UNSIGNED_INT,0);
+        glDrawElements(GL_LINES, mainWindow->skel_index_vbo->size()/sizeof(uint32_t), GL_UNSIGNED_INT,0);
         mainWindow->skel_vbo.release();
         mainWindow->skel_index_vbo->release();
     }
@@ -238,7 +238,7 @@ void SkelWidget::exploreEdge(int first, int second)
     int prev = first ;
     int next;
     QPointF p0 = skel_points[prev] , p1 = p0 ;
-    QVector<int> str ;
+    QVector<uint32_t> str ;
     str<<prev;
     double mean_width = skel_distance[prev] ;
     QPointF p2;

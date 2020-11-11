@@ -14,11 +14,11 @@ class IntRangedMapResult : public MapResult
 {
     Q_OBJECT
 
-    QVector<int> &data;
+    QVector<uint32_t> &data;
     QVector<QColor> colors;
     QList<int> class_value ;
 public:
-    explicit IntRangedMapResult(MapPage *parent, QString titre, QVector<int> &data, int index, int min, int max, int step, int type);
+    explicit IntRangedMapResult(MapPage *parent, QString titre, QVector<uint32_t> &data, int index, int min, int max, int step, int type);
     ~IntRangedMapResult();
 
 private:

@@ -102,10 +102,10 @@ typedef struct CGALTriangle {
 
 typedef struct DoubleSidedEdge {
     QRgb color;
-    int road_index ;
-    int first_junction,second_junction;
-    int first_index,second_index;
-    QVector<int> str,truncated_str;
+    uint32_t road_index ;
+    uint32_t first_junction,second_junction;
+    uint32_t first_index,second_index;
+    QVector<uint32_t> str,truncated_str;
     double mean_distance;
     double length;
     double first_width,second_width ;
@@ -113,7 +113,7 @@ typedef struct DoubleSidedEdge {
 
 typedef struct Arrival{
     double angle;
-    int edge;
+    uint32_t edge;
     QPointF point;
     bool str_inverted ;
     Arrival(){}
@@ -129,10 +129,10 @@ typedef struct Arrival{
 typedef struct Junction {
     QRgb color;
     float mean_radius ;
-    QVector<int> centers_indices;
+    QVector<uint32_t> centers_indices;
 QVector<Arrival> arrivals;
-QHash<int,int> equivalent;
-QSet<int> roads;
+QHash<uint32_t,uint32_t> equivalent;
+QSet<uint32_t> roads;
 Junction (const Junction & right)
     {
     color = right.color ;

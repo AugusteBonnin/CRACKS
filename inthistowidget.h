@@ -7,7 +7,7 @@
 class IntHistoWidget : public QWidget
 {
     Q_OBJECT
-QVector<int> &data;
+QVector<uint32_t> &data;
 typedef struct Element{
     int value ;
     int index ;
@@ -18,7 +18,7 @@ QVector<int> class_count ;
 QVector<int> class_value ;
 int max_class_count;
 public:
-    explicit IntHistoWidget(QWidget *parent, QVector<int> &data);
+    explicit IntHistoWidget(QWidget *parent, QVector<uint32_t> &data);
     ~IntHistoWidget();
 int getMaxCount() {return max_class_count ;}
 int getDataCount() {return data.count() ;}

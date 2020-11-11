@@ -66,46 +66,46 @@ public:
 KDTree2D::PointCloud point_cloud;
     KDTree2D::my_kd_tree_2d_type *kdtree ;
     QVector<Vertex_handle> treeIdx2Handle;
-    QMap<CGALTriangle,int> centersIdx;
+    QMap<CGALTriangle,uint32_t> centersIdx;
 
     inline QVector<DoubleSidedEdge> & getDoubleSidedEdges(){return double_sided_edges;}
     inline QVector<QPointF> & getSkelVertices(){return skelVertices;}
-    inline QVector<unsigned int> & getSkelIndices(){return skelIndices;}
-    inline QVector<QVector<unsigned int> > & getSkelChildren(){return skelChildren;}
+    inline QVector<uint32_t> & getSkelIndices(){return skelIndices;}
+    inline QVector<QVector<uint32_t> > & getSkelChildren(){return skelChildren;}
     inline QVector<unsigned char> & getSkelColors(){return skelColors;}
     inline QVector<float> & getSkelDistanceToBoundary(){return skelDistanceToBoundary;}
     inline QVector<bool> & getSkelPointIsExit() {return skel_point_is_exit;}
     inline QVector<QPointF> & getContourVertices(){return contourVertices;}
-    inline QVector<unsigned int> & getContourIndices(){return contourIndices;}
-    inline QVector<unsigned int> & getNextPointIndex(){return nextPointIndex;}
-    inline QVector<unsigned int> & getPrevPointIndex(){return prevPointIndex;}
+    inline QVector<uint32_t> & getContourIndices(){return contourIndices;}
+    inline QVector<uint32_t> & getNextPointIndex(){return nextPointIndex;}
+    inline QVector<uint32_t> & getPrevPointIndex(){return prevPointIndex;}
     inline DoubleImage * getOpenedImage(){return openedImage;}
-    inline QVector<unsigned int> & getConnectedComponentsStarts(){return connectedComponentsStarts;}
-    inline QVector<QVector<int> > & getRoadsEdges(){return roads_edges;}
-    inline QVector<QSet<int> > & getRoadsJunctions(){return roads_junctions;}
-    inline QHash<int,int> & getIndexJunction(){return index_junction;}
+    inline QVector<uint32_t> & getConnectedComponentsStarts(){return connectedComponentsStarts;}
+    inline QVector<QVector<uint32_t> > & getRoadsEdges(){return roads_edges;}
+    inline QVector<QSet<uint32_t> > & getRoadsJunctions(){return roads_junctions;}
+    inline QHash<uint32_t,uint32_t> & getIndexJunction(){return index_junction;}
     inline QVector<Junction> & getJunctions(){return junctions;}
     void setActionsEnabled(bool enabled);
     QPushButton * back,*next;
 
-    QVector<unsigned int> pre_roads_index_vbo;
+    QVector<uint32_t> pre_roads_index_vbo;
     QVector<float> pre_roads_vbo ;
-    QVector<unsigned int> pre_roads_index_vbo_start;
-    QVector<unsigned int> pre_roads_index_vbo_end;
-    QVector<unsigned int> pre_valid_roads_index_vbo_start;
-    QVector<unsigned int> pre_valid_roads_index_vbo_end;
-    QVector<unsigned int>  pre_valid_roads_index_vbo;
+    QVector<uint32_t> pre_roads_index_vbo_start;
+    QVector<uint32_t> pre_roads_index_vbo_end;
+    QVector<uint32_t> pre_valid_roads_index_vbo_start;
+    QVector<uint32_t> pre_valid_roads_index_vbo_end;
+    QVector<uint32_t>  pre_valid_roads_index_vbo;
 
     QVector<QVector<float> > pre_junctions_vbos;
     QVector<QOpenGLBuffer*> junctions_contours_vbos;
     QVector<QOpenGLBuffer*> junctions_vbos;
     QVector<QOpenGLBuffer*> junctions_bg_vbos;
 
-    QVector<QVector<int> > histoIntData;
+    QVector<QVector<uint32_t> > histoIntData;
     QVector<QVector<double> > histoDoubleData;
 
-    QVector<int> valid_roads;
-    QVector<int> valid_junctions;
+    QVector<uint32_t> valid_roads;
+    QVector<uint32_t> valid_junctions;
 
     double valid_roads_total_length;
 
@@ -156,27 +156,27 @@ private:
     QStackedWidget * stackedWidget ;
 
     QVector<QPointF> skelVertices ;
-    QVector<unsigned int> skelIndices;
+    QVector<uint32_t> skelIndices;
     QVector<unsigned char> skelColors;
-    QVector<QVector<unsigned int> > skelChildren ;
+    QVector<QVector<uint32_t> > skelChildren ;
     QVector<float> skelDistanceToBoundary ;
     QVector<bool> skel_point_is_exit ;
 
     QVector<DoubleSidedEdge> double_sided_edges ;
     QVector<DoubleSidedEdge> double_sided_edges_copy ;
-    QVector<int> double_sided_edges_birth ;
+    QVector<uint32_t> double_sided_edges_birth ;
 
 
     QVector<QPointF> contourVertices ;
-    QVector<unsigned int> contourIndices;
-QVector<unsigned int> nextPointIndex;
-QVector<unsigned int> prevPointIndex;
-QVector<unsigned int> connectedComponentsStarts ;
+    QVector<uint32_t> contourIndices;
+QVector<uint32_t> nextPointIndex;
+QVector<uint32_t> prevPointIndex;
+QVector<uint32_t> connectedComponentsStarts ;
 
-QVector<QSet<int> > roads_junctions;
+QVector<QSet<uint32_t> > roads_junctions;
 QVector<Junction> junctions ;
-QHash<int,int> index_junction ;
-QVector<QVector<int> >  roads_edges;
+QHash<uint32_t,uint32_t> index_junction ;
+QVector<QVector<uint32_t> >  roads_edges;
 
 //QDockWidget *docWidget,*paramWidget;
 void setPageTitle(QString str);

@@ -95,7 +95,7 @@ void RoadsWidget::paintGL()
     }
 
     //junctions contours
-    for (int i = 0 ; i < mainWindow->junctions_contours_vbos.count() ; i++)
+    for (uint32_t i = 0 ; i < mainWindow->junctions_contours_vbos.count() ; i++)
     {
         mainWindow->junctions_contours_vbos[i]->bind();
         mainWindow->line_program->setUniformValue("matrix", m);
@@ -107,7 +107,7 @@ void RoadsWidget::paintGL()
         mainWindow->junctions_contours_vbos[i]->release();
     }
     //junctions colors
-    for (int i = 0 ; i < mainWindow->junctions_bg_vbos.count() ; i++)
+    for (uint32_t i = 0 ; i < mainWindow->junctions_bg_vbos.count() ; i++)
     {
         mainWindow->junctions_bg_vbos[i]->bind();
         mainWindow->line_program->setUniformValue("matrix", m);
@@ -119,7 +119,7 @@ void RoadsWidget::paintGL()
         mainWindow->junctions_bg_vbos[i]->release();
     }
     //junctions connexity
-    //    for (int i = 0 ; i < mainWindow->junctions_vbos.count() ; i++)
+    //    for (uint32_t i = 0 ; i < mainWindow->junctions_vbos.count() ; i++)
     //    {
     //        mainWindow->junctions_vbos[i]->bind();
     //        mainWindow->line_program->setUniformValue("matrix", m);
@@ -142,7 +142,7 @@ void RoadsWidget::paintGL()
         mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
 
         mainWindow->roads_index_vbo->bind();
-        glDrawElements(GL_LINES, mainWindow->roads_index_vbo->size()/sizeof(unsigned int), GL_UNSIGNED_INT,0);
+        glDrawElements(GL_LINES, mainWindow->roads_index_vbo->size()/sizeof(uint32_t), GL_UNSIGNED_INT,0);
         mainWindow->roads_vbo.release();
         mainWindow->roads_index_vbo->release();
     }
@@ -181,9 +181,9 @@ void RoadsWidget::addBranch(QVector<QLineF> &tree,const Arrival & arrival)
     qreal min_d = INFINITY ;
     QPointF min_d_point;
     QPointF current_point ;
-    for (int k = 0 ; k < tree.count() ; k++)
+    for (uint32_t k = 0 ; k < tree.count() ; k++)
     {
-        int result = l.intersect(tree[k],&current_point) ;
+        uint32_t result = l.intersect(tree[k],&current_point) ;
         if (result==0) qDebug() << " 0 " << arrival.angle << tree[k].angle();
         if ((result==QLineF::BoundedIntersection))
         {
@@ -199,7 +199,7 @@ void RoadsWidget::addBranch(QVector<QLineF> &tree,const Arrival & arrival)
     if (min_d<INFINITY)
     {
         skel_vertices << min_d_point ;
-        QVector<int> & str = double_sided_edges[arrival.edge].truncated_str ;
+        QVector<uint32_t> & str = double_sided_edges[arrival.edge].truncated_str ;
         if (!arrival.str_inverted)
             str.push_front(skel_vertices.count() -1);
         else
@@ -298,7 +298,7 @@ void RoadsWidget::exploreGraph()
 }
 
 
-void RoadsWidget::explorePoint(int i)
+void RoadsWidget::explorePoint(uint32_t i)
 {
     if (!index_junction.contains(i))
     {
@@ -309,7 +309,7 @@ void RoadsWidget::explorePoint(int i)
         junctions.append(junction) ;
         index_junction.insert(i,junctions.count()-1);
     }
-    for (int j = 0 ; j < skel_children[i].count() ; j++)
+    for (uint32_t j = 0 ; j < skel_children[i].count() ; j++)
         exploreEdge(i,skel_children[i][j]);
 
 }
@@ -318,7 +318,7 @@ void RoadsWidget::computeJunctionsHulls()
 {
 
     QVector<float> circle;
-    for (int i = 0 ; i < 40 ; i++)
+    for (uint32_t i = 0 ; i < 40 ; i++)
     {
         float angle = M_PI*i/20.0f ;
         circle << cosf(angle) << sinf(angle) ;
@@ -329,14 +329,14 @@ void RoadsWidget::computeJunctionsHulls()
     mainWindow->junctions_contours_vbos.clear();
     mainWindow->junctions_bg_vbos.clear();
 
-    for (int i = 0 ; i < junctions.count() ; i++)
+    for (uint32_t i = 0 ; i < junctions.count() ; i++)
     {
 
         std::vector<Point_2> circles ;
         QVector<QPointF> contour ;
 
         //push arrivals points
-        for (int j = 0 ; j < junctions[i].arrivals.count() ; j++)
+        for (uint32_t j = 0 ; j < junctions[i].arrivals.count() ; j++)
         {
             QPointF & p = junctions[i].arrivals[j].point ;
             circles.push_back(Point_2(p.x(),p.y()));
@@ -345,14 +345,14 @@ void RoadsWidget::computeJunctionsHulls()
         if (valid_junctions[i]>-1)
         {
             QVector<float> pre_junction_vbo ;
-            for (int j = 0 ; j < junctions[i].centers_indices.count() ; j++)
+            for (uint32_t j = 0 ; j < junctions[i].centers_indices.count() ; j++)
             {
                 float radius = skel_distance[junctions[i].centers_indices[j]]
                         * radiusFactor;
                 float x = skel_vertices[junctions[i].centers_indices[j]].x() ;
                 float y = skel_vertices[junctions[i].centers_indices[j]].y() ;
 
-                for (int k = 0 ; k <= 40 ; k++)
+                for (uint32_t k = 0 ; k <= 40 ; k++)
                 {
                     float xprime =  circle[(k%40)*2]*radius+x ;
                     float yprime = circle[(k%40)*2+1]*radius+y ;
@@ -387,7 +387,7 @@ void RoadsWidget::computeJunctionsHulls()
             vbo->allocate(pre_junction_vbo.constData(),pre_junction_vbo.count()*sizeof(float));
             mainWindow->junctions_contours_vbos << vbo ;
 
-            for (int j = 0 ; j < pre_junction_vbo.count() ; j+=6)
+            for (uint32_t j = 0 ; j < pre_junction_vbo.count() ; j+=6)
             {
                 pre_junction_vbo[j+2] = pre_junction_vbo[j+3] = pre_junction_vbo[j+4] = 1 ;
             }
@@ -405,23 +405,23 @@ void RoadsWidget::computeJunctionsHulls()
 
 void RoadsWidget::computeJunctionsLineStrings()
 {
-    for (int i = 0 ; i < junctions.count() ; i++)
+    for (uint32_t i = 0 ; i < junctions.count() ; i++)
     {
         if (junctions[i].arrivals.count())
         {
             QVector<QPointF> junctions_line_string ;
-            QMap<float,int> elts;
+            QMap<float,uint32_t> elts;
 
             QVector<float> pre_junction_vbo;
 
-            for (int j = 0 ; j < junctions[i].arrivals.count() ; j++)
+            for (uint32_t j = 0 ; j < junctions[i].arrivals.count() ; j++)
             {
                 QLineF l(skel_vertices[junctions[i].centers_indices[0]],junctions[i].arrivals[j].point);
                 elts.insert( l.angle(),j);
             }
 
-            QList<int> sorted = elts.values() ;
-            for (int j = 0 ; j < sorted.count() ; j++)
+            QList<uint32_t> sorted = elts.values() ;
+            for (uint32_t j = 0 ; j < sorted.count() ; j++)
             {
                 QPointF & p = junctions[i].arrivals[sorted[j]].point ;
                 junctions_line_string << p ;
@@ -447,13 +447,13 @@ void RoadsWidget::computeJunctionsLineStrings()
 
 void RoadsWidget::computeJunctionsMeanRadius()
 {
-    for (int i = 0 ; i < junctions.count() ; i++)
+    for (uint32_t i = 0 ; i < junctions.count() ; i++)
     {
         if (junctions[i].centers_indices.count())
         {
             junctions[i].mean_radius = 0 ;
 
-            for (int j = 0 ; j < junctions[i].centers_indices.count() ; j++)
+            for (uint32_t j = 0 ; j < junctions[i].centers_indices.count() ; j++)
                 junctions[i].mean_radius += skel_distance[junctions[i].centers_indices[j]] ;
 
             junctions[i].mean_radius /= junctions[i].centers_indices.count() ;
@@ -463,18 +463,18 @@ void RoadsWidget::computeJunctionsMeanRadius()
 
 void RoadsWidget::computeCloseness()
 {
-    QVector<unsigned int>  &pre_valid_roads_index_vbo = mainWindow->pre_valid_roads_index_vbo;
+    QVector<uint32_t>  &pre_valid_roads_index_vbo = mainWindow->pre_valid_roads_index_vbo;
 
-    QVector<int> fifo_in ;
+    QVector<uint32_t> fifo_in ;
 
     valid_roads.clear();
-    int * simple_distances = new int[(mainWindow->getRoadsJunctions().count()*(mainWindow->getRoadsJunctions().count()-1)/2)];
-    int * tmp_distance = new int[mainWindow->getRoadsJunctions().count()];
+    uint32_t * simple_distances = new uint32_t[(mainWindow->getRoadsJunctions().count()*(mainWindow->getRoadsJunctions().count()-1)/2)];
+    uint32_t * tmp_distance = new uint32_t[mainWindow->getRoadsJunctions().count()];
     mainWindow->progress->setMaximum(mainWindow->getRoadsJunctions().count()-1);
-    for (int i = 0 ; i < mainWindow->getRoadsJunctions().count() ; i++)
+    for (uint32_t i = 0 ; i < mainWindow->getRoadsJunctions().count() ; i++)
     {
         mainWindow->progress->setValue(i);
-        for (int j = 0 ; j  < mainWindow->getRoadsJunctions().count() ; j++)
+        for (uint32_t j = 0 ; j  < mainWindow->getRoadsJunctions().count() ; j++)
             if (i==j)
                 tmp_distance[j] = 0 ;
             else
@@ -484,16 +484,16 @@ void RoadsWidget::computeCloseness()
         fifo_in.append(i);
         while(fifo_in.count())
         {
-            QVector<int> fifo_out;
-            for (int j = 0 ; j < fifo_in.count() ; j++)
+            QVector<uint32_t> fifo_out;
+            for (uint32_t j = 0 ; j < fifo_in.count() ; j++)
             {
-                int index = fifo_in[j] ;
-                QList<int> juncs = mainWindow->getRoadsJunctions()[index].toList() ;
-                for (int k = 0 ; k < juncs.count() ; k++)
+                uint32_t index = fifo_in[j] ;
+                QList<uint32_t> juncs = mainWindow->getRoadsJunctions()[index].toList() ;
+                for (uint32_t k = 0 ; k < juncs.count() ; k++)
                 {
-                    int junc = juncs[k] ;
-                    QList<int> roads = mainWindow->getJunctions()[junc].roads.toList() ;
-                    for (int l = 0 ; l < roads.count() ; l++)
+                    uint32_t junc = juncs[k] ;
+                    QList<uint32_t> roads = mainWindow->getJunctions()[junc].roads.toList() ;
+                    for (uint32_t l = 0 ; l < roads.count() ; l++)
                         if (tmp_distance[index]+1<tmp_distance[roads[l]])
                         {
                             tmp_distance[roads[l]] = tmp_distance[index]+1 ;
@@ -506,8 +506,8 @@ void RoadsWidget::computeCloseness()
 
         qDebug() << "flag6" ;
 
-        int number_of_valid_distances = 0 ;
-        for (int j = 0 ; j < mainWindow->getRoadsJunctions().count() ; j++)
+        uint32_t number_of_valid_distances = 0 ;
+        for (uint32_t j = 0 ; j < mainWindow->getRoadsJunctions().count() ; j++)
         {
             if (j<i)
             {
@@ -528,10 +528,10 @@ void RoadsWidget::computeCloseness()
         qApp->processEvents();
     }
 
-    for (int i = 0 ; i < valid_roads.count() ; i++ )
+    for (uint32_t i = 0 ; i < valid_roads.count() ; i++ )
     {
         mainWindow->pre_valid_roads_index_vbo_start << pre_valid_roads_index_vbo.count() ;
-        for (int j = pre_roads_index_vbo_start[valid_roads[i]] ;
+        for (uint32_t j = pre_roads_index_vbo_start[valid_roads[i]] ;
              j < pre_roads_index_vbo_end[valid_roads[i]] ; j++)
         {
 
@@ -543,12 +543,12 @@ void RoadsWidget::computeCloseness()
 
     //closeness
     QVector<double> closeness;
-    for (int i = 0 ; i < valid_roads.count() ; i++)
+    for (uint32_t i = 0 ; i < valid_roads.count() ; i++)
     {
         double close = 0 ;
-        for (int j = 0 ; j < i ; j ++)
+        for (uint32_t j = 0 ; j < i ; j ++)
             close += simple_distances[(valid_roads[i]*(valid_roads[i]-1))/2+valid_roads[j]] ;
-        for (int j = i+1 ; j < valid_roads.count() ; j ++)
+        for (uint32_t j = i+1 ; j < valid_roads.count() ; j ++)
             close += simple_distances[(valid_roads[j]*(valid_roads[j]-1))/2+valid_roads[i]] ;
         closeness << 1.0/close ;
     }
@@ -557,19 +557,19 @@ void RoadsWidget::computeCloseness()
 
 void RoadsWidget::computeOtherIndices()
 {
-    QVector<int> degree;
+    QVector<uint32_t> degree;
     QVector<double> orthogonality ;
-    for (int i = 0 ; i < valid_roads.count() ; i++)
+    for (uint32_t i = 0 ; i < valid_roads.count() ; i++)
     {
-        int deg = 0 ;
-        int total = 0 ;
+        uint32_t deg = 0 ;
+        uint32_t total = 0 ;
         double orth = 0 ;
-        QList<int> junctions = mainWindow->getRoadsJunctions()[valid_roads[i]].toList() ;
-        for (int j = 0 ; j < junctions.count() ; j++)
+        QList<uint32_t> junctions = mainWindow->getRoadsJunctions()[valid_roads[i]].toList() ;
+        for (uint32_t j = 0 ; j < junctions.count() ; j++)
         {
             QVector<Arrival> junction_arrivals = mainWindow->getJunctions()[junctions[j]].arrivals ;
             QVector<double> angles1,angles2;
-            for (int k = 0 ; k < junction_arrivals.count() ; k++)
+            for (uint32_t k = 0 ; k < junction_arrivals.count() ; k++)
                 if (!(mainWindow->getRoadsEdges()[valid_roads[i]].contains(junction_arrivals[k].edge)))
                 {
                     deg++ ;
@@ -577,8 +577,8 @@ void RoadsWidget::computeOtherIndices()
                 }
                 else
                     angles1.append(junction_arrivals[k].angle);
-            for (int k = 0 ; k < angles1.count() ; k++)
-                for (int l = 0 ; l < angles2.count() ; l++)
+            for (uint32_t k = 0 ; k < angles1.count() ; k++)
+                for (uint32_t l = 0 ; l < angles2.count() ; l++)
                 {
                     orth += abs(sin((angles1[k]-angles2[l])*M_PI/180.0)) ;
                     total ++ ;
@@ -599,15 +599,15 @@ void RoadsWidget::computeOtherIndices()
     //spacing , length
     QVector<double> spacing ;
     QVector<double> length_roads_odo;
-    QVector<int> length_roads_topo;
+    QVector<uint32_t> length_roads_topo;
     QVector<double> length_edges;
     mainWindow->valid_roads_total_length = 0 ;
-    for (int i = 0 ; i < valid_roads.count() ; i++)
+    for (uint32_t i = 0 ; i < valid_roads.count() ; i++)
     {
 
         double l = 0 ;
-        int t = mainWindow->getRoadsEdges()[valid_roads[i]].count() ;
-        for (int j = 0 ; j < t ; j++)
+        uint32_t t = mainWindow->getRoadsEdges()[valid_roads[i]].count() ;
+        for (uint32_t j = 0 ; j < t ; j++)
         {
             double l1 = mainWindow->getDoubleSidedEdges()[ mainWindow->getRoadsEdges()[valid_roads[i]][j]].length ;
             length_edges << l1 ;
@@ -637,28 +637,28 @@ void RoadsWidget::computeRoadsLineStrings()
     pre_roads_index_vbo_end.clear();
     mainWindow->roads_line_strings.clear();
     QVector<bool> edge_treated(double_sided_edges.count(),false) ;
-    QVector<int> list ;
+    QVector<uint32_t> list ;
 
 #define ROADS_NO_EDGE (-1)
 
-    for (int m = 0 ; m < mainWindow->getRoadsEdges().count() ; m++)
+    for (uint32_t m = 0 ; m < mainWindow->getRoadsEdges().count() ; m++)
     {
-        QVector<int> & edges = mainWindow->getRoadsEdges()[m];
+        QVector<uint32_t> & edges = mainWindow->getRoadsEdges()[m];
 
-        QVector<int> list;
+        QVector<uint32_t> list;
 
         QVector<QPointF>  line_string;
 
-        int startEdgeIdx = edges[0] ;
+        uint32_t startEdgeIdx = edges[0] ;
         DoubleSidedEdge startEdge =  double_sided_edges[startEdgeIdx];
 
         list << startEdge.truncated_str;
 
         edge_treated[startEdgeIdx] = true ;
 
-        int lastJunctionIdx = startEdge.second_junction ;
+        uint32_t lastJunctionIdx = startEdge.second_junction ;
 
-        int currentEdgeIdx = junctions[lastJunctionIdx].equivalent.value(startEdgeIdx,ROADS_NO_EDGE);
+        uint32_t currentEdgeIdx = junctions[lastJunctionIdx].equivalent.value(startEdgeIdx,ROADS_NO_EDGE);
 
         while (currentEdgeIdx!=ROADS_NO_EDGE)
         {
@@ -676,7 +676,7 @@ void RoadsWidget::computeRoadsLineStrings()
                 else
                 {
                     //add to line string double_sided_edges[currentEdgeIdx].truncated_str inverted
-                    for (int k = double_sided_edges[currentEdgeIdx].truncated_str.count()-1;k>=0;k--)
+                    for (uint32_t k = double_sided_edges[currentEdgeIdx].truncated_str.count()-1;k>=0;k--)
                         list << double_sided_edges[currentEdgeIdx].truncated_str[k];
 
                     lastJunctionIdx = double_sided_edges[currentEdgeIdx].first_junction;
@@ -700,7 +700,7 @@ void RoadsWidget::computeRoadsLineStrings()
                 if (lastJunctionIdx==double_sided_edges[currentEdgeIdx].first_junction)
                 {
                     //prepend to line string double_sided_edges[currentEdgeIdx].truncated_str inverted
-                    QVector<int> tmp;
+                    QVector<uint32_t> tmp;
                     for (int k = double_sided_edges[currentEdgeIdx].truncated_str.count()-1;k>=0;k--)
                         tmp << double_sided_edges[currentEdgeIdx].truncated_str[k];
 
@@ -713,7 +713,7 @@ void RoadsWidget::computeRoadsLineStrings()
                 else
                 {
                     //prepend to line string double_sided_edges[currentEdgeIdx].truncated_str
-                    QVector<int> tmp =  double_sided_edges[currentEdgeIdx].truncated_str ;
+                    QVector<uint32_t> tmp =  double_sided_edges[currentEdgeIdx].truncated_str ;
                     tmp << list ;
                     list = tmp ;
 
@@ -737,7 +737,7 @@ void RoadsWidget::computeRoadsLineStrings()
 
         pre_roads_index_vbo_start << pre_roads_index_vbo.count() ;
 
-        int j = 0 ;
+        uint32_t j = 0 ;
         for (; j < list.count() -1 ; j++)
         {
             pre_roads_index_vbo << pre_roads_vbo.count()/6 << pre_roads_vbo.count()/6+1 ;
@@ -782,9 +782,9 @@ void RoadsWidget::computeRoadsLineStrings()
     mainWindow->roads_index_vbo->create() ;
     mainWindow->roads_index_vbo->bind() ;
     mainWindow->roads_index_vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
-    mainWindow->roads_index_vbo->allocate(pre_roads_index_vbo.constData(),pre_roads_index_vbo.count()*sizeof(unsigned int));
+    mainWindow->roads_index_vbo->allocate(pre_roads_index_vbo.constData(),pre_roads_index_vbo.count()*sizeof(uint32_t));
 
-    for (int i = 0 ; i < pre_roads_vbo.count() ; i+=6)
+    for (uint32_t i = 0 ; i < pre_roads_vbo.count() ; i+=6)
     {
         pre_roads_vbo[i+2] = 0 ;
         pre_roads_vbo[i+3] = 0 ;
@@ -802,16 +802,16 @@ void RoadsWidget::computeRoadsLineStrings()
 
 void RoadsWidget::computeDegreeOfJunctions()
 {
-    QVector<int> degrees_of_junctions;
-    QVector<int> second_degrees_of_junctions;
-    for(int i = 0 ; i < junctions.count() ; i++)
+    QVector<uint32_t> degrees_of_junctions;
+    QVector<uint32_t> second_degrees_of_junctions;
+    for(uint32_t i = 0 ; i < junctions.count() ; i++)
     {
-        int degree = junctions[i].arrivals.count() ;
+        uint32_t degree = junctions[i].arrivals.count() ;
         if (degree){
             valid_junctions<<second_degrees_of_junctions.count();
             degrees_of_junctions << degree ;
             int total = - degree ;
-            for (int j = 0 ; j < degree ; j++)
+            for (uint32_t j = 0 ; j < degree ; j++)
             {
                 Arrival & A = junctions[i].arrivals[j];
                 DoubleSidedEdge & edge = double_sided_edges[A.edge] ;
@@ -827,19 +827,19 @@ void RoadsWidget::computeDegreeOfJunctions()
 
     qDebug() << "flag3" ;
 
-    QVector<int> third_degrees_of_junctions;
-    for(int i = 0 ; i < junctions.count() ; i++)
+    QVector<uint32_t> third_degrees_of_junctions;
+    for(uint32_t i = 0 ; i < junctions.count() ; i++)
     {
 
         if (valid_junctions[i]>-1){
 
             int total = - second_degrees_of_junctions[valid_junctions[i]] ;
-            int degree = junctions[i].arrivals.count() ;
-            for (int j = 0 ; j < degree ; j++)
+            uint32_t degree = junctions[i].arrivals.count() ;
+            for (uint32_t j = 0 ; j < degree ; j++)
             {
                 Arrival & A = junctions[i].arrivals[j];
                 DoubleSidedEdge & edge = double_sided_edges[A.edge] ;
-                int second_degree_idx;
+                uint32_t second_degree_idx;
                 if (edge.first_junction==i)
                     second_degree_idx  = valid_junctions[edge.second_junction];
                 else
@@ -875,8 +875,8 @@ void RoadsWidget::computeRoadsJunctionsAndEdges()
         {
             index = roads_junctions.count() ;
             road_index.insert(edge.road_index,index);
-            roads_junctions.append(QSet<int>());
-            roads_edges.append(QVector<int>());
+            roads_junctions.append(QSet<uint32_t>());
+            roads_edges.append(QVector<uint32_t>());
         }
 
         roads_junctions[index].insert(edge.first_junction);
@@ -890,21 +890,21 @@ void RoadsWidget::computeRoadsJunctionsAndEdges()
 
 void RoadsWidget::computeEdgesRoadIndex()
 {
-    QVector<int> fifo_in ;
+    QVector<uint32_t> fifo_in ;
 
-    for (int i = 0 ; i < double_sided_edges.count() ; i++)
+    for (uint32_t i = 0 ; i < double_sided_edges.count() ; i++)
         fifo_in.append(i);
 
     while (fifo_in.count())
     {
-        QVector<int> fifo_out ;
-        for (int i = 0 ; i< fifo_in.count() ; i++)
+        QVector<uint32_t> fifo_out ;
+        for (uint32_t i = 0 ; i< fifo_in.count() ; i++)
         {
-            int current = fifo_in[i] ;
+            uint32_t current = fifo_in[i] ;
             DoubleSidedEdge edge = double_sided_edges[current] ;
             if (junctions[edge.first_junction].equivalent.contains(current))
             {
-                int next = junctions[edge.first_junction].equivalent.value(current) ;
+                uint32_t next = junctions[edge.first_junction].equivalent.value(current) ;
                 DoubleSidedEdge next_edge = double_sided_edges[next] ;
                 if (edge.road_index<next_edge.road_index)
                 {
@@ -916,7 +916,7 @@ void RoadsWidget::computeEdgesRoadIndex()
             }
             if (junctions[edge.second_junction].equivalent.contains(current))
             {
-                int next = junctions[edge.second_junction].equivalent.value(current) ;
+                uint32_t next = junctions[edge.second_junction].equivalent.value(current) ;
                 DoubleSidedEdge next_edge = double_sided_edges[next] ;
                 if (edge.road_index<next_edge.road_index)
                 {
@@ -935,16 +935,16 @@ void RoadsWidget::matchJunctionsEdges(float threshold_on_B)
 {
     const float delta_width_constant = logf(2);
    QVector<double> data;
-    for (int i = 0 ; i < junctions.count() ; i++)
+    for (uint32_t i = 0 ; i < junctions.count() ; i++)
     {
         QVector<EdgePair> edge_pairs;
         const QVector<Arrival> & arrivals = junctions[i].arrivals ;
         if (arrivals.count()>=2)
         {
 
-            for (int j = 0 ; j < arrivals.count() - 1; j++)
+            for (uint32_t j = 0 ; j < arrivals.count() - 1; j++)
 
-                for (int k = j+1 ; k < arrivals.count() ; k++)
+                for (uint32_t k = j+1 ; k < arrivals.count() ; k++)
                 {
                     if (isnan(arrivals[j].angle)||isnan( arrivals[k].angle)) qDebug() << "NAN in edge pairs" ;
                     else
@@ -996,8 +996,8 @@ void RoadsWidget::matchJunctionsEdges(float threshold_on_B)
             if (edge_pairs.count())
             {
                 qSort(edge_pairs);
-                QSet<int> already_used_edge ;
-                for (int j = 0 ; j < edge_pairs.count() ; j++)
+                QSet<uint32_t> already_used_edge ;
+                for (uint32_t j = 0 ; j < edge_pairs.count() ; j++)
                 {
                     if ((!already_used_edge.contains(edge_pairs[j].i))&&
                             (!already_used_edge.contains(edge_pairs[j].j))&&
@@ -1019,13 +1019,13 @@ void RoadsWidget::matchJunctionsEdges(float threshold_on_B)
 
 }
 
-void RoadsWidget::exploreEdge( int first, int second)
+void RoadsWidget::exploreEdge( uint32_t first, uint32_t second)
 {
-    int current = second ;
-    int prev = first ;
-    int next;
+    uint32_t current = second ;
+    uint32_t prev = first ;
+    uint32_t next;
     QPointF p0 = skel_vertices[prev]  , p1 = p0 ;
-    QVector<int> str,truncated_str;
+    QVector<uint32_t> str,truncated_str;
     double cumulated_distance = 0 ;
     str<<prev;
     QPointF p2;
@@ -1042,7 +1042,7 @@ void RoadsWidget::exploreEdge( int first, int second)
     }
 
 
-    int last = current ;
+    uint32_t last = current ;
 
     if (last<first)
     {
@@ -1061,9 +1061,9 @@ void RoadsWidget::exploreEdge( int first, int second)
 
             double first_width,second_width ;
             QPointF first_point_A =p0,first_point_B =p3 ;
-            uint first_index_A=0,first_index_B=str.count()-1;
+            uint32_t first_index_A=0,first_index_B=str.count()-1;
             QPointF p1 = p0 ;
-            for (int i = 0 ; i < str.count() -1; i++)
+            for (uint32_t i = 0 ; i < str.count() -1; i++)
             {
                 p1 = skel_vertices[str[i]] ;
                 QPointF p1prime = skel_vertices[str[i+1]] ;
@@ -1080,7 +1080,7 @@ void RoadsWidget::exploreEdge( int first, int second)
 
             radius = skel_distance[last]*radiusFactor ;
             QPointF p2 = p3 ;
-            for (int i = str.count() -1 ; i > 0  ; i--)
+            for (uint32_t i = str.count() -1 ; i > 0  ; i--)
             {
                 p2 = skel_vertices[str[i]] ;
                 QPointF p2prime = skel_vertices[str[i-1]] ;
@@ -1106,7 +1106,7 @@ void RoadsWidget::exploreEdge( int first, int second)
             truncated_str << skel_vertices.count() ;
             skel_vertices << first_point_A ;
 
-            for (int i = first_index_A ; i <= first_index_B ; i++ )
+            for (uint32_t i = first_index_A ; i <= first_index_B ; i++ )
                 truncated_str << str[i] ;
 
             truncated_str << skel_vertices.count() ;
@@ -1137,7 +1137,7 @@ void RoadsWidget::exploreEdge( int first, int second)
             arrival.point = first_point_B ;
             arrival.str_inverted = true ;
 
-            int junction_idx = index_junction[last] ;
+            uint32_t junction_idx = index_junction[last] ;
             Junction junction = junctions[junction_idx] ;
             QVector<Arrival> arrivals = junction.arrivals ;
             arrivals.append(arrival);
@@ -1161,8 +1161,8 @@ void RoadsWidget::exploreEdge( int first, int second)
         {//d<r1+r2 -> fusion
             if (index_junction.contains(last))
             {
-                int  first_junction = index_junction.value(first) ;
-                int  second_junction = index_junction.value(last) ;
+                uint32_t  first_junction = index_junction.value(first) ;
+                uint32_t  second_junction = index_junction.value(last) ;
                 if (first_junction!=second_junction)
                 {
                 Junction junction = junctions[second_junction] ;
@@ -1170,13 +1170,13 @@ void RoadsWidget::exploreEdge( int first, int second)
                 junction.mean_radius = (junction.mean_radius*junction.centers_indices.count()+
                                         junction2.mean_radius*junction2.centers_indices.count())/
                         (junction.centers_indices.count()+junction2.centers_indices.count()) ;
-                for (int j = 0 ; j < junction2.centers_indices.count() ; j++)
+                for (uint32_t j = 0 ; j < junction2.centers_indices.count() ; j++)
                     index_junction.insert(junction2.centers_indices[j], second_junction );
 
-                for (int i = 0 ; i < junction2.centers_indices.count() ; i++ )
+                for (uint32_t i = 0 ; i < junction2.centers_indices.count() ; i++ )
                     junction.centers_indices.append(junction2.centers_indices[i]) ;
 
-                for (int i = 0 ; i < junction2.arrivals.count() ; i++ )
+                for (uint32_t i = 0 ; i < junction2.arrivals.count() ; i++ )
                     junction.arrivals.append(junction2.arrivals[i]) ;
 
                 junction2.arrivals.clear() ;
