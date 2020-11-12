@@ -775,6 +775,7 @@ const uint32_t ROADS_NO_EDGE =(-1);
     mainWindow->roads_vbo.bind() ;
     mainWindow->roads_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
     mainWindow->roads_vbo.allocate(pre_roads_vbo.constData(),pre_roads_vbo.count()*sizeof(float));
+mainWindow->roads_vbo.release();
 
     if (mainWindow->roads_index_vbo->isCreated())
         mainWindow->roads_index_vbo->destroy();
@@ -783,6 +784,7 @@ const uint32_t ROADS_NO_EDGE =(-1);
     mainWindow->roads_index_vbo->bind() ;
     mainWindow->roads_index_vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
     mainWindow->roads_index_vbo->allocate(pre_roads_index_vbo.constData(),pre_roads_index_vbo.count()*sizeof(uint32_t));
+    mainWindow->roads_index_vbo->release() ;
 
     for (uint32_t i = 0 ; i < pre_roads_vbo.count() ; i+=6)
     {
@@ -798,6 +800,7 @@ const uint32_t ROADS_NO_EDGE =(-1);
     mainWindow->black_roads_vbo.bind() ;
     mainWindow->black_roads_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
     mainWindow->black_roads_vbo.allocate(pre_roads_vbo.constData(),pre_roads_vbo.count()*sizeof(GLfloat));
+    mainWindow->black_roads_vbo.release();
 }
 
 void RoadsWidget::computeDegreeOfJunctions()

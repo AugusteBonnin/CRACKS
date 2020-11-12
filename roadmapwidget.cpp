@@ -5,7 +5,7 @@ RoadMapWidget::RoadMapWidget(MapPage *parent, QVector<QColor> & colors) : MapWid
 {
 
     QVector<float> pre_valid_roads_vbo ;
-    QVector<unsigned int> pre_valid_roads_index_vbo ;
+    QVector<uint32_t> pre_valid_roads_index_vbo ;
 
     for (int i = 0 ; i < colors.count() ; i++)
     {
@@ -50,14 +50,15 @@ RoadMapWidget::RoadMapWidget(MapPage *parent, QVector<QColor> & colors) : MapWid
     valid_roads_vbo.bind();
     valid_roads_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
     valid_roads_vbo.allocate(pre_valid_roads_vbo.constData(),pre_valid_roads_vbo.count()*sizeof(float));
+valid_roads_vbo.release();
 
     valid_roads_index_vbo = new QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
     valid_roads_index_vbo->create();
     valid_roads_index_vbo->bind();
     valid_roads_index_vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
     valid_roads_index_vbo->allocate(pre_valid_roads_index_vbo.constData(),
-                                    pre_valid_roads_index_vbo.count()*sizeof(unsigned int));
-
+                                    pre_valid_roads_index_vbo.count()*sizeof(uint32_t));
+valid_roads_index_vbo->release();
 //places
     QVector<QVector<float> > & pre_junctions_vbos = mainWindow->pre_junctions_vbos ;
 
