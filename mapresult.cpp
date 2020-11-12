@@ -64,7 +64,7 @@ void MapResult::saveSVG()
     //widget->saveSVG(path);
     QSvgGenerator generator;
     generator.setFileName(path);
-    generator.setSize(size());
+    generator.setSize(size()*2);
     generator.setViewBox(rect());
     generator.setTitle(tr("%1-%2").arg(file.baseName()).arg(resultName));
 
