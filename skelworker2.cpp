@@ -89,9 +89,10 @@ int SkelWorker2::maibe_create_middle(const Vertex_handle & v1, const Vertex_hand
 
         QPointF p1(v1->point().x(),v1->point().y());
         QLineF p1_middle(p1,middle);
-        if (point_is_exit)
+        /*
+         * if (point_is_exit)
             skel_distance << 0 ;
-            else
+            else*/
         skel_distance << p1_middle.length() ;
         static int total=0;
         static int border=0;

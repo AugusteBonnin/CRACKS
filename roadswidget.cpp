@@ -441,7 +441,7 @@ void RoadsWidget::computeJunctionsLineStrings()
             vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
             vbo->allocate(pre_junction_vbo.constData(),pre_junction_vbo.count()*sizeof(float));
             mainWindow->junctions_vbos << vbo ;
-
+            vbo->release();
         }
     }
 
@@ -906,15 +906,14 @@ void RoadsWidget::computeEdgesRoadIndex()
         for (uint32_t i = 0 ; i< fifo_in.count() ; i++)
         {
             uint32_t current = fifo_in[i] ;
-            DoubleSidedEdge edge = double_sided_edges[current] ;
+            DoubleSidedEdge & edge = double_sided_edges[current] ;
             if (junctions[edge.first_junction].equivalent.contains(current))
             {
                 uint32_t next = junctions[edge.first_junction].equivalent.value(current) ;
-                DoubleSidedEdge next_edge = double_sided_edges[next] ;
+                DoubleSidedEdge & next_edge = double_sided_edges[next] ;
                 if (edge.road_index<next_edge.road_index)
                 {
                     next_edge.road_index = edge.road_index ;
-                    double_sided_edges[next] = next_edge ;
                     fifo_out.append(next) ;
                 }
 
@@ -922,11 +921,10 @@ void RoadsWidget::computeEdgesRoadIndex()
             if (junctions[edge.second_junction].equivalent.contains(current))
             {
                 uint32_t next = junctions[edge.second_junction].equivalent.value(current) ;
-                DoubleSidedEdge next_edge = double_sided_edges[next] ;
+                DoubleSidedEdge & next_edge = double_sided_edges[next] ;
                 if (edge.road_index<next_edge.road_index)
                 {
                     next_edge.road_index = edge.road_index ;
-                    double_sided_edges[next] = next_edge ;
                     fifo_out.append(next) ;
                 }
 
