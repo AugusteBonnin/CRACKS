@@ -363,12 +363,12 @@ void RoadsWidget::computeJunctionsHulls()
             }
 
 
-            std::vector<Point_2> hull(circles.size());
-            std::vector<Point_2>::iterator ptr = CGAL::convex_hull_2
-                    ( circles.begin(), circles.end(), hull.begin() );
+            std::vector<Point_2> hull;
+             CGAL::convex_hull_2
+                    ( circles.begin(), circles.end(), std::back_inserter(hull) );
 
             std::vector<Point_2>::iterator it;
-            for (it = hull.begin(); it < ptr ; it++)
+            for (it = hull.begin(); it !=hull.end() ; it++)
             {
                 pre_junction_vbo <<(*it).x()<<(*it).y()
                                 << 0 << 0 << 0 << 1  ;
@@ -376,7 +376,7 @@ void RoadsWidget::computeJunctionsHulls()
             }
             pre_junction_vbo <<(*(hull.begin())).x()<<(*(hull.begin())).y()
                             << 0 << 0 << 0 << 1  ;
-            contour<< QPointF((*hull.begin()).x(),(*hull.begin()).y()) ;
+            contour<< QPointF((*(hull.begin())).x(),(*(hull.begin())).y()) ;
 
             pre_junctions_vbos << pre_junction_vbo ;
             mainWindow->places_contours_line_strings << contour ;
@@ -385,6 +385,7 @@ void RoadsWidget::computeJunctionsHulls()
             vbo->bind();
             vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
             vbo->allocate(pre_junction_vbo.constData(),pre_junction_vbo.count()*sizeof(float));
+            vbo->release();
             mainWindow->junctions_contours_vbos << vbo ;
 
             for (uint32_t j = 0 ; j < pre_junction_vbo.count() ; j+=6)
@@ -396,6 +397,7 @@ void RoadsWidget::computeJunctionsHulls()
             vbo->bind();
             vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
             vbo->allocate(pre_junction_vbo.constData(),pre_junction_vbo.count()*sizeof(float));
+            vbo->release();
             mainWindow->junctions_bg_vbos << vbo ;
 
         }

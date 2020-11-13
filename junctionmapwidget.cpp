@@ -124,7 +124,7 @@ void JunctionMapWidget::paintGL()
         mainWindow->line_program->enableAttributeArray(PROGRAM_COLOR_ATTRIBUTE);
         mainWindow->line_program->setAttributeBuffer(PROGRAM_VERTEX_ATTRIBUTE, GL_FLOAT, 0, 2, 6 * sizeof(GLfloat));
         mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
-        glDrawArrays(GL_LINE_STRIP,0,mainWindow->places_contours_line_strings[i].count());
+        glDrawArrays(GL_LINE_STRIP,0,mainWindow->junctions_contours_vbos[i]->size()/(6*sizeof(float)));
         mainWindow->junctions_contours_vbos[i]->release();
     }
     //junctions colors
@@ -136,7 +136,7 @@ void JunctionMapWidget::paintGL()
         mainWindow->line_program->enableAttributeArray(PROGRAM_COLOR_ATTRIBUTE);
         mainWindow->line_program->setAttributeBuffer(PROGRAM_VERTEX_ATTRIBUTE, GL_FLOAT, 0, 2, 6 * sizeof(GLfloat));
         mainWindow->line_program->setAttributeBuffer(PROGRAM_COLOR_ATTRIBUTE, GL_FLOAT, 2 * sizeof(GLfloat), 4, 6 * sizeof(GLfloat));
-        glDrawArrays(GL_POLYGON,0,mainWindow->places_contours_line_strings[i].count());
+        glDrawArrays(GL_POLYGON,0,junctions_vbos[i]->size()/(6*sizeof(float)));
         junctions_vbos[i]->release();
     }
 }
