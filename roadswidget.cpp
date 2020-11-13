@@ -227,7 +227,10 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
 
     mainWindow->histoIntData.clear();
     mainWindow->histoDoubleData.clear();
+    mainWindow->places_contours_line_strings.clear();
 
+    valid_junctions.clear();
+    valid_roads.clear();
 
     //Build junctions and edges
     exploreGraph();
