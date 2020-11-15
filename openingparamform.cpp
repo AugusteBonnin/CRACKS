@@ -17,8 +17,7 @@ OpeningParamForm::OpeningParamForm(MainWindow *parent,OpeningPage * page) :
 
     ui->spinBox->setValue(settings.value("OpeningParamForm-Zoom",QVariant(1)).toInt()) ;
     ui->spinBox_2->setValue(settings.value("OpeningParamForm-Radius",QVariant(10)).toInt()) ;
-    ui->checkBox->setChecked(settings.value("OpeningParamForm-SaveJPG",QVariant(false)).toBool()) ;
-    ui->checkBox_2->setChecked(settings.value("OpeningParamForm-Apply",QVariant(true)).toBool()) ;
+     ui->checkBox_2->setChecked(settings.value("OpeningParamForm-Apply",QVariant(true)).toBool()) ;
     ui->groupBox->setEnabled(ui->checkBox_2->isChecked());
     connect(ui->spinBox,SIGNAL(valueChanged(int)),page->originalZoomWidget,SLOT(setMagnification(int)));
     connect(ui->spinBox,SIGNAL(valueChanged(int)),page->resultZoomWidget,SLOT(setMagnification(int)));
@@ -43,12 +42,6 @@ void OpeningParamForm::on_checkBox_2_toggled(bool checked)
     ui->groupBox->setEnabled(checked);
 }
 
-void OpeningParamForm::on_checkBox_toggled(bool checked)
-{
-    settings.setValue("OpeningParamForm-SaveJPG",checked);
-
-
-}
 
 void OpeningParamForm::on_spinBox_valueChanged(int arg1)
 {

@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "saveform.h"
 #include "skelparamform.h"
 #include "ui_skelform.h"
 #include <QTimer>
@@ -12,7 +11,6 @@ SkelParamForm::SkelParamForm(MainWindow *parent, SkelPage *page) :
 
     ui->doubleSpinBox->setValue(settings.value("Skel/Prune",2.0).toDouble());
 
-    ui->verticalLayout->addWidget(new SaveForm(parent,"Skel"));
 }
 
 SkelParamForm::~SkelParamForm()

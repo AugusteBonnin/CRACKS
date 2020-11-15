@@ -28,8 +28,6 @@ private slots:
 
     void on_doubleSpinBox_valueChanged(double arg1);
 
-    void on_checkBox_toggled(bool checked);
-
     void on_doubleSpinBox_2_valueChanged(double arg1);
 
     void on_checkBox_3_toggled(bool checked);

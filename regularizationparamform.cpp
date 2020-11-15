@@ -22,7 +22,6 @@ RegularizationParamForm::RegularizationParamForm(MainWindow *parent,Regularizati
     QSettings settings;
     ui->checkBox_2->setChecked( settings.value("Apply1",QVariant(true)).toBool() );
     ui->spinBox->setValue(settings.value("RegularizationForm-Radius",QVariant(10)).toInt());
-    ui->checkBox->setChecked( settings.value("RegularizationForm-SaveJPG",QVariant(true)).toBool() );
 
 }
 
@@ -54,10 +53,6 @@ void RegularizationParamForm::on_checkBox_2_toggled(bool checked)
     settings.setValue("Apply1",checked);
 }
 
-void RegularizationParamForm::on_checkBox_toggled(bool checked)
-{
-    settings.setValue("RegularizationForm-SaveJPG",checked);
-}
 
 void RegularizationParamForm::on_spinBox_valueChanged(int arg1)
 {

@@ -112,10 +112,9 @@ void OpeningPage::nextPhase()
         {
             compute_clicked();
         }
-        if (settings.value("OpeningParamForm-SaveJPG",QVariant(true)).toBool())
-        {
+
             mainWindow->trySaveDoubleImage(tr("Ouverture-"),mainWindow->openedImage);
-        }
+
     }
 }
 

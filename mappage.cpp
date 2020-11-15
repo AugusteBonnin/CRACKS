@@ -32,20 +32,15 @@ MapPage::~MapPage()
 void MapPage::addMapResult(MapResult*result)
 {
     results << result ;
-    result->setFixedHeight(600);
+    //result->setFixedHeight(600);
     container->addWidget(result) ;
 }
 
 void MapPage::nextPhase()
 {
-    //QString path = title +"/" ;
-   for (int i = 0 ; i < results.count() ; i++)
+    for (int i = 0 ; i < results.count() ; i++)
     {
-        //QString path2 = path+results[i]->getName() +"/" ;
-        //if (settings.value(path2+"SaveJPG",false).toBool())
-           // results[i]->saveImage(settings.value(path2+"Screenshot",true).toBool());
-        //if (settings.value(path2+"SaveSVG",false).toBool())
-            results[i]->saveSVG();
+           results[i]->saveSVG();
         }
 }
 
@@ -73,7 +68,7 @@ void MapPage::reinit()
 
     for (int i = 0 ; i < results.count() ; i++)
     {
-        results[i]->setFixedHeight(600);
+        //results[i]->setFixedHeight(600);
         container->addWidget(results[i]) ;
     }
 

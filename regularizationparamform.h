@@ -31,8 +31,6 @@ private slots:
 
     void on_checkBox_2_toggled(bool checked);
 
-    void on_checkBox_toggled(bool checked);
-
     void on_spinBox_valueChanged(int arg1);
 
 private:

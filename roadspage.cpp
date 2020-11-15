@@ -42,25 +42,13 @@ RoadsPage::~RoadsPage()
 
 void RoadsPage::nextPhase()
 {
-    if (settings.value("Roads/SaveJPG",true).toBool())
-    {
-        QImage image;
-        if (settings.value("Roads/Screenshot").toBool())
-        {
-            screenshot(image) ;
-        }
-        else //Full image
-        {
-            image = widget->getImage();
-        }
+
+        QImage image = widget->getImage();
+
         mainWindow->trySaveImage(tr("Voies et places-"),image);
 
-    }
-    //if (settings.value("Roads/SaveSVG",false).toBool())
         saveSVG();
-    //if (settings.value("Roads/SaveSHP",false).toBool())
         saveSHP();
-
         saveCSV();
 }
 

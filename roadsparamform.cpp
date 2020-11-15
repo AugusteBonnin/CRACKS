@@ -1,6 +1,5 @@
 #include "roadspage.h"
 #include "roadsparamform.h"
-#include "saveform.h"
 #include "ui_roadsform.h"
 #include <QTimer>
 
@@ -14,8 +13,6 @@ RoadsParamForm::RoadsParamForm(MainWindow *parent,RoadsPage * page) :
     ui->doubleSpinBox_2->setValue(settings.value("RoadsParamForm-MaxAngle",QVariant(45.0)).toDouble());
 
     connect(ui->pushButton_2,SIGNAL(pressed()),page,SLOT(on_pushButton_2_clicked()));
-
-    ui->verticalLayout->addWidget(new SaveForm(parent,"Roads"));
 }
 
 RoadsParamForm::~RoadsParamForm()

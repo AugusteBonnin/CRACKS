@@ -20,8 +20,6 @@ CropParamForm::CropParamForm(MainWindow *parent,CropPage*page) :
 
     QSettings settings;
 
-    ui->checkBox->setChecked(settings.value("CropForm-SaveJPG",QVariant(true)).toBool());
-
     ui->checkBox_2->setChecked(settings.value("Apply0",QVariant(true)).toBool());
     ui->mygroupbox->setEnabled(ui->checkBox_2->isChecked());
     page->setEnabled(ui->checkBox_2->isChecked());
@@ -54,13 +52,6 @@ void CropParamForm::on_doubleSpinBox_valueChanged(double arg1)
     settings.setValue("CropForm-UnitY",arg1);
     ((CropPage*)page)->remap(((CropPage*)page)->quadWidget->polygon);
     page->repaint();
-
-}
-
-void CropParamForm::on_checkBox_toggled(bool checked)
-{
-    QSettings settings;
-    settings.setValue("CropForm-SaveJPG",checked);
 
 }
 

@@ -847,7 +847,7 @@ void RoadsWidget::computeDegreeOfJunctions()
             {
                 Arrival & A = junctions[i].arrivals[j];
                 DoubleSidedEdge & edge = double_sided_edges[A.edge] ;
-                uint32_t second_degree_idx;
+                int second_degree_idx;
                 if (edge.first_junction==i)
                     second_degree_idx  = valid_junctions[edge.second_junction];
                 else

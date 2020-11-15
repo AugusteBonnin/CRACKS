@@ -38,10 +38,6 @@ void on_checkBox_clicked(bool checked);
 
 void on_checkBox_2_clicked(bool checked);
 
-private slots:
-
-void checkBox_3_toggled(bool checked);
-void spinBox_valueChanged(int arg1);
 };
 
 #endif // ContourParamForm_H

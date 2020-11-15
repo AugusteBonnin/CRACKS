@@ -79,13 +79,6 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QCheckBox" name="checkBox">
-        <property name="text">
-         <string>Enregistrer l'image en JPG</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>

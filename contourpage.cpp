@@ -101,7 +101,7 @@ ContourPage::ContourPage(MainWindow *parent) :
     mainWindow->openedQImage = originalQImage ;
 
     widget = new ContourWidget(this) ;
-widget->setFixedHeight(512);
+//widget->setFixedHeight(512);
 
     QVBoxLayout * layout = new QVBoxLayout ;
     layout->addWidget(widget);
@@ -159,23 +159,12 @@ ContourPage::~ContourPage()
 void ContourPage::nextPhase()
 {
 
-    if (settings.value("Contour/SaveJPG",false).toBool())
-    {
-        QImage image;
-        if (settings.value("Contour/Screenshot",true).toBool())
-        {
-            screenshot(image) ;
-        }
-        else //Full image
-        {
-            image = widget->getImage();
-        }
+
+        QImage image= widget->getImage();
 
         mainWindow->trySaveImage(tr("Contour-"),image);
-    }
-    if (settings.value("Contour/SaveSVG",false).toBool())
+
         saveSVG();
-    if (settings.value("Contour/SaveSHP",false).toBool())
         saveSHP();
 }
 

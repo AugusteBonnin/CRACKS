@@ -124,25 +124,13 @@ void SkelPage::reinit()
 
 void SkelPage::nextPhase()
 {
-    if (settings.value("Skel/SaveJPG",false).toBool())
-    {
-        QImage image;
-        if (settings.value("Skel/Screenshot").toBool())
-        {
-            screenshot(image) ;
-        }
-        else //Full image
-        {
-            image = widget->getImage();
-        }
+
+        QImage image = widget->getImage();
 
         mainWindow->trySaveImage(tr("Squelettisation-"),image);
 
-    }
-    if (settings.value("Skel/SaveSVG",false).toBool())
         saveSVG();
-    if (settings.value("Skel/SaveSHP",false).toBool())
-        saveSHP();
+       saveSHP();
 }
 
 void SkelPage::prevPhase()

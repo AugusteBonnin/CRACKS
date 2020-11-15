@@ -80,11 +80,8 @@ void CropPage::nextPhase()
     if (!settings.value("Apply0",QVariant(true)).toBool())
     {
         mainWindow->croppedImage = mainWindow->initialImage ;
-        if (settings.value("CropForm-SaveJPG",false).toBool())
-        {
-         mainWindow->trySaveImage(tr("Recadrage-"),mainWindow->croppedImage);
 
-        }
+         mainWindow->trySaveImage(tr("Recadrage-"),mainWindow->croppedImage);
     }
 
 

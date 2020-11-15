@@ -77,10 +77,8 @@ void RegularizationPage::nextPhase()
         {
             on_compute_clicked();
         }
-        if (settings.value("RegularizationForm-SaveJPG",false).toBool())
-    {
-            mainWindow->trySaveDoubleImage(tr("Régularisation-"),mainWindow->regularizedImage);
-    }
+     mainWindow->trySaveDoubleImage(tr("Régularisation-"),mainWindow->regularizedImage);
+
     }
 }
 
