@@ -27,10 +27,10 @@ CropParamForm::CropParamForm(MainWindow *parent,CropPage*page) :
     ui->checkBox_3->setChecked(settings.value("Crop/Unit",false).toBool());
     ui->groupBox->setVisible(settings.value("Crop/Unit",false).toBool());
 
-    ui->doubleSpinBox->setValue(settings.value("CropForm-UnitY",QVariant(1.0)).toDouble());
-    ui->doubleSpinBox_2->setValue(settings.value("CropForm-UnitX",QVariant(1.0)).toDouble());
+    ui->doubleSpinBox->setValue(settings.value("CropForm-UnitY",QVariant(300.0)).toDouble());
+    ui->doubleSpinBox_2->setValue(settings.value("CropForm-UnitX",QVariant(300.0)).toDouble());
 
-    ui->comboBox->setEditText(settings.value("Crop/UnitName","").toString());
+    ui->comboBox->setEditText(settings.value("Crop/UnitName","mm").toString());
 }
 
 CropParamForm::~CropParamForm()

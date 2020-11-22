@@ -76,6 +76,7 @@ QLabel * label;
     QSettings settings;
     sw->setVisible(settings.value("Crop/Unit",false).toBool());
 
+    connect(widget,SIGNAL(ScaleChanged(double)),sw,SLOT(ScaleChanged(double)));
 
 }
 

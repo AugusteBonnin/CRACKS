@@ -615,6 +615,8 @@ void RoadsWidget::computeOtherIndices()
         for (uint32_t j = 0 ; j < t ; j++)
         {
             double l1 = mainWindow->getDoubleSidedEdges()[ mainWindow->getRoadsEdges()[valid_roads[i]][j]].length ;
+            if (settings.value("Crop/Unit",false).toBool())
+                l1 *= settings.value("CropForm-UnitX",1.0).toDouble()/mainWindow->getOpenedImage()->width();
             length_edges << l1 ;
             l += l1 ;
         }
