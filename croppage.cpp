@@ -120,15 +120,6 @@ void CropPage::remap(QPolygon p)
     qreal hauteur = QLineF(p[1],p[2]).length() ;
     hauteur = qMin(hauteur,QLineF(p[3],p[0]).length());
 
-    if (settings.value("Crop/Unit",false).toBool())
-    {
-        if (largeur/hauteur>
-                settings.value("CropForm-UnitX",1).toDouble()/settings.value("CropForm-UnitY",1).toDouble())
-            hauteur = largeur * settings.value("CropForm-UnitY",1).toDouble()/settings.value("CropForm-UnitX",1).toDouble() ;
-        else
-            largeur = hauteur * settings.value("CropForm-UnitX",1).toDouble()/settings.value("CropForm-UnitY",1).toDouble() ;
-
-    }
     QPolygon target ;
     target << QPoint (0,0) << QPoint(largeur,0) << QPoint(largeur,hauteur) << QPoint(0,hauteur);
 
