@@ -4,6 +4,8 @@
 #include "histogramlabel.h"
 #include <QApplication>
 #include <QDebug>
+#include <QDir>
+#include <QFileInfo>
 #include <QPainter>
 #include <cstdlib>
 #include <limits.h>
@@ -185,7 +187,7 @@ void RoadsWidget::addBranch(QVector<QLineF> &tree,const Arrival & arrival)
     {
         uint32_t result = l.intersect(tree[k],&current_point) ;
         if (result==0) qDebug() << " 0 " << arrival.angle << tree[k].angle();
-        if ((result==QLineF::BoundedIntersection))
+        if (result==QLineF::BoundedIntersection)
         {
             qreal d = QLineF(current_point,l.p1()).length();
             if (d<min_d)
@@ -268,7 +270,7 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
     qDebug() << "computeJunctionsLineStrings" ;
 
     computeJunctionsLineStrings();
-qDebug() << "computeJunctionsHulls" ;
+    qDebug() << "computeJunctionsHulls" ;
     computeJunctionsHulls();
 
     ((Page*)parent())->initDone = true ;
@@ -287,8 +289,8 @@ void RoadsWidget::exploreGraph()
         if((skel_children[i].count()==1)||(skel_children[i].count()>=3))
         {
             explorePoint(i);
-        mainWindow->progress->setValue(i);
-        qApp->processEvents();
+            mainWindow->progress->setValue(i);
+            qApp->processEvents();
         }
     }
     for (int i = 0 ; i < double_sided_edges.count() ; i++)
@@ -367,7 +369,7 @@ void RoadsWidget::computeJunctionsHulls()
 
 
             std::vector<Point_2> hull;
-             CGAL::convex_hull_2
+            CGAL::convex_hull_2
                     ( circles.begin(), circles.end(), std::back_inserter(hull) );
 
             std::vector<Point_2>::iterator it;
@@ -468,13 +470,14 @@ void RoadsWidget::computeJunctionsMeanRadius()
 
 void RoadsWidget::computeCloseness()
 {
-    QVector<uint32_t>  &pre_valid_roads_index_vbo = mainWindow->pre_valid_roads_index_vbo;
+    //QVector<uint32_t>  &pre_valid_roads_index_vbo = mainWindow->pre_valid_roads_index_vbo;
+    QVector<double> closeness;
 
     QVector<uint32_t> fifo_in ;
 
     valid_roads.clear();
-    uint32_t * simple_distances = new uint32_t[(mainWindow->getRoadsJunctions().count()*(mainWindow->getRoadsJunctions().count()-1)/2)];
-    uint32_t * tmp_distance = new uint32_t[mainWindow->getRoadsJunctions().count()];
+    simple_distances.clear();
+   QVector<uint32_t> tmp_distance(mainWindow->getRoadsJunctions().count());
     mainWindow->progress->setMaximum(mainWindow->getRoadsJunctions().count()-1);
     for (uint32_t i = 0 ; i < mainWindow->getRoadsJunctions().count() ; i++)
     {
@@ -483,7 +486,7 @@ void RoadsWidget::computeCloseness()
             if (i==j)
                 tmp_distance[j] = 0 ;
             else
-                tmp_distance[j] = INT_MAX;
+                tmp_distance[j] = std::numeric_limits<uint32_t>().max();
 
         fifo_in.clear();
         fifo_in.append(i);
@@ -509,30 +512,31 @@ void RoadsWidget::computeCloseness()
             fifo_in = fifo_out ;
         }
 
-        qDebug() << "flag6" ;
-
-        uint32_t number_of_valid_distances = 0 ;
+        QVector<uint32_t> tmp2_distance;
+        uint32_t valid_distances = 0 ;
         for (uint32_t j = 0 ; j < mainWindow->getRoadsJunctions().count() ; j++)
         {
-            if (j<i)
-            {
-                if (tmp_distance[j]<INT_MAX)
-                    number_of_valid_distances++ ;
-            }
-            else
-                if (i<j)
+
+                if (tmp_distance[j]<std::numeric_limits<uint32_t>().max())
                 {
-                    simple_distances[(j*(j-1))/2+i] = tmp_distance[j] ;
-                    if (tmp_distance[j]<INT_MAX)
-                        number_of_valid_distances ++ ;
+                    valid_distances++;
+                   tmp2_distance << tmp_distance[j] ;
                 }
         }
-        if (number_of_valid_distances>mainWindow->getRoadsJunctions().count()/10)
+        if (valid_distances>mainWindow->getRoadsJunctions().count()/10)
+        {
             valid_roads << i ;
 
+        simple_distances << tmp2_distance ;
+
+        double close = 0 ;
+        for (uint32_t j = 0 ; j <tmp2_distance.count(); j ++)
+            close += tmp2_distance[j] ;
+       closeness << 1.0/close ;
+        }
         qApp->processEvents();
     }
-
+    /*
     for (uint32_t i = 0 ; i < valid_roads.count() ; i++ )
     {
         mainWindow->pre_valid_roads_index_vbo_start << pre_valid_roads_index_vbo.count() ;
@@ -545,19 +549,10 @@ void RoadsWidget::computeCloseness()
         mainWindow->pre_valid_roads_index_vbo_end << pre_valid_roads_index_vbo.count() ;
 
     }
+    */
 
-    //closeness
-    QVector<double> closeness;
-    for (uint32_t i = 0 ; i < valid_roads.count() ; i++)
-    {
-        double close = 0 ;
-        for (uint32_t j = 0 ; j < i ; j ++)
-            close += simple_distances[(valid_roads[i]*(valid_roads[i]-1))/2+valid_roads[j]] ;
-        for (uint32_t j = i+1 ; j < valid_roads.count() ; j ++)
-            close += simple_distances[(valid_roads[j]*(valid_roads[j]-1))/2+valid_roads[i]] ;
-        closeness << 1.0/close ;
-    }
     mainWindow->histoDoubleData << closeness ;
+
 }
 
 void RoadsWidget::computeOtherIndices()
@@ -646,7 +641,7 @@ void RoadsWidget::computeRoadsLineStrings()
     QVector<bool> edge_treated(double_sided_edges.count(),false) ;
     QVector<uint32_t> list ;
 
-const uint32_t ROADS_NO_EDGE =(-1);
+    const uint32_t ROADS_NO_EDGE =(-1);
 
     for (uint32_t m = 0 ; m < mainWindow->getRoadsEdges().count() ; m++)
     {
@@ -782,7 +777,7 @@ const uint32_t ROADS_NO_EDGE =(-1);
     mainWindow->roads_vbo.bind() ;
     mainWindow->roads_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
     mainWindow->roads_vbo.allocate(pre_roads_vbo.constData(),pre_roads_vbo.count()*sizeof(float));
-mainWindow->roads_vbo.release();
+    mainWindow->roads_vbo.release();
 
     if (mainWindow->roads_index_vbo->isCreated())
         mainWindow->roads_index_vbo->destroy();
@@ -942,7 +937,7 @@ void RoadsWidget::computeEdgesRoadIndex()
 void RoadsWidget::matchJunctionsEdges(float threshold_on_B)
 {
     const float delta_width_constant = logf(2);
-   QVector<double> data;
+    QVector<double> data;
     for (uint32_t i = 0 ; i < junctions.count() ; i++)
     {
         QVector<EdgePair> edge_pairs;
@@ -1017,7 +1012,7 @@ void RoadsWidget::matchJunctionsEdges(float threshold_on_B)
                         junctions[i].equivalent.insert(edge_pairs[j].i , edge_pairs[j].j ) ;
                         junctions[i].equivalent.insert(edge_pairs[j].j , edge_pairs[j].i ) ;
 
-                     }
+                    }
                 }
             }
         }
@@ -1173,26 +1168,26 @@ void RoadsWidget::exploreEdge( uint32_t first, uint32_t second)
                 uint32_t  second_junction = index_junction.value(last) ;
                 if (first_junction!=second_junction)
                 {
-                Junction junction = junctions[second_junction] ;
-                Junction junction2 = junctions[first_junction] ;
-                junction.mean_radius = (junction.mean_radius*junction.centers_indices.count()+
-                                        junction2.mean_radius*junction2.centers_indices.count())/
-                        (junction.centers_indices.count()+junction2.centers_indices.count()) ;
-                for (uint32_t j = 0 ; j < junction2.centers_indices.count() ; j++)
-                    index_junction.insert(junction2.centers_indices[j], second_junction );
+                    Junction junction = junctions[second_junction] ;
+                    Junction junction2 = junctions[first_junction] ;
+                    junction.mean_radius = (junction.mean_radius*junction.centers_indices.count()+
+                                            junction2.mean_radius*junction2.centers_indices.count())/
+                            (junction.centers_indices.count()+junction2.centers_indices.count()) ;
+                    for (uint32_t j = 0 ; j < junction2.centers_indices.count() ; j++)
+                        index_junction.insert(junction2.centers_indices[j], second_junction );
 
-                for (uint32_t i = 0 ; i < junction2.centers_indices.count() ; i++ )
-                    junction.centers_indices.append(junction2.centers_indices[i]) ;
+                    for (uint32_t i = 0 ; i < junction2.centers_indices.count() ; i++ )
+                        junction.centers_indices.append(junction2.centers_indices[i]) ;
 
-                for (uint32_t i = 0 ; i < junction2.arrivals.count() ; i++ )
-                    junction.arrivals.append(junction2.arrivals[i]) ;
+                    for (uint32_t i = 0 ; i < junction2.arrivals.count() ; i++ )
+                        junction.arrivals.append(junction2.arrivals[i]) ;
 
-                junction2.arrivals.clear() ;
+                    junction2.arrivals.clear() ;
 
-                junctions[second_junction] = junction ;
-                junctions[first_junction]= junction2 ;
+                    junctions[second_junction] = junction ;
+                    junctions[first_junction]= junction2 ;
                 }
-            /*Junction junction2 = junctions[first_junction] ;
+                /*Junction junction2 = junctions[first_junction] ;
             junction2.vertices.clear() ;
             junction2.arrivals.clear() ;
             junctions[first_junction] = junction2 ;*/
@@ -1220,4 +1215,27 @@ QRgb RoadsWidget::randColor()
     return qRgb((unsigned char)rand(),(unsigned char)rand(),(unsigned char)rand()) ;
 }
 
+void RoadsWidget::saveDistanceMatrixCSV()
+{
+    QFileInfo file(settings.value("File").toString()) ;
 
+    //roads
+    QString path = tr("%1/Matrice des distances-%2.csv").arg(file.absoluteDir().absolutePath()).arg(file.baseName());
+
+    QFile data(path);
+    if (data.open(QFile::WriteOnly)) {
+        QTextStream out(&data);
+
+        for (int i = 0 ; i < mainWindow->valid_roads.count() ; i++)
+        {
+            for (int j = 0 ; j < mainWindow->valid_roads.count() ; j++)
+            {
+                out << simple_distances[i][j] << "\t";
+            }
+            out << "\n" ;
+        }
+
+        data.close();
+    }
+
+}

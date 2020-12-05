@@ -50,6 +50,7 @@ void RoadsPage::nextPhase()
         saveSVG();
         saveSHP();
         saveCSV();
+        widget->saveDistanceMatrixCSV();
 }
 
 void RoadsPage::reinit()

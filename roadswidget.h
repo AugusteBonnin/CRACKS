@@ -14,6 +14,7 @@ public:
     RoadsWidget(Page *parent);
 
     // QOpenGLWidget interface
+    void saveDistanceMatrixCSV();
 public slots:
     void buildRoads(double radiusFactor, double threshold_on_B);
 protected:
@@ -50,6 +51,7 @@ private:
     QVector<int32_t> &valid_junctions;
     QVector<int32_t> &valid_roads ;
 
+    QVector<QVector<uint32_t> >  simple_distances;
 
     QVector<QVector<QPointF> > & junctions_line_strings ;
 
