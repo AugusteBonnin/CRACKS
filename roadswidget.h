@@ -64,6 +64,7 @@ private:
 
     // QWidget interface
     void addBranch(QVector<QLineF> &tree, const Arrival &arrival);
+    void computeFacesSurfaces();
 protected:
 };
 

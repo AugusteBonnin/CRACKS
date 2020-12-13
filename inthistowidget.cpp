@@ -84,6 +84,9 @@ void IntHistoWidget::paintEvent(QPaintEvent *event)
         brush = QBrush(colorFor(i/(float)(class_count.count()-1)));
         painter.setBrush(brush);
         painter.drawRect(rect);
+        QTextOption option;
+        option.setAlignment(Qt::AlignCenter);
+        painter.drawText(rect,QString("%1").arg(class_count[i]),option);
 
     }
 

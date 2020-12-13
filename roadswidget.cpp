@@ -273,6 +273,8 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
     qDebug() << "computeJunctionsHulls" ;
     computeJunctionsHulls();
 
+    computeFacesSurfaces();
+
     ((Page*)parent())->initDone = true ;
     update() ;
     qDebug() << "fin build roads" ;
@@ -1237,5 +1239,60 @@ void RoadsWidget::saveDistanceMatrixCSV()
 
         data.close();
     }
+
+}
+
+void RoadsWidget::computeFacesSurfaces()
+{
+    QVector<QPolygonF> polygons;
+    for (int i = 0 ; i < mainWindow->getConnectedComponentsStarts().count() ; i++)
+    {
+        QPolygonF polygon;
+        int p = mainWindow->getConnectedComponentsStarts()[i] ;
+        do {
+            QPointF & v = mainWindow->getContourVertices()[p] ;
+            polygon<< v;
+            p = mainWindow->getNextPointIndex()[p];
+        } while (p!=mainWindow->getConnectedComponentsStarts()[i]) ;
+       polygons << polygon ;
+
+    }
+
+    QVector<bool> nested(polygons.count(),false);
+
+    for (int i  = 0 ; i < polygons.count() ; ++i)
+        for (int j  = 0 ; j < polygons.count() ; ++j)
+        {
+            if (i==j) continue;
+
+            if (polygons[j].contains(polygons[i][0]))
+            {
+                nested[i] = true ;
+                break ;
+            }
+        }
+
+    QVector<double> surfaces;
+    for (int i  = 0 ; i < polygons.count() ; ++i)
+    {
+        if (nested[i])
+            continue ;
+
+        double surface = 0 ;
+        for (int j = 0 ;j < polygons[i].count()-1 ; j++)
+            surface += -polygons[i][j].y() * polygons[i][j+1].x() +
+                    polygons[i][j].x() *polygons[i][j+1].y() ;
+        surface += -polygons[i][polygons[i].count()-1].y() * polygons[i][0].x() +
+                polygons[i][polygons[i].count()-1].x() * polygons[i][0].y() ;
+        surface = 0.5 * abs(surface) ;
+        if (settings.value("Crop/Unit",false).toBool())
+            surface *= (settings.value("CropForm-UnitX",1.0).toDouble()/mainWindow->getOpenedImage()->width())*
+                    (settings.value("CropForm-UnitX",1.0).toDouble()/mainWindow->getOpenedImage()->width());
+
+        surfaces << surface ;
+
+    }
+
+    mainWindow->histoDoubleData << surfaces ;
 
 }

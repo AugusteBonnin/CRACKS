@@ -207,7 +207,7 @@ void RoadsPage::saveSHP()
                                                padfX.data(), padfY.data() ,NULL );
 
             int entity = SHPWriteObject( shapeFile, -1 /*for newly created shape*/, object );
-            for (int j = 0 ; j < mainWindow->histoDoubleData.count()-2 ; j++)
+            for (int j = 0 ; j < 4 ; j++)
                 DBFWriteDoubleAttribute( dbfFile,entity,fieldNumbers[j],
                                          mainWindow->histoDoubleData[j+1][i]);
 

@@ -44,6 +44,9 @@ SimpleHistoPageFactory::createHistoPage(MainWindow*mainWindow)
     IntHistoResult * length_topo =  new IntHistoResult(histoPage,QObject::tr("Longeur topologique des voies"),mainWindow->histoIntData[4],10) ;
     histoPage->addHistoResult(length_topo);
 
+    LogLogHistoResult * surfaces = new LogLogHistoResult(histoPage,QObject::tr("Surface des ilots"),mainWindow->histoDoubleData[6],11);
+    histoPage->addHistoResult(surfaces);
+
     histoPage->title = QObject::tr("Histogrammes (7/8)") ;
     histoPage->prevTooltip = QObject::tr("Revenir à la phase 6 : Voies et Places") ;
     histoPage->nextTooltip = QObject::tr("Passer à la phase 8 : Cartes") ;
