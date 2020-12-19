@@ -1248,7 +1248,7 @@ void RoadsWidget::saveDistanceMatrixCSV()
         {
             for (int j = 0 ; j < mainWindow->valid_roads.count() ; j++)
             {
-                out << simple_distances[i][j] << "\t";
+                out << simple_distances[i][j] << ";";
             }
             out << "\n" ;
         }
