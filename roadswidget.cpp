@@ -247,22 +247,23 @@ void RoadsWidget::buildRoads(double radiusFactor,double threshold_on_B)
     //compute RoadsJunctions And RoadsEdges
     computeRoadsJunctionsAndEdges();
 
-    qDebug() << "computeDegreeOfJunctions" ;
+
+    //compute closeness by finite simple distance
+    qDebug() << "computeCloseness" ;
+    computeCloseness();
 
     //Gather histogram info for degree of junctions
+    qDebug() << "computeDegreeOfJunctions" ;
     computeDegreeOfJunctions();
     qDebug() << "computeRoadsLineStrings" ;
 
 
     //build line strings
     computeRoadsLineStrings();
-    qDebug() << "computeCloseness" ;
 
-    //compute closeness by finite simple distance
-    computeCloseness();
-    qDebug() << "computeOtherIndices" ;
 
     //degree , orthogonality , spacing , length odo & topo
+    qDebug() << "computeOtherIndices" ;
     computeOtherIndices();
     qDebug() << "computeJunctionsMeanRadius" ;
 
@@ -535,6 +536,15 @@ void RoadsWidget::computeCloseness()
         for (uint32_t j = 0 ; j <tmp2_distance.count(); j ++)
             close += tmp2_distance[j] ;
        closeness << 1.0/close ;
+        }
+        else {
+            QSet<uint32_t> & junctionsIndex = mainWindow->getRoadsJunctions()[i];
+            QVector<Junction> & junctions = mainWindow->getJunctions();
+            QList<uint32_t> list = junctionsIndex.values();
+            for (int j = 0 ; j < list.count() ; ++j)
+            {
+                junctions[list[j]].arrivals.clear();
+            }
         }
         qApp->processEvents();
     }
@@ -814,6 +824,12 @@ void RoadsWidget::computeDegreeOfJunctions()
     for(uint32_t i = 0 ; i < junctions.count() ; i++)
     {
         uint32_t degree = junctions[i].arrivals.count() ;
+        for (int j = 0 ; j < junctions[i].centers_indices.count() ; ++j)
+        if (mainWindow->getSkelPointIsExit()[junctions[i].centers_indices[j]])
+        {
+            degree = 0 ;
+            break;
+        }
         if (degree){
             valid_junctions<<second_degrees_of_junctions.count();
             degrees_of_junctions << degree ;
