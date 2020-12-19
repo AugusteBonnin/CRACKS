@@ -1275,19 +1275,20 @@ void RoadsWidget::computeFacesSurfaces()
     }
 
     QVector<bool> nested(polygons.count(),false);
-
+int nested_count = 0;
     for (int i  = 0 ; i < polygons.count() ; ++i)
         for (int j  = 0 ; j < polygons.count() ; ++j)
         {
             if (i==j) continue;
 
-            if (polygons[j].contains(polygons[i][0]))
+            if (polygons[j].containsPoint(polygons[i][0],Qt::OddEvenFill))
             {
                 nested[i] = true ;
+                nested_count++;
                 break ;
             }
         }
-
+qDebug() << "Nested count " << nested_count ;
     QVector<double> surfaces;
     for (int i  = 0 ; i < polygons.count() ; ++i)
     {
