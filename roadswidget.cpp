@@ -655,9 +655,9 @@ void RoadsWidget::computeRoadsLineStrings()
 
     const uint32_t ROADS_NO_EDGE =(-1);
 
-    for (uint32_t m = 0 ; m < mainWindow->getRoadsEdges().count() ; m++)
+    for (uint32_t m = 0 ; m < valid_roads.count() ; m++)
     {
-        QVector<uint32_t> & edges = mainWindow->getRoadsEdges()[m];
+        QVector<uint32_t> & edges = mainWindow->getRoadsEdges()[valid_roads[m]];
 
         QVector<uint32_t> list;
 

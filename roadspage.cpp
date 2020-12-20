@@ -104,16 +104,16 @@ void RoadsPage::saveSVG()
             {
                 mainWindow->progress->setValue(i);
                 out << "<polyline points=\"" ;
-                for (int j = 0 ; j < mainWindow->roads_line_strings[mainWindow->valid_roads[i]].count() - 1 ; j++)
+                for (int j = 0 ; j < mainWindow->roads_line_strings[i].count() - 1 ; j++)
                 {
-                    QPointF point = mainWindow->roads_line_strings[mainWindow->valid_roads[i]][j] ;
+                    QPointF point = mainWindow->roads_line_strings[i][j] ;
                     out << point.x() << " " << point.y() << "," ;
                 }
-                QPointF point = mainWindow->roads_line_strings[mainWindow->valid_roads[i]]
-                        [mainWindow->roads_line_strings[mainWindow->valid_roads[i]].count() - 1] ;
+                QPointF point = mainWindow->roads_line_strings[i]
+                        [mainWindow->roads_line_strings[i].count() - 1] ;
                  out << point.x() << " " << point.y() ;
 
-                out << "\" stroke=\""+mainWindow->roads_line_strings_colors[mainWindow->valid_roads[i]].name()+
+                out << "\" stroke=\""+mainWindow->roads_line_strings_colors[i].name()+
                         "\" fill=\"none\" stroke-width=\"1\"/>\n" ;
             }
 
@@ -193,9 +193,9 @@ void RoadsPage::saveSHP()
 
             QVector<double> padfX,padfY;
 
-            for (int j = 0 ; j < mainWindow->roads_line_strings[mainWindow->valid_roads[i]].count() ; j++)
+            for (int j = 0 ; j < mainWindow->roads_line_strings[i].count() ; j++)
             {
-                QPointF &point = mainWindow->roads_line_strings[mainWindow->valid_roads[i]][j];
+                QPointF &point = mainWindow->roads_line_strings[i][j];
                 padfX.append(point.x()*scale);
                 padfY.append(point.y()*scale);
             }
@@ -203,7 +203,7 @@ void RoadsPage::saveSHP()
 
             SHPObject * object =
 
-                        SHPCreateSimpleObject( SHPT_ARC, mainWindow->roads_line_strings[mainWindow->valid_roads[i]].count(),
+                        SHPCreateSimpleObject( SHPT_ARC, mainWindow->roads_line_strings[i].count(),
                                                padfX.data(), padfY.data() ,NULL );
 
             int entity = SHPWriteObject( shapeFile, -1 /*for newly created shape*/, object );

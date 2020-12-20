@@ -10,7 +10,7 @@ RoadMapWidget::RoadMapWidget(MapPage *parent, QVector<QColor> & colors) : MapWid
     for (int i = 0 ; i < colors.count() ; i++)
     {
         int j = 0 ;
-        QVector<QPointF> & road = mainWindow->roads_line_strings[mainWindow->valid_roads[i]] ;
+        QVector<QPointF> & road = mainWindow->roads_line_strings[i] ;
         for  (;j < road.count()-1 ; j++)
         {
             pre_valid_roads_index_vbo << pre_valid_roads_vbo.count()/6 << pre_valid_roads_vbo.count()/6 +1;
