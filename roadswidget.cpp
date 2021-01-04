@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include "inthistogramlabel.h"
 #include "histogramlabel.h"
+#include "halfedge.h"
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
@@ -1260,6 +1261,140 @@ void RoadsWidget::saveDistanceMatrixCSV()
 
 void RoadsWidget::computeFacesSurfaces()
 {
+    HalfEdge he;
+    QMap<uint32_t,uint32_t> junctionToVertex;
+    QMap<uint32_t,uint32_t> doubleToHalfedge;
+    QMap<uint32_t,uint32_t> doubleToOppositeHalfedge;
+
+    for (int i = 0 ; i < junctions.count() ; ++i)
+    {
+        if (junctions[i].arrivals.count())
+        {
+        Vertex v;
+        junctionToVertex.insert(i,he.vertices.count());
+        v.junction = i;
+        he.vertices << v;
+        }
+    }
+
+    for (int i = 0 ; i < valid_roads.count() ; ++i)
+    {
+        QVector<uint32_t> & edges =  roads_edges[valid_roads[i]];
+        for (int j = 0 ; j < edges.count() ; ++j)
+        {
+            DoubleSidedEdge & d = double_sided_edges[ edges[j]];
+            Edge e1;
+            for (int k = 0 ; k < d.str.count();++k)
+            e1.str << skel_vertices[d.str[k]];
+            e1.road = d.road_index ;
+            e1.vertex = junctionToVertex[d.first_junction];
+            he.vertices[e1.vertex].edge = he.edges.count();
+            Edge e2;
+            for (int k = d.str.count()-1 ; k >=0 ;++k)
+            e2.str << skel_vertices[d.str[k]];
+            e2.road = d.road_index ;
+            e2.vertex = junctionToVertex[d.second_junction];
+            e1.opposite = he.edges.count()+1;
+            e2.opposite = he.edges.count();
+            he.vertices[e2.vertex].edge = he.edges.count()+1;
+            doubleToHalfedge.insert(edges[j],he.edges.count());
+            doubleToOppositeHalfedge.insert(edges[j],he.edges.count()+1);
+            he.edges.append(e1);
+            he.edges.append(e2);
+           }
+        }
+    typedef struct Element {
+        double angle;
+        int index;
+        bool operator<(const Element & right) const {return angle<right.angle;}
+    } Element;
+    for (int i = 0 ; i < he.vertices.count() ; ++i)
+    {
+        Junction & junction = junctions[he.vertices[i].junction];
+        QVector<Element> elements;
+        for (int j = 0 ; j < junction.arrivals.count() ; ++j)
+        {
+            Element e;
+            e.angle = junction.arrivals[j].angle;
+            e.index = j ;
+            elements << e;
+        }
+        qSort(elements);
+        for (int j = 0 ; j < elements.count();++j)
+        {
+            int e1= junction.arrivals[elements[j].index].edge;
+            bool i1 =  junction.arrivals[elements[j].index].str_inverted;
+            int e2= junction.arrivals[elements[(j+1)%elements.count()].index].edge;
+            bool i2 =  junction.arrivals[elements[(j+1)%elements.count()].index].str_inverted;
+            if (i1)
+            {
+                if (i2)
+                    he.edges[doubleToHalfedge[e1]].next = doubleToOppositeHalfedge[e2];
+                else
+                     he.edges[doubleToHalfedge[e1]].next = doubleToHalfedge[e2];
+            }
+            else
+            {
+                if (i2)
+                    he.edges[doubleToOppositeHalfedge[e1]].next = doubleToOppositeHalfedge[e2];
+                else
+                     he.edges[doubleToOppositeHalfedge[e1]].next = doubleToHalfedge[e2];
+            }
+
+        }
+    }
+QVector<QPolygonF> faces;
+QVector<QVector<int> > edges;
+QVector<bool> edge_treated(he.edges.count(),false);
+    for (int i = 0 ; i < junctions.count() ; ++i)
+    {
+        for (int j = 0 ; j < junctions[i].centers_indices.count() ; ++j)
+            if ((mainWindow->getSkelPointIsExit()[junctions[i].centers_indices[j]])&&(junctions[i].arrivals.count()))
+            {
+                Vertex & v = he.vertices[junctionToVertex[i]];
+                int e = v.edge;
+                do {
+                    QVector<int> es;
+                    bool end = false;
+                    int e2 = e ;
+                    QPolygonF p;
+                    do {
+                        edge_treated[e2] = true ;
+                        es << e2 ;
+                        p << he.edges[e2].str;
+                        e2 = he.edges[e2].next ;
+                        for (int k = 0 ; k < junctions[he.vertices[he.edges[e2].vertex].junction].centers_indices.count() ; ++k)
+                            if (mainWindow->getSkelPointIsExit()[junctions[he.vertices[he.edges[e2].vertex].junction].centers_indices[j]])
+                            {
+                                end = true;
+                                break ;
+                            }
+
+                    } while (!end);
+                    faces << p;
+                    edges << es ;
+                    e = he.edges[ he.edges[he.edges[e].next].opposite].next ;
+                } while (e!=v.edge);
+            }
+    }
+
+int next_edge = edge_treated.indexOf(false);
+while (next_edge!=-1)
+{
+    QVector<int> es;
+    QPolygonF p;
+    int e = next_edge;
+    do {
+        edge_treated[e]=true;
+    p << he.edges[e].str;
+es << e ;
+e = he.edges[e].next;
+    }while (e!=next_edge);
+    edges << es ;
+    faces << p ;
+    next_edge = edge_treated.indexOf(false);
+ }
+
     QVector<QPolygonF> polygons;
     for (int i = 0 ; i < mainWindow->getConnectedComponentsStarts().count() ; i++)
     {

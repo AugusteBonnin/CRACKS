@@ -4,7 +4,7 @@
 #pragma once
 
 typedef struct {
-QPointF point;
+uint32_t junction;
 int32_t edge;
 }Vertex;
 
