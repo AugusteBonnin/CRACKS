@@ -1144,6 +1144,8 @@ void RoadsWidget::exploreEdge( uint32_t first, uint32_t second)
             edge.color = randColor() ;
             edge.first_index = first ;
             edge.second_index = last ;
+            edge.first_junction = index_junction[first];
+            edge.second_junction = index_junction[last];
             edge.length = cumulated_distance ;
             edge.first_width = first_width ;
             edge.second_width = second_width ;
@@ -1202,6 +1204,91 @@ void RoadsWidget::exploreEdge( uint32_t first, uint32_t second)
                         junction.arrivals.append(junction2.arrivals[i]) ;
 
                     junction2.arrivals.clear() ;
+/*
+                    if (junction.arrivals.count()==2)
+                    {
+                        DoubleSidedEdge & d1=double_sided_edges[junction.arrivals[0].edge];
+                        DoubleSidedEdge & d2=double_sided_edges[junction.arrivals[1].edge];
+                        if (d1.first_junction==second_junction)
+                        {
+                            if (d2.first_junction==second_junction)
+                            {
+                                d1.first_junction = d2.second_junction;
+                                for (int j = 0;j<d2.str.count();j++)
+                                {
+                                    d1.str.prepend(d2.str[j]);
+                                }
+                                Junction & junction3 = junctions[d2.second_junction];
+                                for (int j = 0 ; j < junction3.arrivals.count() ; ++j)
+                                {
+                                    if (junction3.arrivals[j].edge == junction.arrivals[1].edge)
+                                    {
+                                        junction3.arrivals[j].edge = junction.arrivals[0].edge;
+                                        junction3.arrivals[j].str_inverted = false;
+                                                break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                d1.first_junction = d2.first_junction;
+                                for (int j = d2.str.count()-1;j>=0;j--)
+                                {
+                                    d1.str.prepend(d2.str[j]);
+                                }
+                                Junction & junction3 = junctions[d2.first_junction];
+                                for (int j = 0 ; j < junction3.arrivals.count() ; ++j)
+                                {
+                                    if (junction3.arrivals[j].edge == junction.arrivals[1].edge)
+                                    {
+                                        junction3.arrivals[j].edge = junction.arrivals[0].edge;
+                                        junction3.arrivals[j].str_inverted = false;
+                                                break;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (d2.first_junction==second_junction)
+                            {
+                                d1.second_junction = d2.second_junction;
+                                for (int j = 0;j<d2.str.count();j++)
+                                {
+                                    d1.str << d2.str[j];
+                                }
+                                Junction & junction3 = junctions[d2.second_junction];
+                                for (int j = 0 ; j < junction3.arrivals.count() ; ++j)
+                                {
+                                    if (junction3.arrivals[j].edge == junction.arrivals[1].edge)
+                                    {
+                                        junction3.arrivals[j].edge = junction.arrivals[0].edge;
+                                        junction3.arrivals[j].str_inverted = true;
+                                                break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                d1.second_junction = d2.first_junction;
+                                for (int j = d2.str.count()-1;j>=0;j--)
+                                {
+                                    d1.str<< d2.str[j];
+                                }
+                                Junction & junction3 = junctions[d2.first_junction];
+                                for (int j = 0 ; j < junction3.arrivals.count() ; ++j)
+                                {
+                                    if (junction3.arrivals[j].edge == junction.arrivals[1].edge)
+                                    {
+                                        junction3.arrivals[j].edge = junction.arrivals[0].edge;
+                                        junction3.arrivals[j].str_inverted = true;
+                                                break;
+                                    }
+                                }
+                            }
+                        }
+                        junction.arrivals.clear();
+                    }*/
 
                     junctions[second_junction] = junction ;
                     junctions[first_junction]= junction2 ;
@@ -1263,8 +1350,7 @@ void RoadsWidget::computeFacesSurfaces()
 {
     HalfEdge he;
     QMap<uint32_t,uint32_t> junctionToVertex;
-    QMap<uint32_t,uint32_t> doubleToHalfedge;
-    QMap<uint32_t,uint32_t> doubleToOppositeHalfedge;
+    QMap<QPair<uint32_t,uint32_t>,uint32_t> junctionsToHalfedge;
 
     for (int i = 0 ; i < junctions.count() ; ++i)
     {
@@ -1273,6 +1359,13 @@ void RoadsWidget::computeFacesSurfaces()
         Vertex v;
         junctionToVertex.insert(i,he.vertices.count());
         v.junction = i;
+        v.exit = false;
+        for (int j = 0 ; j < junctions[i].centers_indices.count() ; ++j)
+            if (mainWindow->getSkelPointIsExit()[junctions[i].centers_indices[j]])
+               {
+                v.exit = true ;
+                break ;
+            }
         he.vertices << v;
         }
     }
@@ -1283,79 +1376,115 @@ void RoadsWidget::computeFacesSurfaces()
         for (int j = 0 ; j < edges.count() ; ++j)
         {
             DoubleSidedEdge & d = double_sided_edges[ edges[j]];
+            if (he.edges.count()==232)
+            {}
             Edge e1;
             for (int k = 0 ; k < d.str.count();++k)
             e1.str << skel_vertices[d.str[k]];
             e1.road = d.road_index ;
             e1.vertex = junctionToVertex[d.first_junction];
-            he.vertices[e1.vertex].edge = he.edges.count();
             Edge e2;
-            for (int k = d.str.count()-1 ; k >=0 ;++k)
+            for (int k = d.str.count()-1 ; k >=0 ;--k)
             e2.str << skel_vertices[d.str[k]];
             e2.road = d.road_index ;
             e2.vertex = junctionToVertex[d.second_junction];
             e1.opposite = he.edges.count()+1;
             e2.opposite = he.edges.count();
-            he.vertices[e2.vertex].edge = he.edges.count()+1;
-            doubleToHalfedge.insert(edges[j],he.edges.count());
-            doubleToOppositeHalfedge.insert(edges[j],he.edges.count()+1);
-            he.edges.append(e1);
-            he.edges.append(e2);
-           }
+            junctionsToHalfedge.insert(QPair<uint32_t,uint32_t>(d.first_junction,d.second_junction),he.edges.count());
+            junctionsToHalfedge.insert(QPair<uint32_t,uint32_t>(d.second_junction,d.first_junction),he.edges.count()+1);
+            he.edges << e1;
+            he.edges << e2;
         }
+    }
+
+
     typedef struct Element {
         double angle;
-        int index;
+        int edge;
         bool operator<(const Element & right) const {return angle<right.angle;}
     } Element;
+
     for (int i = 0 ; i < he.vertices.count() ; ++i)
     {
-        Junction & junction = junctions[he.vertices[i].junction];
+        Vertex & v = he.vertices[i];
+        Junction & first = junctions[v.junction];
+        QPointF center(0,0);
+        for (int j = 0 ; j < first.centers_indices.count() ;++j)
+        {
+            center += skel_vertices[first.centers_indices[j]];
+        }
+        center/=first.centers_indices.count();
+        v.center=center;
         QVector<Element> elements;
-        for (int j = 0 ; j < junction.arrivals.count() ; ++j)
+        for (int j = 0 ; j < first.arrivals.count() ; ++j)
         {
             Element e;
-            e.angle = junction.arrivals[j].angle;
-            e.index = j ;
+            QPointF p = first.arrivals[j].point - center ;
+            e.angle = atan2(p.y(),p.x());
+            e.edge = first.arrivals[j].edge ;
             elements << e;
         }
         qSort(elements);
-        for (int j = 0 ; j < elements.count();++j)
+        DoubleSidedEdge & first_edge = double_sided_edges[elements[0].edge];
+        v.edge = junctionsToHalfedge[QPair<uint32_t,uint32_t>(v.junction,
+                                                              (first_edge.first_junction==v.junction)?
+                                                                  first_edge.second_junction:
+                                                                  first_edge.first_junction)];
+        for (int j = 0 ; j < elements.count() ; ++j)
         {
-            int e1= junction.arrivals[elements[j].index].edge;
-            bool i1 =  junction.arrivals[elements[j].index].str_inverted;
-            int e2= junction.arrivals[elements[(j+1)%elements.count()].index].edge;
-            bool i2 =  junction.arrivals[elements[(j+1)%elements.count()].index].str_inverted;
-            if (i1)
-            {
-                if (i2)
-                    he.edges[doubleToHalfedge[e1]].next = doubleToOppositeHalfedge[e2];
-                else
-                     he.edges[doubleToHalfedge[e1]].next = doubleToHalfedge[e2];
-            }
-            else
-            {
-                if (i2)
-                    he.edges[doubleToOppositeHalfedge[e1]].next = doubleToOppositeHalfedge[e2];
-                else
-                     he.edges[doubleToOppositeHalfedge[e1]].next = doubleToHalfedge[e2];
-            }
-
+            uint32_t edge_index = elements[j].edge;
+            DoubleSidedEdge & current_edge = double_sided_edges[edge_index];
+            uint32_t current_incident_halfedge = junctionsToHalfedge[QPair<uint32_t,uint32_t>((current_edge.first_junction==v.junction)?
+                                                                                         current_edge.second_junction:
+                                                                                         current_edge.first_junction,v.junction)];
+            DoubleSidedEdge & next_edge = double_sided_edges[elements[(j+1)%elements.count()].edge];
+            uint32_t  next_excident_halfedge =junctionsToHalfedge[QPair<uint32_t,uint32_t>(v.junction,(next_edge.first_junction==v.junction)?
+                                                                                             next_edge.second_junction:
+                                                                                             next_edge.first_junction)];
+            he.edges[current_incident_halfedge].next = next_excident_halfedge ;
         }
+
     }
+/*
+    QImage image(mainWindow->openedQImage.size(),QImage::Format_ARGB32);
+    QPainter painter(&image);
+    image.fill(0xFFFFFFFF);
+    painter.setBrush(QBrush(Qt::black));
+for (int i = 0 ; i < he.edges.count() ; ++i)
+{
+    QPointF p1(he.vertices[he.edges[i].vertex].center);
+    QPointF p2(he.vertices[he.edges[he.edges[i].opposite].vertex].center);
+    QPointF p3 = p2 + QPointF((p2.y()-p1.y())*.1,(p1.x()-p2.x())*.1)+QPointF((p1.x()-p2.x())*.1,(p1.y()-p2.y())*.1);
+    QPointF p4 = p2*.3333+p1*.6666;
+    QPen pen;
+        if(he.edges[i].next<he.edges.count())
+                 pen = QPen(Qt::black);
+    else
+                 pen = QPen(Qt::red);
+    painter.setPen(pen);
+       painter.drawLine(p1,p2);
+       painter.drawLine(p2,p3);
+       painter.drawText(p4,QString("%1").arg(i));
+}
+
+QFileInfo file(settings.value("File").toString()) ;
+
+QString path = tr("%1/he-%2.jpg").arg(file.absoluteDir().absolutePath()).arg(file.baseName());
+
+image.save(path);
+*/
+
 QVector<QPolygonF> faces;
 QVector<QVector<int> > edges;
 QVector<bool> edge_treated(he.edges.count(),false);
-    for (int i = 0 ; i < junctions.count() ; ++i)
+    for (int i = 0 ; i < he.vertices.count() ; ++i)
     {
-        for (int j = 0 ; j < junctions[i].centers_indices.count() ; ++j)
-            if ((mainWindow->getSkelPointIsExit()[junctions[i].centers_indices[j]])&&(junctions[i].arrivals.count()))
-            {
-                Vertex & v = he.vertices[junctionToVertex[i]];
+                Vertex & v = he.vertices[i];
+                if (v.exit)
+                {
                 int e = v.edge;
                 do {
                     QVector<int> es;
-                    bool end = false;
                     int e2 = e ;
                     QPolygonF p;
                     do {
@@ -1363,17 +1492,10 @@ QVector<bool> edge_treated(he.edges.count(),false);
                         es << e2 ;
                         p << he.edges[e2].str;
                         e2 = he.edges[e2].next ;
-                        for (int k = 0 ; k < junctions[he.vertices[he.edges[e2].vertex].junction].centers_indices.count() ; ++k)
-                            if (mainWindow->getSkelPointIsExit()[junctions[he.vertices[he.edges[e2].vertex].junction].centers_indices[j]])
-                            {
-                                end = true;
-                                break ;
-                            }
-
-                    } while (!end);
+                    } while (!he.vertices[he.edges[e2].vertex].exit);
                     faces << p;
                     edges << es ;
-                    e = he.edges[ he.edges[he.edges[e].next].opposite].next ;
+                    e = he.edges[ he.edges[e].opposite].next ;
                 } while (e!=v.edge);
             }
     }
@@ -1424,6 +1546,8 @@ int nested_count = 0;
             }
         }
 qDebug() << "Nested count " << nested_count ;
+QVector<bool> face_treated(faces.count(),false);
+QVector<bool> polygon_treated(polygons.count(),false);
     QVector<double> surfaces;
     for (int i  = 0 ; i < polygons.count() ; ++i)
     {
@@ -1443,8 +1567,42 @@ qDebug() << "Nested count " << nested_count ;
 
         surfaces << surface ;
 
+        for (int j = 0 ; j < faces.count() ; ++j)
+        {
+            if (face_treated[j]) continue;
+            if (faces[j].intersects(polygons[i]))
+            {
+                polygon_treated[i]=true;
+                face_treated[j] = true ;
+                Face f;
+                f.surface = surface;
+                f.edge = edges[j][0];
+                f.contour = polygons[i] ;
+                for (int k = 0 ; k < edges[j].count() ; ++k)
+                {
+                    he.edges[edges[j][k]].face = he.faces.count();
+                }
+                he.faces << f ;
+                break;
+            }
+        }
+
     }
 
+    QImage image(mainWindow->openedQImage.size(),QImage::Format_ARGB32);
+    QPainter painter(&image);
+    image.fill(0xFFFFFFFF);
+    painter.setBrush(QBrush(Qt::black));
+for (int i = 0 ; i < he.faces.count() ; ++i)
+{
+       painter.drawPolygon(he.faces[i].contour);
+}
+
+QFileInfo file(settings.value("File").toString()) ;
+
+QString path = tr("%1/he-%2.jpg").arg(file.absoluteDir().absolutePath()).arg(file.baseName());
+
+image.save(path);
     mainWindow->histoDoubleData << surfaces ;
 
 }

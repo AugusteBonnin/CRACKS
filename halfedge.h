@@ -5,20 +5,23 @@
 
 typedef struct {
 uint32_t junction;
-int32_t edge;
+uint32_t edge;
+bool exit ;
+QPointF center;
 }Vertex;
 
 typedef struct {
     double surface;
-    int32_t edge;
+    uint32_t edge;
+    QPolygonF contour;
 }Face;
 
 typedef struct
 {
-    int32_t opposite;
-    int32_t next;
-    int32_t vertex;
-    int32_t face;
+    uint32_t opposite;
+    uint32_t next;
+    uint32_t vertex;
+    uint32_t face;
     uint32_t road;
     QPolygonF str;
 }Edge;
