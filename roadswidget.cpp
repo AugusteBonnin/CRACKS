@@ -991,7 +991,7 @@ void RoadsWidget::matchJunctionsEdges(float threshold_on_B)
                     float second_width = (double_sided_edges[arrivals[k].edge].first_junction==i)?
                                 double_sided_edges[arrivals[k].edge].second_width : double_sided_edges[arrivals[k].edge].first_width ;
                     float C = fabs(logf(first_width/second_width)/delta_width_constant);
-
+C=0;
                     if ((A<1.0f)&&(C<1.0f))
                     {
                         EdgePair element;
@@ -1376,8 +1376,8 @@ void RoadsWidget::computeFacesSurfaces()
         for (int j = 0 ; j < edges.count() ; ++j)
         {
             DoubleSidedEdge & d = double_sided_edges[ edges[j]];
-            if (he.edges.count()==232)
-            {}
+            //if ((valid_junctions[d.first_junction]!=-1)&&(valid_junctions[d.second_junction]!=-1))
+            {
             Edge e1;
             for (int k = 0 ; k < d.str.count();++k)
             e1.str << skel_vertices[d.str[k]];
@@ -1394,6 +1394,7 @@ void RoadsWidget::computeFacesSurfaces()
             junctionsToHalfedge.insert(QPair<uint32_t,uint32_t>(d.second_junction,d.first_junction),he.edges.count()+1);
             he.edges << e1;
             he.edges << e2;
+            }
         }
     }
 
@@ -1426,10 +1427,10 @@ void RoadsWidget::computeFacesSurfaces()
         }
         qSort(elements);
         DoubleSidedEdge & first_edge = double_sided_edges[elements[0].edge];
-        v.edge = junctionsToHalfedge[QPair<uint32_t,uint32_t>(v.junction,
-                                                              (first_edge.first_junction==v.junction)?
-                                                                  first_edge.second_junction:
-                                                                  first_edge.first_junction)];
+//        v.edge = junctionsToHalfedge[QPair<uint32_t,uint32_t>(v.junction,
+//                                                              (first_edge.first_junction==v.junction)?
+//                                                                  first_edge.second_junction:
+//                                                                  first_edge.first_junction)];
         for (int j = 0 ; j < elements.count() ; ++j)
         {
             uint32_t edge_index = elements[j].edge;
@@ -1445,44 +1446,43 @@ void RoadsWidget::computeFacesSurfaces()
         }
 
     }
-/*
-    QImage image(mainWindow->openedQImage.size(),QImage::Format_ARGB32);
-    QPainter painter(&image);
-    image.fill(0xFFFFFFFF);
-    painter.setBrush(QBrush(Qt::black));
-for (int i = 0 ; i < he.edges.count() ; ++i)
 {
-    QPointF p1(he.vertices[he.edges[i].vertex].center);
-    QPointF p2(he.vertices[he.edges[he.edges[i].opposite].vertex].center);
-    QPointF p3 = p2 + QPointF((p2.y()-p1.y())*.1,(p1.x()-p2.x())*.1)+QPointF((p1.x()-p2.x())*.1,(p1.y()-p2.y())*.1);
-    QPointF p4 = p2*.3333+p1*.6666;
-    QPen pen;
-        if(he.edges[i].next<he.edges.count())
-                 pen = QPen(Qt::black);
-    else
-                 pen = QPen(Qt::red);
-    painter.setPen(pen);
-       painter.drawLine(p1,p2);
-       painter.drawLine(p2,p3);
-       painter.drawText(p4,QString("%1").arg(i));
-}
+        QImage image(mainWindow->openedQImage.size(),QImage::Format_ARGB32);
+                QPainter painter(&image);
+                image.fill(0xFFFFFFFF);
+                painter.setBrush(QBrush(Qt::black));
+            for (int i = 0 ; i < he.edges.count() ; ++i)
+            {
+                QPointF p1(he.vertices[he.edges[i].vertex].center);
+                QPointF p2(he.vertices[he.edges[he.edges[i].opposite].vertex].center);
+                QPointF p3 = p2 + QPointF((p2.y()-p1.y())*.1,(p1.x()-p2.x())*.1)+QPointF((p1.x()-p2.x())*.1,(p1.y()-p2.y())*.1);
+                QPointF p4 = p2*.3333+p1*.6666;
+                QPen pen;
+                    if(he.edges[i].next<he.edges.count())
+                             pen = QPen(Qt::black);
+                else
+                             pen = QPen(Qt::red);
+                painter.setPen(pen);
+                   painter.drawLine(p1,p2);
+                   painter.drawLine(p2,p3);
+                   //painter.drawText(p4,QString("%1").arg(i));
+            }
+            QFileInfo file(settings.value("File").toString()) ;
 
-QFileInfo file(settings.value("File").toString()) ;
+            QString path = tr("%1/he.jpg").arg(file.absoluteDir().absolutePath());
 
-QString path = tr("%1/he-%2.jpg").arg(file.absoluteDir().absolutePath()).arg(file.baseName());
-
-image.save(path);
-*/
+            image.save(path);
+    }
 
 QVector<QPolygonF> faces;
 QVector<QVector<int> > edges;
 QVector<bool> edge_treated(he.edges.count(),false);
-    for (int i = 0 ; i < he.vertices.count() ; ++i)
+    for (int i = 0 ; i < he.edges.count() ; ++i)
     {
-                Vertex & v = he.vertices[i];
+                Vertex & v = he.vertices[he.edges[i].vertex];
                 if (v.exit)
                 {
-                int e = v.edge;
+                int e = i;
                 do {
                     QVector<int> es;
                     int e2 = e ;
@@ -1496,7 +1496,7 @@ QVector<bool> edge_treated(he.edges.count(),false);
                     faces << p;
                     edges << es ;
                     e = he.edges[ he.edges[e].opposite].next ;
-                } while (e!=v.edge);
+                } while (e!=i);
             }
     }
 
@@ -1576,19 +1576,71 @@ QVector<bool> polygon_treated(polygons.count(),false);
                 face_treated[j] = true ;
                 Face f;
                 f.surface = surface;
-                f.edge = edges[j][0];
-                f.contour = polygons[i] ;
+                f.contour = faces[j] ;
                 for (int k = 0 ; k < edges[j].count() ; ++k)
                 {
                     he.edges[edges[j][k]].face = he.faces.count();
                 }
+                f.stream_order = 1 ;
                 he.faces << f ;
                 break;
             }
         }
 
     }
+    QVector<HalfEdge*> hes;
+he.verifyIntegrity();
+    HalfEdge * he1 = &he;
+    uint32_t N = 1 ;
+    while (he1->edges.count()>0)
+    {
+    he1->verifyIntegrity();
+    HalfEdge * he2 = NULL;
+    bool something_happened = false;
+    do {
+        if (he2) delete he2;
+        he2 = he1->suppressRoadsOfTopoLengthN(N,something_happened);
+    N++;
+    } while(!something_happened);
+    he2->verifyIntegrity();
+    hes << he2;
+    he1=he2;
+    QImage image(mainWindow->openedQImage.size(),QImage::Format_ARGB32);
+            QPainter painter(&image);
+            image.fill(0xFFFFFFFF);
+            painter.setBrush(QBrush(Qt::black));
+        for (int i = 0 ; i < he2->edges.count() ; ++i)
+        {
+            QPointF p1(he2->vertices[he2->edges[i].vertex].center);
+            QPointF p2(he2->vertices[he2->edges[he2->edges[i].next].vertex].center);
+            QPointF p3 = p2 + QPointF((p2.y()-p1.y())*.1,(p1.x()-p2.x())*.1)+QPointF((p1.x()-p2.x())*.1,(p1.y()-p2.y())*.1);
+            QPointF p4 = p2*.3333+p1*.6666;
+            QPen pen;
+                if(he2->edges[i].next<he2->edges.count())
+                         pen = QPen(Qt::black);
+            else
+                         pen = QPen(Qt::red);
+            painter.setPen(pen);
+               painter.drawLine(p1,p2);
+               painter.drawLine(p2,p3);
+               painter.drawText(p4,QString("%1").arg(he2->edges[i].road));
+        }
+        QTextOption option;
+        option.setAlignment(Qt::AlignCenter);
 
+        for (int i = 0 ; i < he2->faces.count() ; ++i)
+        {
+            painter.drawText(he2->faces[i].contour.boundingRect(),QString("%1").arg(he2->faces[i].stream_order),option);
+        }
+        QFileInfo file(settings.value("File").toString()) ;
+
+        QString path = tr("%1/he-%2.jpg").arg(file.absoluteDir().absolutePath()).arg(N);
+
+        image.save(path);
+    }
+/*
+*/
+/*
     QImage image(mainWindow->openedQImage.size(),QImage::Format_ARGB32);
     QPainter painter(&image);
     image.fill(0xFFFFFFFF);
@@ -1602,7 +1654,6 @@ QFileInfo file(settings.value("File").toString()) ;
 
 QString path = tr("%1/he-%2.jpg").arg(file.absoluteDir().absolutePath()).arg(file.baseName());
 
-image.save(path);
+image.save(path);*/
     mainWindow->histoDoubleData << surfaces ;
-
 }

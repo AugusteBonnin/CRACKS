@@ -24,6 +24,7 @@ INCLUDEPATH +=   /usr/local/include
 
 SOURCES += main.cpp\
         mainwindow.cpp \
+    skelworker3.cpp \
     statsform.cpp \
     phase.cpp \
     cropzoomwidget.cpp \
@@ -103,6 +104,7 @@ SOURCES += main.cpp\
     halfedge.cpp
 
 HEADERS  += mainwindow.h \
+    skelworker3.h \
     statsform.h \
     phase.h \
     cropzoomwidget.h \

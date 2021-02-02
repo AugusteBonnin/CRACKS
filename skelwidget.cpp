@@ -5,6 +5,7 @@
 #include "skelpage.h"
 #include "skelworker.h"
 #include "skelworker2.h"
+#include "skelworker3.h"
 #include <QApplication>
 
 #include <QAction>
@@ -148,7 +149,7 @@ void SkelWidget::buildSkel()
 {
     mainWindow->setActionsEnabled(false);
     mainWindow->progress->setValue(0);
-    SkelWorker2 * worker = new SkelWorker2(mainWindow) ;
+    SkelWorker3 * worker = new SkelWorker3(mainWindow) ;
     mainWindow->progress->setMaximum(getProgressMax()+worker->getProgressMax());
 
     connect(worker,SIGNAL(finished()),this,SLOT(buildSkel2())) ;
