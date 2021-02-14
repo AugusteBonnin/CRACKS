@@ -98,6 +98,15 @@ HalfEdge *HalfEdge::suppressRoadsOfTopoLengthN(uint32_t N,bool & something_happe
                     facesToFuse[j] << edges[edges[i].opposite].face ;
 
                     found = true;
+                    for (int k = j+1 ; k < facesToFuse.count() ; )
+                    {
+                        if ((facesToFuse[k].contains(edges[i].face))||(facesToFuse[k].contains(edges[edges[i].opposite].face)))
+                        {
+                            facesToFuse[j] += facesToFuse[k] ;
+                            facesToFuse.removeAt(k);
+                        }
+                        else ++k ;
+                    }
                     break;
                 }
             }

@@ -1348,6 +1348,7 @@ void RoadsWidget::saveDistanceMatrixCSV()
 
 void RoadsWidget::computeFacesSurfaces()
 {
+    /*
     HalfEdge he;
     QMap<uint32_t,uint32_t> junctionToVertex;
     QMap<QPair<uint32_t,uint32_t>,uint32_t> junctionsToHalfedge;
@@ -1516,7 +1517,7 @@ e = he.edges[e].next;
     faces << p ;
     next_edge = edge_treated.indexOf(false);
  }
-
+*/
     QVector<QPolygonF> polygons;
     for (int i = 0 ; i < mainWindow->getConnectedComponentsStarts().count() ; i++)
     {
@@ -1546,8 +1547,10 @@ int nested_count = 0;
             }
         }
 qDebug() << "Nested count " << nested_count ;
-QVector<bool> face_treated(faces.count(),false);
+/*
+ QVector<bool> face_treated(faces.count(),false);
 QVector<bool> polygon_treated(polygons.count(),false);
+*/
     QVector<double> surfaces;
     for (int i  = 0 ; i < polygons.count() ; ++i)
     {
@@ -1566,7 +1569,7 @@ QVector<bool> polygon_treated(polygons.count(),false);
                     (settings.value("CropForm-UnitX",1.0).toDouble()/mainWindow->getOpenedImage()->width());
 
         surfaces << surface ;
-
+/*
         for (int j = 0 ; j < faces.count() ; ++j)
         {
             if (face_treated[j]) continue;
@@ -1586,8 +1589,9 @@ QVector<bool> polygon_treated(polygons.count(),false);
                 break;
             }
         }
-
+*/
     }
+    /*
     QVector<HalfEdge*> hes;
 he.verifyIntegrity();
     HalfEdge * he1 = &he;
@@ -1637,7 +1641,7 @@ he.verifyIntegrity();
         QString path = tr("%1/he-%2.jpg").arg(file.absoluteDir().absolutePath()).arg(N);
 
         image.save(path);
-    }
+    }*/
 /*
 */
 /*
