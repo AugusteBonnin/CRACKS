@@ -144,7 +144,7 @@ void RoadsPage::saveCSV()
 
           for (int i = 0 ; i < mainWindow->valid_roads.count() ; i++)
           {
-              for (int j = 0 ; j < mainWindow->histoDoubleData.count()-2 ; j++)
+              for (int j = 0 ; j < 4 ; j++)
                   out << mainWindow->histoDoubleData[j+1][i] << ";" ;
 
               out << mainWindow->histoIntData[3][i] << ";" ;

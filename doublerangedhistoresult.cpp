@@ -15,7 +15,7 @@ DoubleRangedHistoResult::DoubleRangedHistoResult(HistoPage *parent, QString name
     for (int i = 0 ; i < data.count() ; i++)
         strl << QString("%1").arg(data[i]) ;
 
-    csv = strl.join(';');
+    csv = strl.join('\n');
 
     QGridLayout * grid = new QGridLayout;
     setLayout(grid);

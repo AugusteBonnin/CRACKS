@@ -29,6 +29,9 @@ void SkelPage::saveSVG()
             out << point.x() << " " << point.y() ;
 
             out << "\" stroke=\"black\" fill=\"none\" stroke-width=\"1\"/>\n" ;
+            QPointF center = (mainWindow->getSkelVertices()[mainWindow->getDoubleSidedEdges()[i].str[0]]+
+                    mainWindow->getSkelVertices()[mainWindow->getDoubleSidedEdges()[i].str[mainWindow->getDoubleSidedEdges()[i].str.count() - 1]] )*.5f;
+        out << "<text x=\"" << center.x()<<"\" y=\"" << center.y() << "\">"<<i<<"</text>" ;
         }
 
         out << "</svg>\n" ;
