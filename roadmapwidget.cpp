@@ -1,5 +1,6 @@
 #include "roadmapwidget.h"
 #include "mainwindow.h"
+#include <QFile>
 
 RoadMapWidget::RoadMapWidget(MapPage *parent, QVector<QColor> & colors) : MapWidget(parent) , colors(colors)
 {

@@ -50,7 +50,7 @@ int SkelWorker3::create_cendroid(const Vertex_handle& v0,const Vertex_handle & v
     QLineF medAC = AC.normalVector() ;
     medAC.translate(AC.pointAt(.5)-A);
 
-    medAB.intersect(medAC,&inter);
+    medAB.intersects(medAC,&inter);
     int centroid_idx = skel_points.count();
     skel_points << inter ; skel_children<<QVector<uint>() ;
 

@@ -23,7 +23,7 @@ IntMapResult::IntMapResult(MapPage *parent, QString titre, QVector<uint32_t> &da
         keys.insert(data[i]);
     }
 
-    class_value = keys.toList() ;
+    class_value = keys.values() ;
     std::sort(class_value.begin(),class_value.end());
 
     QHash<int,int> classForValue;

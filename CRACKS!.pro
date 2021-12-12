@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui svg
+QT += core gui svg
+QT += openglwidgets
 
 CONFIG += c++11
 

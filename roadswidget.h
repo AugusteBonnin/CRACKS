@@ -65,6 +65,15 @@ private:
     // QWidget interface
     void addBranch(QVector<QLineF> &tree, const Arrival &arrival);
     void computeFacesSurfaces();
+
+    enum Side
+    {
+        SideN,
+        SideW,
+        SideS,
+        SideE
+    };
+    Side onWhichSide(QPointF &point);
 protected:
 };
 

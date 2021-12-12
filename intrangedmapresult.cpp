@@ -22,7 +22,7 @@ IntRangedMapResult::IntRangedMapResult(MapPage *parent, QString titre, QVector<u
     for (int i = 0 ; i < data.count() ; i++)
         set.insert(data[i]);
 
-     QList<int> values = set.toList();
+     QList<int> values = set.values();
 
     QHash<int,int> classForValue;
     QHash<int,QVector<int> > valuesForClass;

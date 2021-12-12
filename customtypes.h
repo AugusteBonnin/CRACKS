@@ -91,7 +91,7 @@ typedef struct CGALTriangle {
         QLineF medAC = AC.normalVector() ;
         medAC.translate(AC.pointAt(.5)-A);
 
-        medAB.intersect(medAC,&inter);
+        medAB.intersects(medAC,&inter);
 
         return inter ;
     }
@@ -148,8 +148,13 @@ typedef struct EdgePair {
     float B ;
     int i,j;
     QPointF point_i,point_j;
-    bool operator < (const EdgePair & right) const {return B <right.B ; }
+
 } EdgePair ;
+
+typedef struct Element {
+    double angle;
+    int edge;
+} Element;
 
 
 #endif // CUSTOMTYPES

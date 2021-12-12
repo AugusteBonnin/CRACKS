@@ -1,5 +1,6 @@
 #include "junctionmapwidget.h"
 #include "mainwindow.h"
+#include <QFile>
 
 JunctionMapWidget::JunctionMapWidget(MapPage *parent,QVector<QColor> & colors) : MapWidget(parent) , colors(colors)
 {

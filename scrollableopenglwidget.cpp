@@ -110,7 +110,7 @@ void ScrollableOpenGLWidget::mouseMoveEvent(QMouseEvent *event)
 
 void ScrollableOpenGLWidget::wheelEvent(QWheelEvent *event)
 {
-    scale *= (1000.0/(1000.0+event->delta())) ;
+    scale *= (1000.0/(1000.0+event->angleDelta().y())) ;
 
     emit ScaleChanged(scale);
 

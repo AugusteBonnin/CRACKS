@@ -37,7 +37,7 @@ void ScrollableWidget::mouseReleaseEvent(QMouseEvent *) {
 
 void ScrollableWidget::wheelEvent(QWheelEvent *event)
 {
-    scale *= (1000.0/(1000.0+event->delta())) ;
+    scale *= (1000.0/(1000.0+event->angleDelta().y())) ;
 
     imageToScreen = QTransform(scale,0,0,scale,
                                (width()>>1)-center.x()*scale,(height()>>1)-center.y()*scale);

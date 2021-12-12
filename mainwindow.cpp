@@ -218,7 +218,7 @@ void MainWindow::dynamicalAnalysis(){
 
     QDir dir(settings.value("IntroParamForm-File-2").toString());
 
-    QStringList dirs_paths = dirs_paths_set.toList() ;
+    QStringList dirs_paths = dirs_paths_set.values() ;
     for (int i = 0 ; i < dirs_paths.count(); i++)
     {
         QDir new_dir(dirs_paths[i]);
@@ -262,7 +262,7 @@ void MainWindow::dynamicalAnalysis(){
         threshold = threshold*(openedImage->getMax()-openedImage->getMin())+openedImage->getMin();
 
 
-        QList<int> remainings = remaining_edges.toList() ;
+        QList<int> remainings = remaining_edges.values() ;
         for (int j = 0 ; j < remainings.count() ; j++)
             if (isOnPicture(remainings[i],threshold))
             {

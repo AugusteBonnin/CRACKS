@@ -72,7 +72,7 @@ void SkelWorker::crop()
                         QPointF inter ;
                         QLineF p1p2(p1,p2) ;
                         for (int k = 0 ; k < 4 ; k++)
-                            if (((p1p2.intersect(lines[k],&inter)==QLineF::BoundedIntersection)))
+                            if (((p1p2.intersects(lines[k],&inter)==QLineF::BoundedIntersection)))
                             {
                                 new_points << inter ;
                                 skel_distance << INFINITY ;
@@ -98,7 +98,7 @@ void SkelWorker::crop()
                         QPointF inter ;
                         QLineF p1p2(p1,p2) ;
                         for (int k = 0 ; k < 4 ; k++)
-                            if (((p1p2.intersect(lines[k],&inter)==QLineF::BoundedIntersection)))
+                            if (((p1p2.intersects(lines[k],&inter)==QLineF::BoundedIntersection)))
                             {
                                 new_points << inter ;
                                 skel_distance << INFINITY ;
