@@ -39,7 +39,7 @@ private:
     QVector<DoubleSidedEdge> & double_sided_edges;
     QVector<QSet<uint32_t> > & roads_junctions ;
     QVector<QVector<uint32_t> > & roads_edges;
-    QHash<uint32_t,uint32_t> & index_junction;
+    QMap<uint32_t,uint32_t> & index_junction;
     QVector<QVector<uint32_t> > & skel_children;
     QVector<QPointF> & skel_vertices;
     QVector<float> & skel_distance ;
