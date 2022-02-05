@@ -85,6 +85,7 @@ KDTree2D::PointCloud point_cloud;
     inline QVector<QSet<uint32_t> > & getRoadsJunctions(){return roads_junctions;}
     inline QMap<uint32_t,uint32_t> & getIndexJunction(){return index_junction;}
     inline QVector<Junction> & getJunctions(){return junctions;}
+    inline QVector<double> & getEdgeCloseness(){return edgeCloseness;}
     void setActionsEnabled(bool enabled);
     QPushButton * back,*next;
 
@@ -177,6 +178,8 @@ QVector<QSet<uint32_t> > roads_junctions;
 QVector<Junction> junctions ;
 QMap<uint32_t,uint32_t> index_junction ;
 QVector<QVector<uint32_t> >  roads_edges;
+
+QVector<double> edgeCloseness;
 
 //QDockWidget *docWidget,*paramWidget;
 void setPageTitle(QString str);

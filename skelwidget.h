@@ -29,6 +29,8 @@ private:
     QVector<unsigned char> & skel_colors ;
     QVector<unsigned int> & skel_indices ;
 
+    QMap<uint32_t,QVector<uint32_t> > vertexEdges;
+
     inline bool isFramePoint(DoubleImage * image,QPointF & point)
         {
         return ((point.x()==0)||(point.x()==image->width()-1)||

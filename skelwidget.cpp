@@ -205,8 +205,8 @@ void SkelWidget::buildSkel2()
     mainWindow->skel_index_vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
     mainWindow->skel_index_vbo->allocate(skel_indices.constData(),skel_indices.count()*sizeof(unsigned int));
 
-    //line strings computing
     mainWindow->getDoubleSidedEdges().clear();
+    vertexEdges.clear();
 
     int total_vertices = 0 ;
 
@@ -218,6 +218,73 @@ void SkelWidget::buildSkel2()
             total_vertices++ ;
         }
         emit progressIncrement(1);
+    }
+
+    mainWindow->getEdgeCloseness().clear();
+    QVector<QVector<uint32_t> > distances;
+    QVector<DoubleSidedEdge> & edges = mainWindow->getDoubleSidedEdges();
+    QVector<uint32_t> tmp_distance(edges.count());
+    for (int i = 0 ; i < edges.count() ; ++i)
+    {
+        for (int j = 0 ; j < edges.count();++j)
+            if (i==j)
+                tmp_distance[j] = 0 ;
+            else
+                tmp_distance[j] = std::numeric_limits<uint32_t>().max();
+
+        QVector<uint32_t> fifo_in,fifo_out;
+        fifo_in << i ;
+        while (fifo_in.count())
+        {
+            fifo_out.clear();
+            for (int j = 0 ; j < fifo_in.count() ; ++j)
+            {
+                DoubleSidedEdge & e1 = edges[fifo_in[j]];
+                QVector<uint32_t> edges1 = vertexEdges.value(e1.str[0]);
+                for (int k = 0 ; k < edges1.count() ; ++k)
+                {
+                    if (edges1[k] != fifo_in[j])
+                    {
+                        if (tmp_distance[fifo_in[j]]+1<tmp_distance[edges1[k]])
+                        {
+                            tmp_distance[edges1[k]] = tmp_distance[fifo_in[j]]+1 ;
+                            fifo_out << edges1[k] ;
+                        }
+                    }
+                }
+                QVector<uint32_t> edges2 = vertexEdges.value(e1.str[e1.str.count()-1]);
+                for (int k = 0 ; k < edges2.count() ; ++k)
+                {
+                    if (edges2[k] != fifo_in[j])
+                    {
+                        if (tmp_distance[fifo_in[j]]+1<tmp_distance[edges2[k]])
+                        {
+                            tmp_distance[edges2[k]] = tmp_distance[fifo_in[j]]+1 ;
+                            fifo_out << edges2[k] ;
+                        }
+                    }
+                }
+            }
+            fifo_in = fifo_out ;
+        }
+        QVector<uint32_t> tmp2_distance;
+        uint32_t valid_edges = 0 ;
+        double closeness=0;
+        for (int j = 0 ; j < tmp_distance.count() ; ++j)
+        {
+            if (tmp_distance[j]<std::numeric_limits<uint32_t>().max())
+            {
+                valid_edges++;
+                tmp2_distance << tmp_distance[j];
+                closeness+=tmp_distance[j];
+            }
+        }
+        if (valid_edges>edges.count()/10)
+        {
+            distances << tmp2_distance ;
+            closeness = 1.0/closeness;
+           mainWindow->getEdgeCloseness()<<closeness;
+        }
     }
 
     mainWindow->setActionsEnabled(true);
@@ -267,6 +334,19 @@ void SkelWidget::exploreEdge(int first, int second)
         edge.str = str ;
         edge.mean_distance = mean_width ;
         mainWindow->getDoubleSidedEdges().append(edge);
+
+        {
+            QVector<uint32_t> edges = vertexEdges.value(str[0]);
+            edges << mainWindow->getDoubleSidedEdges().count()-1;
+            vertexEdges.insert(str[0],edges);
+        }
+        {
+            QVector<uint32_t> edges = vertexEdges.value(str[str.count()-1]);
+            edges << mainWindow->getDoubleSidedEdges().count()-1;
+            vertexEdges.insert(str[str.count()-1],edges);
+        }
+
+
     }
 
 }
